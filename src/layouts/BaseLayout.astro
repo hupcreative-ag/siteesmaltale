@@ -1,11 +1,9 @@
 ---
-import '@fontsource/poppins/300.css';
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/400-italic.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
-import '@fontsource/poppins/800.css';
 import '../styles/global.css';
 
 import { IS_PRODUCTION, SITE } from '../config/site';
@@ -16,16 +14,24 @@ import Footer from '../components/layout/Footer.astro';
 import FloatingCta from '../components/layout/FloatingCta.astro';
 import BookingModal from '../components/booking/BookingModal.astro';
 import ContactStrip from '../components/sections/ContactStrip.astro';
+import { grafo, organizacao, website } from '../lib/schema';
+import gazpachoBold from '../assets/fontes/gazpacho-bold.woff2?url';
 
 interface Props {
   title: string;
   description: string;
   /** Faixa "Dúvidas ou precisa de ajuda?" antes do rodapé (Sobre, Nail Art e Podologia). */
   contactStrip?: boolean;
+  /** Imagem de compartilhamento (1200x630, em public/). */
+  ogImage?: string;
+  /** Nós extras de JSON-LD da página; somam-se à organização e ao site, num só @graph. */
+  schema?: object[];
 }
 
-const { title, description, contactStrip = false } = Astro.props;
+const { title, description, contactStrip = false, ogImage = '/og-image.jpg', schema = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImageUrl = new URL(ogImage, SITE.url).href;
+const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href), website(), ...schema);
 ---
 
 <!doctype html>
@@ -43,6 +49,26 @@ const canonical = new URL(Astro.url.pathname, SITE.url).href;
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href={gazpachoBold} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={SITE.nome} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.nome}: ${SITE.assinatura}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="geo.region" content="BR-BA" />
+    <meta name="geo.placename" content="Salvador" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <slot name="head" />
   </head>
   <body>
@@ -60,6 +86,8 @@ const canonical = new URL(Astro.url.pathname, SITE.url).href;
     <script>
       import { initIconDraw } from '../scripts/icons-draw';
       import { initClickTracking } from '../scripts/analytics';
+      import { initReveal } from '../scripts/reveal';
+      initReveal();
       initIconDraw();
       initClickTracking();
     </script>

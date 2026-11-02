@@ -1,18 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroHome from '../components/home/HeroHome.astro';
-import Servicos from '../components/home/Servicos.astro';
 import SobreResumo from '../components/home/SobreResumo.astro';
 import Unidades from '../components/home/Unidades.astro';
-import { totalUnidades, porExtenso, listaCidades } from '../lib/unidades';
+import FaixaMarca from '../components/home/FaixaMarca.astro';
+import Servicos from '../components/home/Servicos.astro';
+import Galeria from '../components/home/Galeria.astro';
+import Avaliacoes from '../components/home/Avaliacoes.astro';
+import Faq from '../components/home/Faq.astro';
+import { getImage } from 'astro:assets';
+import { totalUnidades, porExtenso, listaCidades, unidadesAtivas } from '../lib/unidades';
+import { salao } from '../lib/schema';
+import { SITE } from '../config/site';
 
 // Sem faixa de contato na Home: cada unidade já tem o botão de WhatsApp.
 const descricao = `Manicure, pedicure, nail art e podologia em ${porExtenso(totalUnidades)} unidades nos principais shoppings de ${listaCidades}. Agende online.`;
+
+// Cada unidade como BeautySalon no JSON-LD (endereço, geo, horário, Trinks)
+const saloes = await Promise.all(
+  unidadesAtivas.map(async (u) => {
+    const foto = u.foto ? await getImage({ src: u.foto, width: 1200, format: 'jpg' }) : null;
+    return salao(u, foto ? new URL(foto.src, SITE.url).href : undefined);
+  }),
+);
 ---
 
-<BaseLayout title="Esmaltale | Esmalteria em Salvador e Lauro de Freitas" description={descricao}>
+<BaseLayout title="Esmaltale | Esmalteria em Salvador e Lauro de Freitas" description={descricao} schema={saloes}>
   <HeroHome />
-  <Servicos />
   <SobreResumo />
   <Unidades />
+  <Servicos />
+  <FaixaMarca />
+  <Galeria />
+  <Avaliacoes />
+  <Faq />
 </BaseLayout>

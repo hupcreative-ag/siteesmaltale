@@ -1,12 +1,15 @@
 ---
-/** Hero das páginas internas: mais baixo que o da Home, com o mesmo gradiente animado. */
+/**
+ * Hero das páginas internas: a mesma moldura arredondada e os tons claros do hero da Home,
+ * mais baixo. O header fixo fica por cima da moldura.
+ */
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 
 interface Props {
   tag?: string;
   titulo: string;
-  /** Foto em baixa opacidade com mix-blend luminosity (opcional). */
+  /** Foto em baixa opacidade, em tons de cinza (opcional). */
   fundo?: ImageMetadata;
 }
 
@@ -14,23 +17,32 @@ const { tag, titulo, fundo } = Astro.props;
 const bg = fundo ? await getImage({ src: fundo, width: 1600, format: 'webp' }) : null;
 ---
 
-<section class="hero-internal brand-gradient">
-  {bg && <div class="hero-internal__bg" style={`background-image: url('${bg.src}')`} />}
-  <div class="container hero-internal__content">
-    {tag && <span class="hero-internal__tag">{tag}</span>}
-    <h1 class="hero-internal__title">{titulo}</h1>
-    <slot />
+<section class="hero-internal" data-hero>
+  <div class="hero-internal__frame brand-gradient">
+    {bg && <div class="hero-internal__bg" style={`background-image: url('${bg.src}')`} />}
+    <div class="container hero-internal__content">
+      {tag && <span class="hero-internal__tag">{tag}</span>}
+      <h1 class="hero-internal__title">{titulo}</h1>
+      <slot />
+    </div>
   </div>
 </section>
 
 <style>
   .hero-internal {
+    padding: calc(var(--preview-h) + var(--frame-inset)) var(--frame-inset) 0;
+    background-color: var(--color-white);
+  }
+
+  .hero-internal__frame {
     position: relative;
     overflow: hidden;
-    padding-top: calc(var(--header-h) + var(--preview-h) + 48px);
+    isolation: isolate;
+    padding-top: calc(var(--header-h) + 40px);
     padding-bottom: 56px;
-    color: var(--color-white);
+    color: var(--color-purple);
     text-align: center;
+    border-radius: 18px;
   }
 
   .hero-internal__bg {
@@ -38,8 +50,9 @@ const bg = fundo ? await getImage({ src: fundo, width: 1600, format: 'webp' }) :
     inset: 0;
     background-size: cover;
     background-position: center;
-    opacity: 0.12;
-    mix-blend-mode: luminosity;
+    opacity: 0.1;
+    mix-blend-mode: multiply;
+    filter: grayscale(1);
     pointer-events: none;
   }
 
@@ -52,41 +65,32 @@ const bg = fundo ? await getImage({ src: fundo, width: 1600, format: 'webp' }) :
   .hero-internal__tag {
     display: inline-block;
     margin-bottom: 16px;
-    padding: 6px 14px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-size: 0.8125rem;
+    font-style: italic;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    background-color: rgba(107, 31, 124, 0.8);
-    border: 1px solid rgba(161, 30, 93, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: var(--radius-20);
+    color: var(--color-pink-dark);
   }
 
   .hero-internal__title {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 
   .hero-internal__content :global(p) {
     margin-top: 20px;
     font-size: 1.05rem;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.95);
+    color: #5b3d60;
   }
 
   @media (min-width: 768px) {
-    .hero-internal {
-      padding-top: calc(var(--header-h) + var(--preview-h) + 72px);
+    .hero-internal__frame {
+      padding-top: calc(var(--header-h) + 64px);
       padding-bottom: 80px;
-    }
-
-    .hero-internal__title {
-      font-size: 2.75rem;
+      border-radius: 30px;
     }
   }
 </style>

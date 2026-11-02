@@ -1,0 +1,165 @@
+---
+/**
+ * Avaliações do Google. Lê src/data/avaliacoes.ts, que só pode ter avaliações reais.
+ * Sem avaliações cadastradas, mostra três cards de [TEXTO PENDENTE] (ver PENDENCIAS.md).
+ * Sem nota geral, esconde o resumo.
+ */
+import { AVALIACOES, RESUMO_GOOGLE } from '../../data/avaliacoes';
+import { UNIDADES } from '../../data/unidades';
+
+const nomeUnidade = (slug?: string) => UNIDADES.find((u) => u.slug === slug)?.nome;
+const pendente = AVALIACOES.length === 0;
+const cards = pendente
+  ? Array.from({ length: 3 }, () => ({
+      autor: '[TEXTO PENDENTE: nome]',
+      nota: 5 as const,
+      texto: '[TEXTO PENDENTE: avaliação real copiada do perfil da Esmaltale no Google]',
+      unidade: undefined,
+      data: undefined,
+    }))
+  : AVALIACOES;
+const { notaGeral, totalAvaliacoes, url } = RESUMO_GOOGLE;
+const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.07-6.27L2.9 9.4l6.3-.9z';
+---
+
+<section class="section section--neutral avaliacoes" aria-labelledby="avaliacoes-titulo">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <h2 class="section-title" id="avaliacoes-titulo">O que nossas clientes falam</h2>
+      {
+        notaGeral ? (
+          <p class="avaliacoes__resumo">
+            <strong>{notaGeral.toLocaleString('pt-BR', { minimumFractionDigits: 1 })}</strong>
+            <span class="avaliacoes__estrelas" aria-hidden="true">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <svg viewBox="0 0 24 24" class:list={['estrela', { 'estrela--vazia': n > Math.round(notaGeral) }]}>
+                  <path d={ESTRELA} />
+                </svg>
+              ))}
+            </span>
+            <span>
+              {totalAvaliacoes && `${totalAvaliacoes.toLocaleString('pt-BR')} avaliações no Google`}
+              {url && (
+                <a href={url} target="_blank" rel="noopener noreferrer" class="avaliacoes__link">
+                  Ver no Google
+                </a>
+              )}
+            </span>
+          </p>
+        ) : (
+          <p class="section-description">O que as clientes contam no Google sobre a pausa delas na Esmaltale.</p>
+        )
+      }
+    </div>
+
+    <ul class="avaliacoes__lista" data-reveal-stagger="90">
+      {
+        cards.map((a) => (
+          <li class="avaliacao" data-reveal>
+            <p class="avaliacoes__estrelas" role="img" aria-label={`Nota ${a.nota} de 5`}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <svg viewBox="0 0 24 24" aria-hidden="true" class:list={['estrela', { 'estrela--vazia': n > a.nota }]}>
+                  <path d={ESTRELA} />
+                </svg>
+              ))}
+            </p>
+            <blockquote class="avaliacao__texto">
+              <p>{a.texto}</p>
+            </blockquote>
+            <p class="avaliacao__autor">
+              <span>{a.autor}</span>
+              {(nomeUnidade(a.unidade) || a.data) && (
+                <span class="avaliacao__meta">{[nomeUnidade(a.unidade), a.data].filter(Boolean).join(' · ')}</span>
+              )}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .avaliacoes__lista {
+    display: grid;
+    gap: 16px;
+    list-style: none;
+  }
+
+  .avaliacao {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 28px;
+    background-color: var(--color-white);
+    border: 1px solid rgba(107, 31, 124, 0.08);
+    border-radius: 20px;
+  }
+
+  .avaliacoes__estrelas {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .estrela {
+    width: 16px;
+    height: 16px;
+    fill: var(--color-pink);
+  }
+
+  .estrela--vazia {
+    fill: rgba(107, 31, 124, 0.15);
+  }
+
+  .avaliacao__texto p {
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--color-purple-dark);
+  }
+
+  .avaliacao__autor {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: auto;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-purple);
+  }
+
+  .avaliacao__meta {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+  }
+
+  .avaliacoes__resumo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 12px;
+    color: var(--color-text-muted);
+  }
+
+  .avaliacoes__resumo strong {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-purple);
+  }
+
+  .avaliacoes__link {
+    margin-left: 8px;
+    font-weight: 600;
+    color: var(--color-purple);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 768px) {
+    .avaliacoes__lista {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+  }
+</style>

@@ -1,0 +1,178 @@
+---
+/**
+ * Perguntas frequentes da Home, em <details> nativo (abre sem JS, acessível por teclado).
+ * Gera também o JSON-LD FAQPage com o mesmo texto visível, para buscadores e leitura por IA.
+ */
+import { FAQ } from '../../data/faq';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({
+    '@type': 'Question',
+    name: f.pergunta,
+    acceptedAnswer: { '@type': 'Answer', text: f.resposta },
+  })),
+};
+---
+
+<section class="section section--white faq" aria-labelledby="faq-titulo">
+  <div class="container faq__grid">
+    <div class="faq__intro" data-reveal>
+      <h2 class="section-title" id="faq-titulo">Perguntas frequentes</h2>
+      <p class="section-description">O que costumam nos perguntar antes do primeiro atendimento.</p>
+      <button type="button" class="btn btn--solid faq__cta" data-booking data-booking-origem="faq" data-booking-modo="duvida">
+        Falar com a recepção
+      </button>
+    </div>
+
+    <div class="faq__lista" data-reveal-stagger="60">
+      {
+        FAQ.map((f, i) => (
+          <details class="faq__item" name="faq" open={i === 0} data-reveal>
+            <summary class="faq__pergunta">
+              <span>{f.pergunta}</span>
+              <span class="faq__icone" aria-hidden="true" />
+            </summary>
+            <div class="faq__resposta">
+              <p>{f.resposta}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    gap: 32px;
+  }
+
+  .faq__intro .section-title {
+    margin-bottom: 12px;
+  }
+
+  .faq__cta {
+    margin-top: 24px;
+  }
+
+  .faq__lista {
+    display: grid;
+    gap: 8px;
+  }
+
+  .faq__item {
+    padding-inline: 24px;
+    background-color: var(--color-neutral-bg);
+    border-radius: 20px;
+    interpolate-size: allow-keywords;
+    transition: background-color 300ms var(--ease);
+  }
+
+  .faq__item[open] {
+    background-color: #f7ecf2;
+  }
+
+  .faq__pergunta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: 20px;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-purple-dark);
+    list-style: none;
+    cursor: pointer;
+    transition: color 250ms var(--ease);
+  }
+
+  .faq__pergunta::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__pergunta:hover {
+    color: var(--color-purple);
+  }
+
+  /* "+" que vira "−" */
+  .faq__icone {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-white);
+    border: 1px solid rgba(107, 31, 124, 0.12);
+    border-radius: 50%;
+    transition: background-color 300ms var(--ease), border-color 300ms var(--ease);
+  }
+
+  .faq__icone::before,
+  .faq__icone::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 1.5px;
+    background-color: var(--color-pink-dark);
+    border-radius: 2px;
+    transform: translate(-50%, -50%);
+    transition: transform 400ms var(--ease-out-expo), background-color 300ms var(--ease);
+  }
+
+  .faq__icone::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .faq__item[open] .faq__icone {
+    background-color: var(--color-purple);
+    border-color: var(--color-purple);
+  }
+
+  .faq__item[open] .faq__icone::before,
+  .faq__item[open] .faq__icone::after {
+    background-color: var(--color-white);
+  }
+
+  .faq__item[open] .faq__icone::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  /* Abertura animada onde o navegador suporta ::details-content */
+  .faq__item::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 450ms var(--ease-out-expo), content-visibility 450ms allow-discrete;
+  }
+
+  .faq__item[open]::details-content {
+    block-size: auto;
+  }
+
+  .faq__resposta p {
+    max-width: 62ch;
+    padding-bottom: 22px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 900px) {
+    .faq__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    .faq__intro {
+      position: sticky;
+      top: calc(var(--header-h) + var(--preview-h) + 40px);
+    }
+  }
+</style>

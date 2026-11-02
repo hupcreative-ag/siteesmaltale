@@ -21,6 +21,11 @@ Build de produção local: `npm run build` (gera `dist/`) e `npm run preview` pa
 | `src/data/unidades.ts` | Fonte única das unidades (endereços, WhatsApp, Trinks, fotos) |
 | `src/data/hero.ts` | Banners do carrossel da Home (banner sem imagem não aparece) |
 | `src/data/servicos.ts` | Cards de serviço da Home (textos, fotos e links "Saiba mais") |
+| `src/data/galeria.ts` | Fotos da galeria da Home |
+| `src/data/faq.ts` | Perguntas frequentes da Home (também geram o JSON-LD FAQPage) |
+| `src/data/avaliacoes.ts` | Avaliações do Google (só reais; vazio mostra pendência) |
+| `src/lib/schema.ts` | JSON-LD (Organization, WebSite, BeautySalon por unidade, catálogo de serviços) |
+| `src/pages/robots.txt.ts`, `src/pages/llms.txt.ts` | robots.txt por ambiente e resumo da marca para IA, gerados dos dados |
 | `src/config/site.ts` | URL, horário, Instagram, mensagens do WhatsApp, menu |
 | `src/config/tracking.ts` | IDs do GA4 e do Meta Pixel |
 | `src/lib/unidades.ts` | Ordenação, contagem por extenso, listas e links das unidades |

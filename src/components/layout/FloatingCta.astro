@@ -1,41 +1,73 @@
 ---
+/** Botão flutuante de agendamento, só abaixo de 1024px (no desktop o header já tem o botão).
+    É um círculo com o ícone de agenda; fica escondido enquanto o hero ([data-hero]) está na tela. */
 import IconCalendar from '../icons/IconCalendar.astro';
 ---
 
-<button type="button" class="floating-cta" data-booking data-booking-origem="flutuante">
-  <IconCalendar size={20} />
-  <span>Agende agora</span>
+<button type="button" class="floating-cta" aria-label="Agende agora" data-booking data-booking-origem="flutuante">
+  <IconCalendar size={22} />
 </button>
+
+<script>
+  const botao = document.querySelector<HTMLElement>('.floating-cta');
+  const hero = document.querySelector('[data-hero]');
+  if (botao && hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entrada]) => botao.classList.toggle('is-hidden', entrada.isIntersecting), {
+      rootMargin: '0px 0px -35% 0px',
+    }).observe(hero);
+  }
+</script>
 
 <style>
   .floating-cta {
     position: fixed;
     right: 16px;
-    bottom: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
     z-index: 80;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px 22px;
-    font-size: 0.95rem;
-    font-weight: 700;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
     color: var(--color-white);
-    background: var(--gradient-pink);
-    border-radius: var(--radius-pill);
-    box-shadow: 0 8px 25px rgba(161, 30, 93, 0.35);
-    transition: var(--transition);
+    background: var(--color-purple);
+    border-radius: 50%;
+    box-shadow: 0 10px 24px -8px rgba(99, 32, 102, 0.55);
+    transition:
+      opacity 350ms var(--ease-out-expo),
+      transform 450ms var(--ease-out-expo),
+      background-color 250ms var(--ease),
+      visibility 0s;
   }
 
   .floating-cta:hover {
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 12px 30px rgba(161, 30, 93, 0.5);
+    background: var(--color-purple-hover);
+  }
+
+  .floating-cta:active {
+    transform: scale(0.94);
+  }
+
+  .floating-cta.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px) scale(0.9);
+    transition:
+      opacity 300ms var(--ease-out-expo),
+      transform 400ms var(--ease-out-expo),
+      visibility 0s linear 400ms;
   }
 
   @media (min-width: 768px) {
     .floating-cta {
       right: 24px;
       bottom: 24px;
-      padding: 14px 24px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .floating-cta {
+      display: none;
     }
   }
 </style>

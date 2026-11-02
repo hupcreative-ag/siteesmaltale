@@ -3,19 +3,18 @@
 import { Picture } from 'astro:assets';
 import sobreHome from '../../assets/sobre/sobre-home.jpg';
 import { totalUnidades } from '../../lib/unidades';
-import { SITE } from '../../config/site';
 import IconArrow from '../icons/IconArrow.astro';
 ---
 
 <section class="section section--white sobre-resumo" aria-labelledby="sobre-titulo">
   <div class="container sobre-resumo__grid">
-    <div class="sobre-resumo__media">
+    <div class="sobre-resumo__media" data-reveal>
       <Picture
         src={sobreHome}
         width={1200}
         height={900}
         widths={[480, 800, 1200]}
-        sizes="(min-width: 768px) 560px, 92vw"
+        sizes="(min-width: 768px) 640px, 92vw"
         formats={['avif', 'webp']}
         alt="Interior de uma unidade Esmaltale, com bancadas de atendimento, prateleira de esmaltes e o logo iluminado na parede"
         class="sobre-resumo__img"
@@ -23,8 +22,7 @@ import IconArrow from '../icons/IconArrow.astro';
       />
     </div>
 
-    <div class="sobre-resumo__texto">
-      <span class="section-tag">Desde {SITE.fundacao}</span>
+    <div class="sobre-resumo__texto" data-reveal style="--reveal-delay: 120ms">
       <h2 class="section-title" id="sobre-titulo">Sobre a Esmaltale</h2>
       <p>Fundada em 2017, a Esmaltale nasceu com uma proposta: entregar um cuidado que vai além do esmalte.</p>
       <p>
@@ -52,8 +50,7 @@ import IconArrow from '../icons/IconArrow.astro';
 
   .sobre-resumo__media {
     overflow: hidden;
-    border-radius: var(--radius-24);
-    box-shadow: var(--shadow-medium);
+    border-radius: 24px;
   }
 
   .sobre-resumo__media :global(.sobre-resumo__img) {
@@ -66,19 +63,22 @@ import IconArrow from '../icons/IconArrow.astro';
     margin-bottom: 16px;
     font-size: 1rem;
     line-height: 1.7;
-    color: var(--color-purple-dark);
-    opacity: 0.85;
+    color: var(--color-text-muted);
+  }
+
+  .sobre-resumo__texto .section-title {
+    margin-bottom: 20px;
   }
 
   .sobre-resumo__cta {
-    margin-top: 8px;
-    font-size: 1.05rem;
+    margin-top: 12px;
+    font-size: 1rem;
   }
 
   @media (min-width: 768px) {
     .sobre-resumo__grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 56px;
+      grid-template-columns: 7fr 5fr;
+      gap: 64px;
     }
   }
 </style>

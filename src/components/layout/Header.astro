@@ -1,6 +1,5 @@
 ---
 import { NAV, SITE } from '../../config/site';
-import logoBranca from '../../assets/marca/logo-branca.svg';
 import logoCor from '../../assets/marca/logo-cor.svg';
 import IconMenu from '../icons/IconMenu.astro';
 import IconClose from '../icons/IconClose.astro';
@@ -13,8 +12,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
 <header class="site-header" data-header>
   <div class="container site-header__inner">
     <a href="/" class="site-header__logo" aria-label={`${SITE.nome}, página inicial`}>
-      <img src={logoBranca.src} width="140" height="43" alt="" class="logo logo--branca" />
-      <img src={logoCor.src} width="140" height="43" alt="" class="logo logo--cor" />
+      <img src={logoCor.src} width="140" height="43" alt="" class="logo" />
     </a>
 
     <nav class="site-nav" aria-label="Principal">
@@ -51,7 +49,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
 
 <div class="mobile-menu" id="mobile-menu" hidden data-mobile-menu>
   <div class="mobile-menu__top container">
-    <img src={logoBranca.src} width="140" height="43" alt={SITE.nome} class="logo" />
+    <img src={logoCor.src} width="140" height="43" alt={SITE.nome} class="logo" />
     <button type="button" class="mobile-menu__close" aria-label="Fechar menu" data-menu-close>
       <IconClose />
     </button>
@@ -68,68 +66,55 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
         ))
       }
     </ul>
-    <button type="button" class="specular-button" data-booking data-booking-origem="header">
+    <button type="button" class="specular-button specular-button--dark" data-booking data-booking-origem="header">
       Agende agora
     </button>
   </nav>
 </div>
 
 <style>
+  /* Header fixo. No topo da página ele fica dentro da moldura do hero (desce --frame-inset);
+     depois de rolar, sobe para o topo com fundo branco. Grade de 3 colunas: logo, menu, botão. */
   .site-header {
     position: fixed;
-    top: var(--preview-h);
+    top: calc(var(--preview-h) + var(--frame-inset));
     left: 0;
     right: 0;
     z-index: 90;
     height: var(--header-h);
-    color: var(--color-white);
-    transition: background-color 250ms var(--ease), box-shadow 250ms var(--ease), color 250ms var(--ease);
+    color: var(--color-purple);
+    transition:
+      top 400ms var(--ease-out-expo),
+      background-color 300ms var(--ease),
+      box-shadow 300ms var(--ease);
   }
 
   .site-header.is-scrolled {
-    background-color: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-soft), 0 1px 0 rgba(107, 31, 124, 0.06);
-    color: var(--color-purple-dark);
+    top: var(--preview-h);
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 rgba(99, 32, 102, 0.08);
   }
 
   .site-header__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 24px;
     height: 100%;
   }
 
   .site-header__logo {
-    position: relative;
     display: block;
-    width: 120px;
-    margin-right: auto;
+    justify-self: start;
+    width: 118px;
+    /* o logo tem a assinatura embaixo; sobe 2px para o centro ótico bater com o menu */
+    margin-top: -2px;
   }
 
   .logo {
     width: 100%;
     height: auto;
-  }
-
-  .logo--cor {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-  }
-
-  .logo--branca,
-  .logo--cor {
-    transition: opacity 250ms var(--ease);
-  }
-
-  .is-scrolled .logo--branca {
-    opacity: 0;
-  }
-
-  .is-scrolled .logo--cor {
-    opacity: 1;
   }
 
   .site-nav {
@@ -138,18 +123,20 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
 
   .site-nav ul {
     display: flex;
-    gap: 4px;
+    align-items: center;
+    gap: 6px;
     list-style: none;
   }
 
   .site-nav a {
     position: relative;
     display: block;
-    padding: 8px 14px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: var(--radius-pill);
-    transition: var(--transition);
+    padding: 10px 14px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-purple);
+    transition: color 250ms var(--ease);
   }
 
   .site-nav a::after {
@@ -157,12 +144,13 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     position: absolute;
     left: 14px;
     right: 14px;
-    bottom: 3px;
-    height: 2px;
+    bottom: 2px;
+    height: 1.5px;
     border-radius: 2px;
     background: currentColor;
     transform: scaleX(0);
-    transition: transform 250ms var(--ease);
+    transform-origin: left;
+    transition: transform 350ms var(--ease-out-expo);
   }
 
   .site-nav a:hover::after,
@@ -170,36 +158,27 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     transform: scaleX(1);
   }
 
-  .is-scrolled .site-nav a[aria-current='page'] {
-    color: var(--color-purple);
+  .site-nav a:hover {
+    color: var(--color-pink-dark);
   }
 
   .site-header__cta {
     display: none;
+    justify-self: end;
     align-items: center;
     gap: 8px;
-    padding: 11px 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-purple);
-    background: var(--color-white);
+    height: 44px;
+    padding: 0 20px 0 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-white);
+    background: var(--color-purple);
     border-radius: var(--radius-pill);
-    box-shadow: 0 6px 18px rgba(42, 36, 40, 0.12);
-    transition: var(--transition);
+    transition: background-color 250ms var(--ease);
   }
 
   .site-header__cta:hover {
-    transform: translateY(-2px);
-  }
-
-  .is-scrolled .site-header__cta {
-    color: var(--color-white);
-    background: var(--color-purple);
-  }
-
-  .is-scrolled .site-header__cta:hover {
     background: var(--color-purple-hover);
   }
 
@@ -207,15 +186,21 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     display: flex;
     align-items: center;
     justify-content: center;
+    justify-self: end;
     width: 44px;
     height: 44px;
     margin-right: -10px;
+    color: var(--color-purple);
     border-radius: 50%;
   }
 
   @media (min-width: 1024px) {
+    .site-header__inner {
+      grid-template-columns: 1fr auto 1fr;
+    }
+
     .site-header__logo {
-      width: 140px;
+      width: 132px;
     }
 
     .site-nav,
@@ -235,7 +220,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     z-index: 120;
     display: flex;
     flex-direction: column;
-    color: var(--color-white);
+    color: var(--color-purple);
     background: var(--gradient-hero);
     background-size: 400% 400%;
     animation: heroGradientLoop 15s ease infinite, menuIn 300ms var(--ease);
@@ -256,11 +241,11 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     align-items: center;
     justify-content: space-between;
     height: var(--header-h);
-    margin-top: var(--preview-h);
+    margin-top: calc(var(--preview-h) + var(--frame-inset));
   }
 
   .mobile-menu__top .logo {
-    width: 120px;
+    width: 118px;
   }
 
   .mobile-menu__close {
@@ -289,17 +274,18 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
 
   .mobile-menu__nav a {
     display: inline-block;
-    padding: 8px 0;
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    opacity: 0.85;
+    padding: 6px 0;
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    opacity: 0.8;
   }
 
   .mobile-menu__nav a[aria-current='page'] {
     opacity: 1;
     text-decoration: underline;
-    text-decoration-thickness: 3px;
+    text-decoration-thickness: 2px;
     text-underline-offset: 8px;
   }
 

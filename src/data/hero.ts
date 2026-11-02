@@ -8,7 +8,6 @@
  */
 import type { ImageMetadata } from 'astro';
 
-import podologia from '../assets/podologia/podologia-02.jpg';
 import experiencia from '../assets/sobre/sobre-pagina.jpg';
 
 export interface HeroBanner {
@@ -19,7 +18,7 @@ export interface HeroBanner {
   subtitulo: string;
   cta: { label: string; href: string };
   imagem: ImageMetadata | null;
-  /** object-position da foto (o texto fica à esquerda no desktop). */
+  /** object-position da foto (no desktop ela ocupa a metade direita; no celular, a tela toda). */
   posicao?: string;
 }
 
@@ -30,8 +29,9 @@ export const HERO_BANNERS: HeroBanner[] = [
     titulo: 'Podologia profissional para quem entende que beleza e saúde andam juntas.',
     subtitulo: 'Tratamento de encravadas, calos, rachaduras e muito mais.',
     cta: { label: 'Clique aqui e saiba mais', href: '/podologia/' },
-    imagem: podologia,
-    posicao: '60% 30%',
+    // Desligado a pedido (2026-11-02): ficam só o hero institucional e o banner Experiência.
+    imagem: null,
+    posicao: 'center 55%',
   },
   {
     id: 'experiencia',

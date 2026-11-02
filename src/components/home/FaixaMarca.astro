@@ -1,0 +1,111 @@
+---
+/**
+ * Faixa de separação entre Serviços e Galeria: palavras-chave da marca passando devagar,
+ * no estilo do panfleto Beauty Ticket (fundo creme, filetes finos, itálico espaçado) com o
+ * brilho de 4 pontas da marca entre elas. Decorativa (aria-hidden): as mesmas informações estão no texto
+ * da página. Pausa no hover; parada com prefers-reduced-motion.
+ */
+
+// Fatos do documento de conteúdo; mudar aqui se a cliente pedir outras palavras.
+const PALAVRAS = [
+  'Esterilização em autoclave',
+  'Agendamento online',
+  'Ambiente acolhedor',
+  'Profissionais treinadas',
+  'Nail art',
+  'Podologia',
+  'Spa das mãos e dos pés',
+  'Desde 2017',
+];
+---
+
+<div class="faixa" aria-hidden="true">
+  <div class="faixa__trilho">
+    {
+      [0, 1].map(() => (
+        <ul class="faixa__grupo">
+          {PALAVRAS.map((p) => (
+            <li class="faixa__item">
+              <span>{p}</span>
+              <svg class="faixa__brilho" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 2c.8 5.2 2.8 7.2 8 8-5.2.8-7.2 2.8-8 8-.8-5.2-2.8-7.2-8-8 5.2-.8 7.2-2.8 8-8z" />
+              </svg>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .faixa {
+    overflow: hidden;
+    padding-block: 18px;
+    color: var(--color-purple);
+    background-color: var(--color-creme);
+    border-block: 1px solid var(--color-line);
+    /* some suavemente nas pontas */
+    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+
+  .faixa__trilho {
+    display: flex;
+    width: max-content;
+    animation: faixaLoop 70s linear infinite;
+  }
+
+  .faixa:hover .faixa__trilho {
+    animation-play-state: paused;
+  }
+
+  .faixa__grupo {
+    display: flex;
+    flex-shrink: 0;
+    list-style: none;
+  }
+
+  .faixa__item {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-right: 28px;
+    font-size: 0.8125rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .faixa__brilho {
+    width: 12px;
+    height: 12px;
+    fill: var(--color-pink);
+  }
+
+  @keyframes faixaLoop {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .faixa {
+      padding-block: 22px;
+    }
+
+    .faixa__item {
+      gap: 40px;
+      padding-right: 40px;
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faixa__trilho {
+      animation: none;
+    }
+  }
+</style>

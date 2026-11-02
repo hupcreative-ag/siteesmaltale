@@ -1,0 +1,282 @@
+---
+/**
+ * Galeria de resultados: fotos em formato polaroid (moldura branca, leve inclinação alternada)
+ * passando em loop, como na landing de unidade aprovada (pausa no hover e no foco), e foto
+ * ampliada num <dialog> ao clicar. Fundo creme, continuando a faixa de palavras acima.
+ * Com prefers-reduced-motion a faixa para e vira rolagem horizontal.
+ */
+import { Picture, getImage } from 'astro:assets';
+import { GALERIA } from '../../data/galeria';
+import IconClose from '../icons/IconClose.astro';
+import IconArrow from '../icons/IconArrow.astro';
+
+const grandes = await Promise.all(
+  GALERIA.map((f) => getImage({ src: f.src, width: 1400, format: 'webp' })),
+);
+const dados = GALERIA.map((f, i) => ({ src: grandes[i].src, alt: f.alt }));
+---
+
+<section class="section galeria" aria-labelledby="galeria-titulo">
+  <h2 class="sr-only" id="galeria-titulo">Galeria de resultados</h2>
+
+  <div class="galeria__faixa" data-reveal="fade">
+    <div class="galeria__trilho">
+      {
+        [0, 1].map((copia) => (
+          <ul class="galeria__grupo" aria-hidden={copia === 1 ? 'true' : undefined}>
+            {GALERIA.map((f, i) => (
+              <li>
+                <button
+                  type="button"
+                  class="galeria__foto"
+                  data-galeria-abrir={i}
+                  tabindex={copia === 1 ? -1 : undefined}
+                  aria-label={copia === 0 ? `Ampliar foto: ${f.alt}` : undefined}
+                >
+                  <Picture
+                    src={f.src}
+                    width={480}
+                    height={480}
+                    widths={[240, 480]}
+                    sizes="230px"
+                    formats={['avif', 'webp']}
+                    alt=""
+                    loading="lazy"
+                  />
+                </button>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </div>
+
+  <dialog class="galeria__modal" aria-label="Foto ampliada" data-galeria-modal>
+    <img src={dados[0].src} alt={dados[0].alt} loading="lazy" class="galeria__ampliada" data-galeria-img />
+    <button type="button" class="galeria__ctrl galeria__fechar" aria-label="Fechar" data-galeria-fechar>
+      <IconClose />
+    </button>
+    <button type="button" class="galeria__ctrl galeria__anterior" aria-label="Foto anterior" data-galeria-passo="-1">
+      <IconArrow />
+    </button>
+    <button type="button" class="galeria__ctrl galeria__proxima" aria-label="Próxima foto" data-galeria-passo="1">
+      <IconArrow />
+    </button>
+  </dialog>
+
+  <script type="application/json" id="galeria-dados" set:html={JSON.stringify(dados)} />
+</section>
+
+<script>
+  const modal = document.querySelector<HTMLDialogElement>('[data-galeria-modal]');
+  const img = document.querySelector<HTMLImageElement>('[data-galeria-img]');
+  const fotos: { src: string; alt: string }[] = JSON.parse(document.getElementById('galeria-dados')?.textContent ?? '[]');
+  let atual = 0;
+
+  function mostrar(i: number) {
+    if (!img || !fotos.length) return;
+    atual = (i + fotos.length) % fotos.length;
+    img.src = fotos[atual].src;
+    img.alt = fotos[atual].alt;
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-galeria-abrir]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      mostrar(Number(btn.dataset.galeriaAbrir));
+      modal?.showModal();
+    }),
+  );
+  document.querySelectorAll<HTMLButtonElement>('[data-galeria-passo]').forEach((btn) =>
+    btn.addEventListener('click', () => mostrar(atual + Number(btn.dataset.galeriaPasso))),
+  );
+  document.querySelector('[data-galeria-fechar]')?.addEventListener('click', () => modal?.close());
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) modal.close();
+  });
+  modal?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') mostrar(atual + 1);
+    if (e.key === 'ArrowLeft') mostrar(atual - 1);
+  });
+</script>
+
+<style>
+  .galeria {
+    overflow: hidden;
+    padding-block: 40px 72px;
+    background-color: var(--color-creme);
+  }
+
+  .galeria__faixa {
+    overflow: hidden;
+  }
+
+  .galeria__trilho {
+    display: flex;
+    width: max-content;
+    animation: galeriaLoop 60s linear infinite;
+  }
+
+  .galeria__faixa:hover .galeria__trilho,
+  .galeria__faixa:focus-within .galeria__trilho {
+    animation-play-state: paused;
+  }
+
+  .galeria__grupo {
+    display: flex;
+    gap: 22px;
+    padding: 20px 22px 28px 0;
+    list-style: none;
+  }
+
+  /* Polaroid: moldura branca com a base mais larga, inclinação alternada */
+  .galeria__foto {
+    display: block;
+    width: 200px;
+    padding: 10px 10px 38px;
+    background-color: var(--color-white);
+    border-radius: 3px;
+    box-shadow:
+      0 1px 2px rgba(54, 33, 58, 0.08),
+      0 14px 30px -14px rgba(54, 33, 58, 0.35);
+    cursor: zoom-in;
+    transform: rotate(var(--giro, -2deg));
+    transition: transform 600ms var(--ease-out-expo), box-shadow 600ms var(--ease-out-expo);
+  }
+
+  .galeria__grupo li:nth-child(4n + 2) .galeria__foto { --giro: 2.5deg; }
+  .galeria__grupo li:nth-child(4n + 3) .galeria__foto { --giro: -1deg; }
+  .galeria__grupo li:nth-child(4n + 4) .galeria__foto { --giro: 3deg; }
+
+  .galeria__foto:hover,
+  .galeria__foto:focus-visible {
+    transform: rotate(0deg) translateY(-8px) scale(1.04);
+    box-shadow:
+      0 1px 2px rgba(54, 33, 58, 0.08),
+      0 24px 40px -16px rgba(54, 33, 58, 0.4);
+  }
+
+  .galeria__foto :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 1px;
+  }
+
+  @keyframes galeriaLoop {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* ---------- Foto ampliada ---------- */
+  .galeria__modal {
+    width: min(92vw, 880px);
+    max-height: 90vh;
+    margin: auto;
+    padding: 0;
+    overflow: visible;
+    background: none;
+    border: 0;
+  }
+
+  .galeria__modal[open] {
+    animation: galeriaModalIn 420ms var(--ease-out-expo) both;
+  }
+
+  .galeria__modal::backdrop {
+    background-color: rgba(54, 33, 58, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .galeria__modal[open]::backdrop {
+    animation: galeriaFundoIn 450ms var(--ease-out-expo) both;
+  }
+
+  @keyframes galeriaModalIn {
+    from { opacity: 0; transform: scale(0.96); }
+  }
+
+  @keyframes galeriaFundoIn {
+    from {
+      background-color: rgba(54, 33, 58, 0);
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+    }
+  }
+
+  .galeria__ampliada {
+    width: 100%;
+    max-height: 86vh;
+    object-fit: contain;
+    border-radius: 16px;
+  }
+
+  .galeria__ctrl {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--color-purple-dark);
+    background-color: var(--color-white);
+    border-radius: 50%;
+    box-shadow: 0 6px 18px rgba(42, 36, 40, 0.25);
+    transition: transform 250ms var(--ease);
+  }
+
+  .galeria__ctrl:hover {
+    transform: scale(1.06);
+  }
+
+  .galeria__fechar {
+    top: -14px;
+    right: -14px;
+  }
+
+  .galeria__anterior,
+  .galeria__proxima {
+    top: 50%;
+    margin-top: -22px;
+  }
+
+  .galeria__anterior {
+    left: 12px;
+  }
+
+  .galeria__anterior :global(.icon) {
+    transform: rotate(180deg);
+  }
+
+  .galeria__proxima {
+    right: 12px;
+  }
+
+  @media (min-width: 768px) {
+    .galeria {
+      padding-block: 48px 96px;
+    }
+
+    .galeria__foto {
+      width: 230px;
+      padding: 12px 12px 44px;
+    }
+
+    .galeria__grupo {
+      gap: 32px;
+      padding-right: 32px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .galeria__faixa {
+      overflow-x: auto;
+    }
+
+    .galeria__trilho {
+      animation: none;
+    }
+  }
+</style>

@@ -1,21 +1,23 @@
 ---
-/** "Nossas unidades" na Home (id="unidades", destino do link "Ver unidades" do hero). */
-import { unidadesAtivas, listaCidades } from '../../lib/unidades';
+/**
+ * "Nossas unidades" na Home (id="unidades", destino do botão "Agende agora" do hero).
+ * Celular e tablet: 2 colunas (no celular, cards compactos). Desktop: 3.
+ */
+import { unidadesAtivas } from '../../lib/unidades';
 import UnitCard from '../unidades/UnitCard.astro';
 ---
 
 <section class="section section--neutral" id="unidades" aria-labelledby="unidades-titulo">
   <div class="container">
-    <div class="section-header">
-      <span class="section-tag">{listaCidades}</span>
+    <div class="section-head" data-reveal>
       <h2 class="section-title" id="unidades-titulo">Nossas unidades</h2>
       <p class="section-description">Estamos nos principais shoppings de Salvador. Escolha a mais perto de você.</p>
     </div>
 
-    <ul class="unidades__grid">
+    <ul class="unidades__lista" data-reveal-stagger="90">
       {
         unidadesAtivas.map((u) => (
-          <li>
+          <li class="unidades__item" data-reveal>
             <UnitCard unidade={u} />
           </li>
         ))
@@ -25,21 +27,26 @@ import UnitCard from '../unidades/UnitCard.astro';
 </section>
 
 <style>
-  .unidades__grid {
+  .unidades__lista {
     display: grid;
-    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
     list-style: none;
   }
 
+  .unidades__item {
+    position: relative;
+  }
+
   @media (min-width: 640px) {
-    .unidades__grid {
-      grid-template-columns: repeat(2, 1fr);
+    .unidades__lista {
+      gap: 24px;
     }
   }
 
   @media (min-width: 1024px) {
-    .unidades__grid {
-      grid-template-columns: repeat(3, 1fr);
+    .unidades__lista {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

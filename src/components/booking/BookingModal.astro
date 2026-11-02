@@ -1,28 +1,44 @@
 ---
 /**
  * Modal de agendamento em <dialog> nativo, em duas etapas:
- * 1. "Em qual unidade?"  2. "Como prefere agendar?" (Trinks e WhatsApp da unidade).
+ * 1. "Em qual unidade?" (lista com miniatura)  2. Ficha da unidade (foto, localização, endereço)
+ *    com os canais: Trinks (principal) e WhatsApp.
+ * No celular abre como folha que sobe da base da tela.
  *
  * Abre com qualquer elemento [data-booking]:
- *   data-booking-origem   header | flutuante | hero | card_servico | card_unidade | faixa_contato | pagina_servico
+ *   data-booking-origem   header | flutuante | hero | card_servico | card_unidade | faixa_contato | pagina_servico | faq
  *   data-booking-modo     agendamento (padrão) | duvida
  *   data-booking-unidade  slug: pula direto para a etapa 2
  */
+import { getImage } from 'astro:assets';
 import {
   unidadesAtivas,
   localizacao,
+  enderecoCompleto,
   whatsappAgendamento,
   whatsappDuvida,
 } from '../../lib/unidades';
+import logoCor from '../../assets/marca/logo-cor.svg';
 import IconClose from '../icons/IconClose.astro';
 import IconArrow from '../icons/IconArrow.astro';
 import IconCalendar from '../icons/IconCalendar.astro';
 import IconWhatsapp from '../icons/IconWhatsapp.astro';
-import IconPin from '../icons/IconPin.astro';
 
-const dados = unidadesAtivas.map((u) => ({
+const unidades = await Promise.all(
+  unidadesAtivas.map(async (u) => ({
+    u,
+    mini: u.foto ? (await getImage({ src: u.foto, width: 112, height: 112, format: 'webp' })).src : null,
+    foto: u.foto ? (await getImage({ src: u.foto, width: 880, height: 440, format: 'webp' })).src : null,
+  })),
+);
+
+const dados = unidades.map(({ u, foto }) => ({
   slug: u.slug,
   nome: u.nome,
+  local: localizacao(u, true),
+  endereco: enderecoCompleto(u),
+  foto,
+  fotoPosicao: u.fotoPosicao ?? 'center',
   trinksUrl: u.trinksUrl ?? null,
   waAgendamento: whatsappAgendamento(u),
   waDuvida: whatsappDuvida(u),
@@ -32,7 +48,7 @@ const dados = unidadesAtivas.map((u) => ({
 <dialog class="booking-modal" aria-labelledby="booking-titulo-unidade" data-booking-modal>
   <div class="modal-card">
     <button type="button" class="modal-close" aria-label="Fechar" data-modal-close>
-      <IconClose />
+      <IconClose size={20} />
     </button>
 
     <!-- Etapa 1 -->
@@ -49,22 +65,25 @@ const dados = unidadesAtivas.map((u) => ({
 
       <ul class="unit-options" data-unit-list>
         {
-          unidadesAtivas.map((u) => (
+          unidades.map(({ u, mini }) => (
             <li data-slug={u.slug}>
               <button type="button" class="unit-option" data-escolher={u.slug}>
-                <span class="unit-option__icon">
-                  <IconPin size={20} />
-                </span>
+                {mini ? (
+                  <img src={mini} width="56" height="56" alt="" class="unit-option__foto" loading="lazy" />
+                ) : (
+                  <span class="unit-option__foto unit-option__foto--vazia brand-gradient" />
+                )}
                 <span class="unit-option__text">
-                  <strong>{u.nome}</strong>
-                  <span>{localizacao(u)}</span>
-                </span>
-                <span class="unit-option__tags">
-                  {u.novidade && <span class="tag tag--new">Nova unidade</span>}
-                  <span class="tag tag--last" hidden>
-                    Última escolhida
+                  <span class="unit-option__nome">
+                    {u.nome}
+                    {u.novidade && <span class="tag">Nova</span>}
+                    <span class="tag tag--last" hidden>
+                      Última escolhida
+                    </span>
                   </span>
+                  <span class="unit-option__local">{localizacao(u)}</span>
                 </span>
+                <IconArrow size={18} class="unit-option__seta" />
               </button>
             </li>
           ))
@@ -78,28 +97,36 @@ const dados = unidadesAtivas.map((u) => ({
         <IconArrow size={16} />
         Voltar
       </button>
-      <header class="modal-header">
-        <h2 id="booking-titulo-canal" tabindex="-1">Como prefere agendar?</h2>
-        <p class="modal-subtitle">
-          Escolha o canal de sua preferência para reservar o seu horário na unidade{' '}<strong
-            data-nome-unidade></strong>.
-        </p>
-      </header>
 
+      <div class="ficha">
+        <div class="ficha__foto">
+          <img src={dados.find((d) => d.foto)?.foto ?? logoCor.src} alt="" width="440" height="220" loading="lazy" data-ficha-foto hidden />
+          <span class="ficha__vazia brand-gradient" data-ficha-vazia>
+            <img src={logoCor.src} width="140" height="43" alt="" />
+          </span>
+        </div>
+        <h2 class="ficha__nome" id="booking-titulo-canal" tabindex="-1" data-nome-unidade></h2>
+        <p class="ficha__local" data-ficha-local></p>
+        <p class="ficha__endereco" data-ficha-endereco></p>
+      </div>
+
+      <p class="modal-pergunta">Como prefere agendar?</p>
       <div class="modal-body" data-canais>
-        <a href="#" target="_blank" rel="noopener noreferrer" class="booking-option" data-canal-trinks>
-          <span class="booking-option__icon"><IconCalendar /></span>
-          <span class="booking-option__text">
+        <a href="#" target="_blank" rel="noopener noreferrer" class="canal canal--principal" data-canal-trinks>
+          <IconCalendar size={20} />
+          <span class="canal__texto">
             <strong>Agendamento online (Trinks)</strong>
             <span>Escolha profissional e horário na hora</span>
           </span>
+          <IconArrow size={18} class="canal__seta" />
         </a>
-        <a href="#" target="_blank" rel="noopener noreferrer" class="booking-option" data-canal-whatsapp>
-          <span class="booking-option__icon"><IconWhatsapp /></span>
-          <span class="booking-option__text">
+        <a href="#" target="_blank" rel="noopener noreferrer" class="canal" data-canal-whatsapp>
+          <IconWhatsapp size={20} />
+          <span class="canal__texto">
             <strong>Agendar pelo WhatsApp</strong>
             <span>Fale com a nossa recepção por mensagem</span>
           </span>
+          <IconArrow size={18} class="canal__seta" />
         </a>
       </div>
     </div>
@@ -110,80 +137,157 @@ const dados = unidadesAtivas.map((u) => ({
 
 <style>
   .booking-modal {
-    width: min(460px, calc(100% - 32px));
+    width: min(440px, calc(100% - 32px));
     max-height: calc(100dvh - 32px);
     margin: auto;
     padding: 0;
-    border: none;
-    border-radius: var(--radius-24);
-    background: transparent;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    overflow: visible;
     color: var(--color-purple-dark);
+    background: transparent;
+    border: none;
   }
 
+  /* Entrada e saída suaves; o fundo desfocado também entra e sai aos poucos */
   .booking-modal[open] {
-    animation: modalIn 250ms var(--ease);
+    animation: modalIn 460ms var(--ease-out-expo) both;
+  }
+
+  .booking-modal.is-closing {
+    animation: modalOut 260ms var(--ease) both;
   }
 
   .booking-modal::backdrop {
-    background: rgba(42, 36, 40, 0.65);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(54, 33, 58, 0.42);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .booking-modal[open]::backdrop {
+    animation: backdropIn 500ms var(--ease-out-expo) both;
+  }
+
+  .booking-modal.is-closing::backdrop {
+    animation: backdropOut 260ms var(--ease) both;
   }
 
   @keyframes modalIn {
-    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
     to { opacity: 1; transform: none; }
+  }
+
+  @keyframes modalOut {
+    to { opacity: 0; transform: translateY(10px) scale(0.98); }
+  }
+
+  @keyframes backdropIn {
+    from {
+      background-color: rgba(54, 33, 58, 0);
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+    }
+  }
+
+  @keyframes backdropOut {
+    to {
+      background-color: rgba(54, 33, 58, 0);
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+    }
   }
 
   .modal-card {
     position: relative;
-    padding: 32px 20px 24px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    padding: 28px 24px 24px;
     background: var(--color-white);
-    border-radius: var(--radius-24);
+    border-radius: 28px;
+    box-shadow: 0 30px 60px -20px rgba(54, 33, 58, 0.45);
   }
 
-  @media (min-width: 480px) {
-    .modal-card {
-      padding: 36px 28px 28px;
+  /* Celular: folha que sobe da base */
+  @media (max-width: 639px) {
+    .booking-modal {
+      width: 100%;
+      max-width: 100%;
+      margin: auto 0 0;
     }
+
+    .booking-modal[open] {
+      animation: sheetIn 520ms var(--ease-out-expo) both;
+    }
+
+    .booking-modal.is-closing {
+      animation: sheetOut 300ms var(--ease) both;
+    }
+
+    .modal-card {
+      max-height: 88dvh;
+      padding: 30px 20px calc(20px + env(safe-area-inset-bottom));
+      border-radius: 24px 24px 0 0;
+    }
+
+    /* alça */
+    .modal-card::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 40px;
+      height: 4px;
+      background: rgba(99, 32, 102, 0.15);
+      border-radius: 4px;
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes sheetIn {
+    from { transform: translateY(100%); }
+    to { transform: none; }
+  }
+
+  @keyframes sheetOut {
+    to { transform: translateY(100%); }
   }
 
   .modal-close {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    color: var(--color-purple);
     background: var(--color-neutral-bg);
-    transition: var(--transition);
+    border-radius: 50%;
+    transition: background-color 250ms var(--ease);
   }
 
   .modal-close:hover {
-    background: rgba(107, 31, 124, 0.1);
-    color: var(--color-pink-dark);
+    background: var(--color-blush);
   }
 
   .modal-back {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin: -8px 0 12px;
-    padding: 6px 10px 6px 4px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    margin: -6px 0 14px;
+    padding: 6px 4px;
+    font-size: 0.8125rem;
+    font-weight: 600;
     color: var(--color-purple);
-    border-radius: var(--radius-pill);
-    transition: var(--transition);
+  }
+
+  .modal-back[hidden] {
+    display: none;
   }
 
   .modal-back :global(.icon) {
     transform: rotate(180deg);
-    transition: transform 200ms ease;
+    transition: transform 250ms var(--ease);
   }
 
   .modal-back:hover :global(.icon) {
@@ -191,97 +295,104 @@ const dados = unidadesAtivas.map((u) => ({
   }
 
   .modal-header {
-    text-align: center;
-    margin-bottom: 20px;
-    padding-inline: 24px;
+    margin-bottom: 18px;
+    padding-right: 44px;
   }
 
-  .modal-header h2 {
-    font-size: 1.35rem;
-    font-weight: 800;
+  .modal-header h2,
+  .ficha__nome {
+    font-size: 1.75rem;
+    line-height: 1.1;
     color: var(--color-purple);
-    margin-bottom: 6px;
   }
 
-  .modal-header h2:focus {
+  .modal-header h2:focus,
+  .ficha__nome:focus {
     outline: none;
   }
 
   .modal-subtitle {
-    font-size: 0.88rem;
+    margin-top: 6px;
+    font-size: 0.875rem;
     line-height: 1.5;
-    opacity: 0.8;
+    color: var(--color-text-muted);
   }
 
-  /* Etapa 1 */
+  /* ---------- Etapa 1: lista ---------- */
   .unit-options {
     list-style: none;
-    display: grid;
-    gap: 8px;
+  }
+
+  .unit-options li + li {
+    border-top: 1px solid var(--color-line);
   }
 
   .unit-option {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     width: 100%;
-    padding: 12px 14px;
+    padding: 12px 4px;
     text-align: left;
-    border: 1px solid rgba(107, 31, 124, 0.12);
-    border-radius: var(--radius-16);
-    background: var(--color-white);
-    transition: var(--transition);
+    border-radius: 14px;
+    transition: background-color 250ms var(--ease);
   }
 
   .unit-option:hover {
-    border-color: rgba(224, 96, 154, 0.5);
-    background: rgba(224, 96, 154, 0.05);
-    transform: translateY(-1px);
+    background: var(--color-neutral-bg);
   }
 
-  .unit-option__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .unit-option__foto {
     flex-shrink: 0;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    color: var(--color-pink-dark);
-    background: rgba(224, 96, 154, 0.12);
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 12px;
   }
 
   .unit-option__text {
     display: flex;
-    flex-direction: column;
-    min-width: 0;
     flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
   }
 
-  .unit-option__text strong {
+  .unit-option__nome {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
     font-size: 0.95rem;
+    font-weight: 600;
     color: var(--color-purple-dark);
   }
 
-  .unit-option__text span {
+  .unit-option__local {
     font-size: 0.8rem;
-    opacity: 0.75;
+    color: var(--color-text-muted);
   }
 
-  .unit-option__tags {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
+  .unit-option :global(.unit-option__seta) {
+    flex-shrink: 0;
+    color: var(--color-purple);
+    opacity: 0.5;
+    transition: transform 300ms var(--ease-out-expo), opacity 250ms var(--ease);
+  }
+
+  .unit-option:hover :global(.unit-option__seta) {
+    opacity: 1;
+    transform: translateX(3px);
   }
 
   .tag {
-    font-size: 0.62rem;
-    font-weight: 800;
+    padding: 2px 7px;
+    font-size: 0.625rem;
+    font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    white-space: nowrap;
-    padding: 3px 8px;
+    color: var(--color-pink-dark);
+    background: var(--color-blush);
     border-radius: var(--radius-pill);
   }
 
@@ -289,67 +400,117 @@ const dados = unidadesAtivas.map((u) => ({
     display: none;
   }
 
-  .tag--new {
-    color: var(--color-white);
-    background: var(--color-pink-dark);
-  }
-
   .tag--last {
     color: var(--color-purple);
-    background: rgba(107, 31, 124, 0.08);
+    background: var(--color-neutral-bg);
   }
 
-  /* Etapa 2 */
-  .modal-body {
-    display: grid;
-    gap: 12px;
+  /* ---------- Etapa 2: ficha da unidade ---------- */
+  .ficha__foto {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border-radius: 18px;
   }
 
-  .booking-option {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    border: 1px solid rgba(107, 31, 124, 0.12);
-    border-radius: var(--radius-16);
-    background: rgba(107, 31, 124, 0.03);
-    transition: var(--transition);
+  .ficha__foto img[data-ficha-foto] {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .booking-option[hidden] {
+  .ficha__foto img[hidden],
+  .ficha__vazia[hidden] {
     display: none;
   }
 
-  .booking-option:hover {
-    transform: translateY(-2px);
-    border-color: rgba(107, 31, 124, 0.3);
-    box-shadow: var(--shadow-hover);
-  }
-
-  .booking-option__icon {
+  .ficha__vazia {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ficha__local {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-purple);
+  }
+
+  .ficha__endereco {
+    margin-top: 2px;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .modal-pergunta {
+    margin: 22px 0 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .modal-body {
+    display: grid;
+    gap: 8px;
+  }
+
+  .canal {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    color: var(--color-purple);
+    background: var(--color-neutral-bg);
+    border-radius: 16px;
+    transition: background-color 250ms var(--ease), color 250ms var(--ease);
+  }
+
+  .canal[hidden] {
+    display: none;
+  }
+
+  .canal:hover {
+    background: var(--color-blush);
+  }
+
+  .canal--principal {
     color: var(--color-white);
     background: var(--color-purple);
   }
 
-  .booking-option__text {
+  .canal--principal:hover {
+    background: var(--color-purple-hover);
+  }
+
+  .canal__texto {
     display: flex;
+    flex: 1;
     flex-direction: column;
   }
 
-  .booking-option__text strong {
-    font-size: 0.95rem;
+  .canal__texto strong {
+    font-size: 0.9375rem;
+    font-weight: 600;
   }
 
-  .booking-option__text span {
-    font-size: 0.8rem;
-    opacity: 0.75;
+  .canal__texto span {
+    font-size: 0.78rem;
+    opacity: 0.8;
+  }
+
+  .canal :global(.canal__seta) {
+    transition: transform 300ms var(--ease-out-expo);
+  }
+
+  .canal:hover :global(.canal__seta) {
+    transform: translateX(3px);
   }
 </style>
 
@@ -360,6 +521,10 @@ const dados = unidadesAtivas.map((u) => ({
   interface DadosUnidade {
     slug: string;
     nome: string;
+    local: string;
+    endereco: string;
+    foto: string | null;
+    fotoPosicao: string;
     trinksUrl: string | null;
     waAgendamento: string;
     waDuvida: string;
@@ -380,6 +545,10 @@ const dados = unidadesAtivas.map((u) => ({
   const nomeUnidade = dialog.querySelector<HTMLElement>('[data-nome-unidade]')!;
   const canais = dialog.querySelector<HTMLElement>('[data-canais]')!;
   const voltar = dialog.querySelector<HTMLButtonElement>('[data-voltar]')!;
+  const fichaFoto = dialog.querySelector<HTMLImageElement>('[data-ficha-foto]')!;
+  const fichaVazia = dialog.querySelector<HTMLElement>('[data-ficha-vazia]')!;
+  const fichaLocal = dialog.querySelector<HTMLElement>('[data-ficha-local]')!;
+  const fichaEndereco = dialog.querySelector<HTMLElement>('[data-ficha-endereco]')!;
 
   let modo: Modo = 'agendamento';
 
@@ -428,6 +597,15 @@ const dados = unidadesAtivas.map((u) => ({
 
   function prepararCanais(u: DadosUnidade) {
     nomeUnidade.textContent = u.nome;
+    fichaLocal.textContent = u.local;
+    fichaEndereco.textContent = u.endereco;
+    fichaFoto.hidden = !u.foto;
+    fichaVazia.hidden = !!u.foto;
+    if (u.foto) {
+      fichaFoto.src = u.foto;
+      fichaFoto.alt = `Unidade Esmaltale ${u.nome}`;
+      fichaFoto.style.objectPosition = u.fotoPosicao;
+    }
     canais.dataset.unit = u.slug;
     linkWhatsapp.href = u.waAgendamento;
     linkTrinks.hidden = !u.trinksUrl;
@@ -470,9 +648,28 @@ const dados = unidadesAtivas.map((u) => ({
     document.body.style.overflow = 'hidden';
   }
 
+  /** Fecha com a animação de saída (o close nativo é instantâneo). */
+  let fechando = false;
   function fechar() {
-    dialog.close();
+    if (!dialog.open || fechando) return;
+    fechando = true;
+    dialog.classList.add('is-closing');
+    const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.setTimeout(
+      () => {
+        dialog.classList.remove('is-closing');
+        fechando = false;
+        dialog.close();
+      },
+      reduz ? 0 : 290,
+    );
   }
+
+  // Esc também usa a saída animada
+  dialog.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    fechar();
+  });
 
   dialog.addEventListener('close', () => {
     // O evento chega de forma assíncrona: se o modal já foi reaberto, não reseta.

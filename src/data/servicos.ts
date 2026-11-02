@@ -21,6 +21,8 @@ export interface Servico {
   nome: string;
   descricao: string;
   imagem?: ImageMetadata;
+  /** object-position da foto: enquadra o serviço na faixa estreita do celular. */
+  foco?: string;
   saibaMais?: string;
 }
 
@@ -30,18 +32,21 @@ export const SERVICOS: Servico[] = [
     nome: 'Manicure',
     descricao: 'Cuidado completo com as unhas das mãos: limpeza, cutícula, lixamento e esmaltação com acabamento impecável.',
     imagem: manicure,
+    foco: 'center 42%',
   },
   {
     slug: 'pedicure',
     nome: 'Pedicure',
     descricao: 'O mesmo rigor da manicure para os pés. Limpeza, cutícula, lixamento e esmaltação com atenção a cada detalhe.',
     imagem: pedicure,
+    foco: 'center 62%',
   },
   {
     slug: 'banho-de-gel',
     nome: 'Banho de Gel',
     descricao: 'Esmaltação de longa duração com gel de alta qualidade. Brilho intenso e resistência para o dia a dia.',
     imagem: banhoDeGel,
+    foco: 'center 42%',
     saibaMais: '/nail-art/#banho-de-gel',
   },
   {
@@ -50,6 +55,7 @@ export const SERVICOS: Servico[] = [
     // Texto substituído por orientação do briefing: o banho de cristal é feito só com gel.
     descricao: 'Esmaltação em gel que reforça a estrutura da unha natural, sem extensão. Resultado natural e duradouro.',
     imagem: banhoDeCristal,
+    foco: 'center 58%',
     saibaMais: '/nail-art/#banho-de-cristal',
   },
   {
@@ -57,6 +63,7 @@ export const SERVICOS: Servico[] = [
     nome: 'Alongamento de Unhas',
     descricao: 'Extensão profissional com modelagem personalizada no formato que mais combina com você, sempre com refinamento e acabamento.',
     imagem: alongamento,
+    foco: 'center 50%',
     saibaMais: '/nail-art/#fibra-de-vidro',
   },
   {
@@ -64,6 +71,7 @@ export const SERVICOS: Servico[] = [
     nome: 'Aplicação de Unhas Postiças',
     descricao: 'Solução rápida e elegante para quem quer unhas mais longas e perfeitas em qualquer ocasião.',
     imagem: unhasPosticas,
+    foco: 'center 48%',
     saibaMais: '/nail-art/#unhas-posticas',
   },
   {
@@ -71,6 +79,7 @@ export const SERVICOS: Servico[] = [
     nome: 'Nail Art',
     descricao: 'Designs exclusivos e personalizados. Do minimalismo às tendências mais ousadas para realçar o seu estilo.',
     imagem: nailArt,
+    foco: 'center 46%',
     saibaMais: '/nail-art/',
   },
   {
@@ -84,18 +93,21 @@ export const SERVICOS: Servico[] = [
     nome: 'SPA dos Pés',
     descricao: 'Imersão relaxante com esfoliação, hidratação e massagem. Um momento só seu, do início ao fim.',
     imagem: spaDosPes,
+    foco: 'center 45%',
   },
   {
     slug: 'plastica-dos-pes',
     nome: 'Plástica dos Pés',
     descricao: 'Tratamento intensivo para calcanhar e pele dos pés com resultados visíveis desde a primeira sessão.',
     imagem: plasticaDosPes,
+    foco: 'center 45%',
   },
   {
     slug: 'podologia',
     nome: 'Podologia',
     descricao: 'Cuidado clínico com as unhas e a pele dos pés. Trata encravamentos, calos, fissuras e infecções com segurança e precisão.',
     imagem: podologia,
+    foco: 'center 30%',
     saibaMais: '/podologia/',
   },
 ];
