@@ -1,102 +1,18 @@
 ---
-// PROVISÓRIA (Fase 1): vitrine dos componentes da fundação. A Home real entra na Fase 2.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroInternal from '../components/sections/HeroInternal.astro';
-import heroFoto from '../assets/lojas/salvador-shopping-02.jpg';
-import { unidadesAtivas, totalUnidades, porExtenso, listaNomes, listaPorCidade } from '../lib/unidades';
+import HeroHome from '../components/home/HeroHome.astro';
+import Servicos from '../components/home/Servicos.astro';
+import SobreResumo from '../components/home/SobreResumo.astro';
+import Unidades from '../components/home/Unidades.astro';
+import { totalUnidades, porExtenso, listaCidades } from '../lib/unidades';
 
-import IconCuidado from '../components/icons/IconCuidado.astro';
-import IconExcelencia from '../components/icons/IconExcelencia.astro';
-import IconHigiene from '../components/icons/IconHigiene.astro';
-import IconAmbiente from '../components/icons/IconAmbiente.astro';
-import IconProfissionais from '../components/icons/IconProfissionais.astro';
-import IconSocial from '../components/icons/IconSocial.astro';
-import IconEncravada from '../components/icons/IconEncravada.astro';
-import IconCalo from '../components/icons/IconCalo.astro';
-import IconFissura from '../components/icons/IconFissura.astro';
-import IconInfeccao from '../components/icons/IconInfeccao.astro';
-import IconBolha from '../components/icons/IconBolha.astro';
-import IconPin from '../components/icons/IconPin.astro';
-import IconCalendar from '../components/icons/IconCalendar.astro';
-import IconWhatsapp from '../components/icons/IconWhatsapp.astro';
-import IconClock from '../components/icons/IconClock.astro';
-import IconPhone from '../components/icons/IconPhone.astro';
-import IconMap from '../components/icons/IconMap.astro';
-import IconArrow from '../components/icons/IconArrow.astro';
-import IconClose from '../components/icons/IconClose.astro';
-import IconMenu from '../components/icons/IconMenu.astro';
-import IconInstagram from '../components/icons/IconInstagram.astro';
-
-const conteudo = [IconCuidado, IconExcelencia, IconHigiene, IconAmbiente, IconProfissionais, IconSocial, IconEncravada, IconCalo, IconFissura, IconInfeccao, IconBolha];
-const interface_ = [IconPin, IconCalendar, IconWhatsapp, IconClock, IconPhone, IconMap, IconArrow, IconClose, IconMenu, IconInstagram];
+// Sem faixa de contato na Home: cada unidade já tem o botão de WhatsApp.
+const descricao = `Manicure, pedicure, nail art e podologia em ${porExtenso(totalUnidades)} unidades nos principais shoppings de ${listaCidades}. Agende online.`;
 ---
 
-<BaseLayout title="Esmaltale | Fundação" description="Página provisória da fase de fundação." contactStrip>
-  <HeroInternal tag="Fase 1" titulo="Fundação do site Esmaltale" fundo={heroFoto}>
-    <p>{porExtenso(totalUnidades, true)} unidades · {totalUnidades} unidades</p>
-  </HeroInternal>
-
-  <section class="section section--white">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Ícones</span>
-        <h2 class="section-title">Conteúdo e interface</h2>
-      </div>
-      <div class="demo-icons">
-        {conteudo.map((I) => <div class="icon-host demo-icon"><I size={40} draw /></div>)}
-      </div>
-      <div class="demo-icons">
-        {interface_.map((I) => <div class="demo-icon"><I size={28} /></div>)}
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Dados</span>
-        <h2 class="section-title">Unidades e modal</h2>
-        <p class="section-description">{listaNomes}.</p>
-        <p class="section-description">Em unidades {listaPorCidade}.</p>
-      </div>
-      <div class="demo-units">
-        {
-          unidadesAtivas.map((u) => (
-            <button type="button" class="btn btn--solid" data-booking data-booking-origem="card_unidade" data-booking-unidade={u.slug}>
-              {u.nome}
-            </button>
-          ))
-        }
-        <button type="button" class="specular-button" data-booking data-booking-origem="hero">Agende agora</button>
-      </div>
-    </div>
-  </section>
+<BaseLayout title="Esmaltale | Esmalteria em Salvador e Lauro de Freitas" description={descricao}>
+  <HeroHome />
+  <Servicos />
+  <SobreResumo />
+  <Unidades />
 </BaseLayout>
-
-<style>
-  .demo-icons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 24px;
-    color: var(--color-purple);
-  }
-
-  .demo-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 76px;
-    height: 76px;
-    border-radius: var(--radius-16);
-    background: var(--color-neutral-bg);
-  }
-
-  .demo-units {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-  }
-</style>

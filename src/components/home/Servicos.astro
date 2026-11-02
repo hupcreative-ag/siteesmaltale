@@ -1,0 +1,216 @@
+---
+/**
+ * "Nossos serviços": 11 cards na ordem do documento.
+ * Layout: no celular, faixa horizontal com scroll-snap e o próximo card aparecendo pela metade
+ * (11 cards empilhados dariam mais de 3.000px de rolagem antes de chegar às unidades).
+ * A partir do tablet, grade de 2, 3 e 4 colunas com a última linha centralizada.
+ */
+import { Picture } from 'astro:assets';
+import { SERVICOS } from '../../data/servicos';
+import iconeBranco from '../../assets/marca/icone-branco.svg';
+import IconArrow from '../icons/IconArrow.astro';
+---
+
+<section class="section section--neutral servicos" aria-labelledby="servicos-titulo">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Mãos e pés</span>
+      <h2 class="section-title" id="servicos-titulo">Nossos serviços</h2>
+      <p class="section-description">Cuidado completo para as suas mãos e pés, com técnica, higiene e muito carinho.</p>
+    </div>
+
+    <ul class="servicos__lista">
+      {
+        SERVICOS.map((s) => (
+          <li class="servicos__item">
+            <article class="service-card">
+              <div class="service-card__media">
+                {s.imagem ? (
+                  <Picture
+                    src={s.imagem}
+                    width={800}
+                    height={600}
+                    widths={[400, 600, 800]}
+                    sizes="(min-width: 1180px) 270px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 82vw"
+                    formats={['avif', 'webp']}
+                    alt=""
+                    class="service-card__img"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="service-card__fallback brand-gradient">
+                    <img src={iconeBranco.src} width="56" height="56" alt="" />
+                  </div>
+                )}
+                <div class="service-card__shade" />
+                <h3 class="service-card__title">{s.nome}</h3>
+              </div>
+              <div class="service-card__body">
+                <p class="service-card__text">{s.descricao}</p>
+                <div class="service-card__actions">
+                  <button type="button" class="btn btn--solid" data-booking data-booking-origem="card_servico">
+                    Agendar agora<span class="sr-only">: {s.nome}</span>
+                  </button>
+                  {s.saibaMais && (
+                    <a href={s.saibaMais} class="link-arrow service-card__more">
+                      Saiba mais sobre o serviço<span class="sr-only">: {s.nome}</span>
+                      <IconArrow size={16} />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Celular: faixa horizontal com scroll-snap */
+  .servicos__lista {
+    display: flex;
+    gap: 16px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 8px var(--gutter) 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    list-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(107, 31, 124, 0.25) transparent;
+  }
+
+  .servicos__item {
+    display: flex;
+    flex: 0 0 82%;
+    max-width: 340px;
+    scroll-snap-align: start;
+  }
+
+  /* position: relative prende os .sr-only (absolutos) dentro do card; sem isso eles
+     escapam do overflow da faixa horizontal e alargam a página no celular. */
+  .service-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--color-white);
+    border-radius: var(--radius-24);
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition);
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .service-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .service-card__media :global(.service-card__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--ease);
+  }
+
+  .service-card:hover :global(.service-card__img) {
+    transform: scale(1.05);
+  }
+
+  .service-card__fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .service-card__fallback img {
+    opacity: 0.9;
+  }
+
+  .service-card__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(42, 36, 40, 0.85) 0%, rgba(42, 36, 40, 0.25) 45%, rgba(42, 36, 40, 0) 70%);
+    pointer-events: none;
+  }
+
+  .service-card__title {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 16px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-white);
+  }
+
+  .service-card__body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 20px;
+  }
+
+  .service-card__text {
+    margin-bottom: 20px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--color-purple-dark);
+    opacity: 0.85;
+  }
+
+  .service-card__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: auto;
+  }
+
+  .service-card__actions .btn {
+    align-self: stretch;
+  }
+
+  .service-card__more {
+    font-size: 0.9rem;
+  }
+
+  /* Tablet em diante: grade com a última linha centralizada */
+  @media (min-width: 640px) {
+    .servicos__lista {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      margin-inline: 0;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .servicos__item {
+      flex: 0 0 calc((100% - 24px) / 2);
+      max-width: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .servicos__item {
+      flex-basis: calc((100% - 48px) / 3);
+    }
+  }
+
+  @media (min-width: 1180px) {
+    .servicos__item {
+      flex-basis: calc((100% - 72px) / 4);
+    }
+  }
+</style>

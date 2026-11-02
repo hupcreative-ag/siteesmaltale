@@ -1,0 +1,194 @@
+---
+/**
+ * Card de unidade da Home. Sem foto: gradiente da marca com o logo branco.
+ * Sem trinksUrl esconde o Trinks; sem landingUrl esconde "Conhecer a unidade".
+ * data-unit alimenta o tracking de cliques (src/scripts/analytics.ts).
+ */
+import { Picture } from 'astro:assets';
+import type { Unidade } from '../../data/unidades';
+import { localizacao, whatsappAgendamento } from '../../lib/unidades';
+import logoBranca from '../../assets/marca/logo-branca.svg';
+import IconPin from '../icons/IconPin.astro';
+import IconCalendar from '../icons/IconCalendar.astro';
+import IconWhatsapp from '../icons/IconWhatsapp.astro';
+import IconArrow from '../icons/IconArrow.astro';
+
+interface Props {
+  unidade: Unidade;
+}
+
+const { unidade: u } = Astro.props;
+const externo = { target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<article class="unit-card" data-unit={u.slug}>
+  <div class="unit-card__media">
+    {
+      u.foto ? (
+        <Picture
+          src={u.foto}
+          width={800}
+          height={600}
+          widths={[400, 600, 800]}
+          sizes="(min-width: 1024px) 368px, (min-width: 640px) 46vw, 92vw"
+          formats={['avif', 'webp']}
+          fallbackFormat="jpg"
+          alt={`Unidade Esmaltale ${u.nome}`}
+          class="unit-card__img"
+          style={u.fotoPosicao ? `object-position: ${u.fotoPosicao}` : undefined}
+          loading="lazy"
+        />
+      ) : (
+        <div class="unit-card__fallback brand-gradient">
+          <img src={logoBranca.src} width="160" height="49" alt="" />
+        </div>
+      )
+    }
+    {u.novidade && <span class="badge unit-card__badge">Nova unidade</span>}
+  </div>
+
+  <div class="unit-card__body">
+    <h3 class="unit-card__name">{u.nome}</h3>
+    <p class="unit-card__loc">
+      <IconPin size={16} />
+      {localizacao(u)}
+    </p>
+
+    <div class="unit-card__actions">
+      {
+        u.trinksUrl && (
+          <a href={u.trinksUrl} class="btn btn--solid" {...externo}>
+            <IconCalendar />
+            Agendar via Trinks<span class="sr-only">, {u.nome}</span>
+          </a>
+        )
+      }
+      <a href={whatsappAgendamento(u)} class="btn btn--solid" {...externo}>
+        <IconWhatsapp />
+        Fale com a recepção<span class="sr-only">, {u.nome}</span>
+      </a>
+    </div>
+
+    {
+      u.landingUrl && (
+        <a href={u.landingUrl} class="unit-card__link" {...externo}>
+          Conhecer a unidade<span class="sr-only"> {u.nome}</span>
+          <IconArrow size={13} />
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .unit-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--color-white);
+    border-radius: var(--radius-20);
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition);
+  }
+
+  .unit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .unit-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .unit-card__media :global(.unit-card__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms var(--ease);
+  }
+
+  .unit-card:hover :global(.unit-card__img) {
+    transform: scale(1.05);
+  }
+
+  .unit-card__fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .unit-card__badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    box-shadow: 0 4px 12px rgba(42, 36, 40, 0.2);
+  }
+
+  .unit-card__body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 20px;
+  }
+
+  .unit-card__name {
+    margin-bottom: 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-purple);
+  }
+
+  .unit-card__loc {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--color-purple-dark);
+  }
+
+  .unit-card__loc :global(.icon) {
+    margin-top: 2px;
+    color: var(--color-pink-dark);
+  }
+
+  .unit-card__actions {
+    display: grid;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  .unit-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    align-self: flex-start;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-purple-dark);
+    text-decoration: underline;
+    text-decoration-color: rgba(107, 31, 124, 0.3);
+    text-underline-offset: 3px;
+    transition: var(--transition);
+  }
+
+  .unit-card__link:hover {
+    color: var(--color-pink-dark);
+    text-decoration-color: var(--color-pink-dark);
+  }
+
+  .unit-card__link :global(.icon) {
+    transition: transform 200ms ease;
+  }
+
+  .unit-card__link:hover :global(.icon) {
+    transform: translateX(3px);
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+/** "Sobre a Esmaltale" resumida na Home: imagem, texto do documento e link para /sobre/. */
+import { Picture } from 'astro:assets';
+import sobreHome from '../../assets/sobre/sobre-home.jpg';
+import { totalUnidades } from '../../lib/unidades';
+import { SITE } from '../../config/site';
+import IconArrow from '../icons/IconArrow.astro';
+---
+
+<section class="section section--white sobre-resumo" aria-labelledby="sobre-titulo">
+  <div class="container sobre-resumo__grid">
+    <div class="sobre-resumo__media">
+      <Picture
+        src={sobreHome}
+        width={1200}
+        height={900}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 768px) 560px, 92vw"
+        formats={['avif', 'webp']}
+        alt="Interior de uma unidade Esmaltale, com bancadas de atendimento, prateleira de esmaltes e o logo iluminado na parede"
+        class="sobre-resumo__img"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="sobre-resumo__texto">
+      <span class="section-tag">Desde {SITE.fundacao}</span>
+      <h2 class="section-title" id="sobre-titulo">Sobre a Esmaltale</h2>
+      <p>Fundada em 2017, a Esmaltale nasceu com uma proposta: entregar um cuidado que vai além do esmalte.</p>
+      <p>
+        Ambiente acolhedor, profissionais qualificadas e esterilização com autoclave em todos os atendimentos, porque
+        capricho nos detalhes é o nosso padrão, não um diferencial.
+      </p>
+      <p>
+        Hoje são {totalUnidades} unidades nos principais shoppings de Salvador, atendendo quem busca qualidade,
+        conveniência e uma experiência que vale a pausa na rotina.
+      </p>
+      <a href="/sobre/" class="link-arrow sobre-resumo__cta">
+        Conheça nossa história
+        <IconArrow size={18} />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre-resumo__grid {
+    display: grid;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .sobre-resumo__media {
+    overflow: hidden;
+    border-radius: var(--radius-24);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .sobre-resumo__media :global(.sobre-resumo__img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .sobre-resumo__texto p {
+    margin-bottom: 16px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-purple-dark);
+    opacity: 0.85;
+  }
+
+  .sobre-resumo__cta {
+    margin-top: 8px;
+    font-size: 1.05rem;
+  }
+
+  @media (min-width: 768px) {
+    .sobre-resumo__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+    }
+  }
+</style>

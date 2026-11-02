@@ -8,7 +8,8 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - `conteudo/Esmaltale_Site_Conteudo.md` — textos aprovados. `conteudo/Imagens/` — originais entregues pelo usuário (backup; o site usa as cópias em `src/assets`).
 - `src/assets/` — imagens usadas no site, em kebab-case sem espaços (`marca/`, `lojas/`, `servicos/`, `nail-art/`, `podologia/`, `sobre/`).
 - `src/data/unidades.ts` — **fonte única** das unidades. `src/lib/unidades.ts` — ordenação, contagem por extenso, listas e links.
-- `src/data/hero.ts` — banners do carrossel da Home (desligado enquanto nenhum banner tiver imagem).
+- `src/data/hero.ts` — banners do carrossel da Home, depois do hero institucional. Banner com `imagem: null` não aparece; sem nenhum, a Home mostra só o hero institucional. Arte montada no site (foto + gradiente + texto real).
+- `src/data/servicos.ts` — os 11 cards de serviço da Home. Sem `imagem`, o card usa o gradiente da marca com o ícone branco.
 - `src/config/site.ts` — URL, ambiente, Instagram, horário, mensagens do WhatsApp, menu. `src/config/tracking.ts` — IDs GA4 e Pixel.
 - `PENDENCIAS.md` — tudo que falta da cliente. Atualizar sempre que algo entrar ou sair.
 

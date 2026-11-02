@@ -19,7 +19,8 @@ Build de produção local: `npm run build` (gera `dist/`) e `npm run preview` pa
 | Caminho | O que é |
 |---|---|
 | `src/data/unidades.ts` | Fonte única das unidades (endereços, WhatsApp, Trinks, fotos) |
-| `src/data/hero.ts` | Banners do carrossel da Home (desligado sem imagem) |
+| `src/data/hero.ts` | Banners do carrossel da Home (banner sem imagem não aparece) |
+| `src/data/servicos.ts` | Cards de serviço da Home (textos, fotos e links "Saiba mais") |
 | `src/config/site.ts` | URL, horário, Instagram, mensagens do WhatsApp, menu |
 | `src/config/tracking.ts` | IDs do GA4 e do Meta Pixel |
 | `src/lib/unidades.ts` | Ordenação, contagem por extenso, listas e links das unidades |

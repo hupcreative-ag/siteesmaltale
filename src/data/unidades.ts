@@ -8,11 +8,13 @@
  */
 import type { ImageMetadata } from 'astro';
 
+// Foto provisória do tapume da loja; trocar pela definitiva quando chegar.
+import shoppingBarra from '../assets/lojas/shopping-barra.webp';
 import salvadorShopping from '../assets/lojas/salvador-shopping.jpg';
 import shoppingDaBahia from '../assets/lojas/shopping-da-bahia.jpg';
 import shoppingParalela from '../assets/lojas/shopping-paralela.jpg';
 import shoppingBelaVista from '../assets/lojas/shopping-bela-vista.jpg';
-import parqueShoppingBahia from '../assets/lojas/parque-shopping-bahia-02.jpg';
+import parqueShoppingBahia from '../assets/lojas/parque-shopping-bahia.jpg';
 
 export interface Unidade {
   slug: string;
@@ -53,7 +55,10 @@ export const UNIDADES: Unidade[] = [
     uf: 'BA',
     cep: '40155-151',
     whatsapp: '71999494089',
-    // trinksUrl: [PENDENTE]
+    // Página encontrada no Trinks com o nome da unidade; aguardando confirmação da cliente.
+    trinksUrl: 'https://www.trinks.com/esmaltale-shopping-barra',
+    foto: shoppingBarra,
+    fotoPosicao: 'center 34%',
   },
   {
     slug: 'salvador-shopping',
