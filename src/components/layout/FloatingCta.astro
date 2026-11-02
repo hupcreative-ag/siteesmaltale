@@ -1,0 +1,41 @@
+---
+import IconCalendar from '../icons/IconCalendar.astro';
+---
+
+<button type="button" class="floating-cta" data-booking data-booking-origem="flutuante">
+  <IconCalendar size={20} />
+  <span>Agende agora</span>
+</button>
+
+<style>
+  .floating-cta {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 80;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-white);
+    background: var(--gradient-pink);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 8px 25px rgba(161, 30, 93, 0.35);
+    transition: var(--transition);
+  }
+
+  .floating-cta:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(161, 30, 93, 0.5);
+  }
+
+  @media (min-width: 768px) {
+    .floating-cta {
+      right: 24px;
+      bottom: 24px;
+      padding: 14px 24px;
+    }
+  }
+</style>

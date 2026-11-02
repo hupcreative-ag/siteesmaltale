@@ -1,0 +1,517 @@
+---
+/**
+ * Modal de agendamento em <dialog> nativo, em duas etapas:
+ * 1. "Em qual unidade?"  2. "Como prefere agendar?" (Trinks e WhatsApp da unidade).
+ *
+ * Abre com qualquer elemento [data-booking]:
+ *   data-booking-origem   header | flutuante | hero | card_servico | card_unidade | faixa_contato | pagina_servico
+ *   data-booking-modo     agendamento (padrão) | duvida
+ *   data-booking-unidade  slug: pula direto para a etapa 2
+ */
+import {
+  unidadesAtivas,
+  localizacao,
+  whatsappAgendamento,
+  whatsappDuvida,
+} from '../../lib/unidades';
+import IconClose from '../icons/IconClose.astro';
+import IconArrow from '../icons/IconArrow.astro';
+import IconCalendar from '../icons/IconCalendar.astro';
+import IconWhatsapp from '../icons/IconWhatsapp.astro';
+import IconPin from '../icons/IconPin.astro';
+
+const dados = unidadesAtivas.map((u) => ({
+  slug: u.slug,
+  nome: u.nome,
+  trinksUrl: u.trinksUrl ?? null,
+  waAgendamento: whatsappAgendamento(u),
+  waDuvida: whatsappDuvida(u),
+}));
+---
+
+<dialog class="booking-modal" aria-labelledby="booking-titulo-unidade" data-booking-modal>
+  <div class="modal-card">
+    <button type="button" class="modal-close" aria-label="Fechar" data-modal-close>
+      <IconClose />
+    </button>
+
+    <!-- Etapa 1 -->
+    <div class="modal-step" data-step="unidade">
+      <header class="modal-header">
+        <h2 id="booking-titulo-unidade" tabindex="-1">Em qual unidade?</h2>
+        <p class="modal-subtitle" data-subtitulo-agendamento>
+          Escolha a unidade mais perto de você para seguir com o agendamento.
+        </p>
+        <p class="modal-subtitle" data-subtitulo-duvida hidden>
+          Escolha a unidade e fale direto com a recepção pelo WhatsApp.
+        </p>
+      </header>
+
+      <ul class="unit-options" data-unit-list>
+        {
+          unidadesAtivas.map((u) => (
+            <li data-slug={u.slug}>
+              <button type="button" class="unit-option" data-escolher={u.slug}>
+                <span class="unit-option__icon">
+                  <IconPin size={20} />
+                </span>
+                <span class="unit-option__text">
+                  <strong>{u.nome}</strong>
+                  <span>{localizacao(u)}</span>
+                </span>
+                <span class="unit-option__tags">
+                  {u.novidade && <span class="tag tag--new">Nova unidade</span>}
+                  <span class="tag tag--last" hidden>
+                    Última escolhida
+                  </span>
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Etapa 2 -->
+    <div class="modal-step" data-step="canal" hidden>
+      <button type="button" class="modal-back" data-voltar>
+        <IconArrow size={16} />
+        Voltar
+      </button>
+      <header class="modal-header">
+        <h2 id="booking-titulo-canal" tabindex="-1">Como prefere agendar?</h2>
+        <p class="modal-subtitle">
+          Escolha o canal de sua preferência para reservar o seu horário na unidade{' '}<strong
+            data-nome-unidade></strong>.
+        </p>
+      </header>
+
+      <div class="modal-body" data-canais>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="booking-option" data-canal-trinks>
+          <span class="booking-option__icon"><IconCalendar /></span>
+          <span class="booking-option__text">
+            <strong>Agendamento online (Trinks)</strong>
+            <span>Escolha profissional e horário na hora</span>
+          </span>
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="booking-option" data-canal-whatsapp>
+          <span class="booking-option__icon"><IconWhatsapp /></span>
+          <span class="booking-option__text">
+            <strong>Agendar pelo WhatsApp</strong>
+            <span>Fale com a nossa recepção por mensagem</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script type="application/json" id="booking-data" set:html={JSON.stringify(dados)} />
+
+<style>
+  .booking-modal {
+    width: min(460px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-24);
+    background: transparent;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    color: var(--color-purple-dark);
+  }
+
+  .booking-modal[open] {
+    animation: modalIn 250ms var(--ease);
+  }
+
+  .booking-modal::backdrop {
+    background: rgba(42, 36, 40, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .modal-card {
+    position: relative;
+    padding: 32px 20px 24px;
+    background: var(--color-white);
+    border-radius: var(--radius-24);
+  }
+
+  @media (min-width: 480px) {
+    .modal-card {
+      padding: 36px 28px 28px;
+    }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-neutral-bg);
+    transition: var(--transition);
+  }
+
+  .modal-close:hover {
+    background: rgba(107, 31, 124, 0.1);
+    color: var(--color-pink-dark);
+  }
+
+  .modal-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: -8px 0 12px;
+    padding: 6px 10px 6px 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-purple);
+    border-radius: var(--radius-pill);
+    transition: var(--transition);
+  }
+
+  .modal-back :global(.icon) {
+    transform: rotate(180deg);
+    transition: transform 200ms ease;
+  }
+
+  .modal-back:hover :global(.icon) {
+    transform: rotate(180deg) translateX(3px);
+  }
+
+  .modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-inline: 24px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-purple);
+    margin-bottom: 6px;
+  }
+
+  .modal-header h2:focus {
+    outline: none;
+  }
+
+  .modal-subtitle {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  /* Etapa 1 */
+  .unit-options {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+
+  .unit-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    text-align: left;
+    border: 1px solid rgba(107, 31, 124, 0.12);
+    border-radius: var(--radius-16);
+    background: var(--color-white);
+    transition: var(--transition);
+  }
+
+  .unit-option:hover {
+    border-color: rgba(224, 96, 154, 0.5);
+    background: rgba(224, 96, 154, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .unit-option__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: var(--color-pink-dark);
+    background: rgba(224, 96, 154, 0.12);
+  }
+
+  .unit-option__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .unit-option__text strong {
+    font-size: 0.95rem;
+    color: var(--color-purple-dark);
+  }
+
+  .unit-option__text span {
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+
+  .unit-option__tags {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .tag {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 3px 8px;
+    border-radius: var(--radius-pill);
+  }
+
+  .tag[hidden] {
+    display: none;
+  }
+
+  .tag--new {
+    color: var(--color-white);
+    background: var(--color-pink-dark);
+  }
+
+  .tag--last {
+    color: var(--color-purple);
+    background: rgba(107, 31, 124, 0.08);
+  }
+
+  /* Etapa 2 */
+  .modal-body {
+    display: grid;
+    gap: 12px;
+  }
+
+  .booking-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid rgba(107, 31, 124, 0.12);
+    border-radius: var(--radius-16);
+    background: rgba(107, 31, 124, 0.03);
+    transition: var(--transition);
+  }
+
+  .booking-option[hidden] {
+    display: none;
+  }
+
+  .booking-option:hover {
+    transform: translateY(-2px);
+    border-color: rgba(107, 31, 124, 0.3);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .booking-option__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    color: var(--color-white);
+    background: var(--color-purple);
+  }
+
+  .booking-option__text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .booking-option__text strong {
+    font-size: 0.95rem;
+  }
+
+  .booking-option__text span {
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+</style>
+
+<script>
+  import { trackOpenModal, trackSelectUnit, gtagEvent, fbqEvent } from '../../scripts/analytics';
+
+  type Modo = 'agendamento' | 'duvida';
+  interface DadosUnidade {
+    slug: string;
+    nome: string;
+    trinksUrl: string | null;
+    waAgendamento: string;
+    waDuvida: string;
+  }
+
+  const CHAVE = 'esmaltale:ultima-unidade';
+  const dialog = document.querySelector<HTMLDialogElement>('[data-booking-modal]')!;
+  const unidades: DadosUnidade[] = JSON.parse(
+    document.getElementById('booking-data')?.textContent || '[]',
+  );
+  const porSlug = new Map(unidades.map((u) => [u.slug, u]));
+
+  const etapaUnidade = dialog.querySelector<HTMLElement>('[data-step="unidade"]')!;
+  const etapaCanal = dialog.querySelector<HTMLElement>('[data-step="canal"]')!;
+  const lista = dialog.querySelector<HTMLUListElement>('[data-unit-list]')!;
+  const linkTrinks = dialog.querySelector<HTMLAnchorElement>('[data-canal-trinks]')!;
+  const linkWhatsapp = dialog.querySelector<HTMLAnchorElement>('[data-canal-whatsapp]')!;
+  const nomeUnidade = dialog.querySelector<HTMLElement>('[data-nome-unidade]')!;
+  const canais = dialog.querySelector<HTMLElement>('[data-canais]')!;
+  const voltar = dialog.querySelector<HTMLButtonElement>('[data-voltar]')!;
+
+  let modo: Modo = 'agendamento';
+
+  function lerUltima(): string | null {
+    try {
+      return localStorage.getItem(CHAVE);
+    } catch {
+      return null;
+    }
+  }
+
+  function salvarUltima(slug: string) {
+    try {
+      localStorage.setItem(CHAVE, slug);
+    } catch {
+      /* armazenamento indisponível: segue sem lembrar */
+    }
+  }
+
+  /** Coloca a última unidade escolhida no topo, com a etiqueta. */
+  function ordenarLista() {
+    const ultima = lerUltima();
+    lista.querySelectorAll<HTMLElement>('.tag--last').forEach((t) => (t.hidden = true));
+    if (!ultima || !porSlug.has(ultima)) return;
+    const item = lista.querySelector<HTMLElement>(`li[data-slug="${ultima}"]`);
+    if (!item) return;
+    lista.prepend(item);
+    item.querySelector<HTMLElement>('.tag--last')!.hidden = false;
+  }
+
+  function mostrarEtapa(etapa: 'unidade' | 'canal') {
+    etapaUnidade.hidden = etapa !== 'unidade';
+    etapaCanal.hidden = etapa !== 'canal';
+    const titulo = etapa === 'unidade' ? 'booking-titulo-unidade' : 'booking-titulo-canal';
+    dialog.setAttribute('aria-labelledby', titulo);
+    if (dialog.open) document.getElementById(titulo)?.focus();
+  }
+
+  /** Abre o WhatsApp em nova aba e registra o evento (não passa pela delegação de links). */
+  function abrirWhatsapp(u: DadosUnidade, url: string) {
+    gtagEvent('generate_lead', { unit: u.slug });
+    gtagEvent('click_whatsapp', { unit: u.slug });
+    fbqEvent('track', 'Contact');
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  function prepararCanais(u: DadosUnidade) {
+    nomeUnidade.textContent = u.nome;
+    canais.dataset.unit = u.slug;
+    linkWhatsapp.href = u.waAgendamento;
+    linkTrinks.hidden = !u.trinksUrl;
+    if (u.trinksUrl) linkTrinks.href = u.trinksUrl;
+  }
+
+  /** Decide o próximo passo depois que a unidade é conhecida. Retorna true se o modal deve ficar aberto. */
+  function seguirComUnidade(u: DadosUnidade): boolean {
+    salvarUltima(u.slug);
+    if (modo === 'duvida') {
+      abrirWhatsapp(u, u.waDuvida);
+      return false;
+    }
+    if (!u.trinksUrl) {
+      abrirWhatsapp(u, u.waAgendamento);
+      return false;
+    }
+    prepararCanais(u);
+    return true;
+  }
+
+  function abrir(origem: string, novoModo: Modo, slug?: string) {
+    modo = novoModo;
+    dialog.querySelector<HTMLElement>('[data-subtitulo-agendamento]')!.hidden = modo !== 'agendamento';
+    dialog.querySelector<HTMLElement>('[data-subtitulo-duvida]')!.hidden = modo !== 'duvida';
+    trackOpenModal(origem, modo);
+
+    const unidade = slug ? porSlug.get(slug) : undefined;
+    if (unidade) {
+      if (!seguirComUnidade(unidade)) return;
+      voltar.hidden = true;
+      mostrarEtapa('canal');
+    } else {
+      ordenarLista();
+      voltar.hidden = false;
+      mostrarEtapa('unidade');
+    }
+
+    dialog.showModal();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fechar() {
+    dialog.close();
+  }
+
+  dialog.addEventListener('close', () => {
+    // O evento chega de forma assíncrona: se o modal já foi reaberto, não reseta.
+    if (dialog.open) return;
+    document.body.style.overflow = '';
+    mostrarEtapa('unidade');
+  });
+
+  // Clique fora do cartão fecha
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) fechar();
+  });
+
+  dialog.querySelector('[data-modal-close]')?.addEventListener('click', fechar);
+  voltar.addEventListener('click', () => {
+    ordenarLista();
+    mostrarEtapa('unidade');
+  });
+
+  lista.addEventListener('click', (e) => {
+    const botao = (e.target as Element).closest<HTMLButtonElement>('[data-escolher]');
+    const u = botao && porSlug.get(botao.dataset.escolher!);
+    if (!u) return;
+    trackSelectUnit(u.slug);
+    if (seguirComUnidade(u)) mostrarEtapa('canal');
+    else fechar();
+  });
+
+  // Depois de escolher o canal, o link abre em nova aba e o modal fecha
+  canais.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('a')) setTimeout(fechar, 150);
+  });
+
+  // Gatilhos em qualquer lugar da página
+  document.addEventListener('click', (e) => {
+    const gatilho = (e.target as Element | null)?.closest<HTMLElement>('[data-booking]');
+    if (!gatilho) return;
+    e.preventDefault();
+    const { bookingOrigem = 'desconhecida', bookingModo, bookingUnidade } = gatilho.dataset;
+    abrir(bookingOrigem, bookingModo === 'duvida' ? 'duvida' : 'agendamento', bookingUnidade);
+  });
+</script>

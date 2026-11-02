@@ -1,0 +1,67 @@
+---
+import '@fontsource/poppins/300.css';
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/400-italic.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import '@fontsource/poppins/800.css';
+import '../styles/global.css';
+
+import { IS_PRODUCTION, SITE } from '../config/site';
+import Tracking from '../components/seo/Tracking.astro';
+import PreviewBanner from '../components/layout/PreviewBanner.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import FloatingCta from '../components/layout/FloatingCta.astro';
+import BookingModal from '../components/booking/BookingModal.astro';
+import ContactStrip from '../components/sections/ContactStrip.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Faixa "Dúvidas ou precisa de ajuda?" antes do rodapé (Sobre, Nail Art e Podologia). */
+  contactStrip?: boolean;
+}
+
+const { title, description, contactStrip = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+---
+
+<!doctype html>
+<html lang="pt-BR" class:list={{ 'is-preview': !IS_PRODUCTION }}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <Tracking />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={IS_PRODUCTION ? 'index, follow' : 'noindex, nofollow'} />
+    <meta name="theme-color" content="#6B1F7C" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <PreviewBanner />
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    {contactStrip && <ContactStrip />}
+    <Footer />
+    <FloatingCta />
+    <BookingModal />
+
+    <script>
+      import { initIconDraw } from '../scripts/icons-draw';
+      import { initClickTracking } from '../scripts/analytics';
+      initIconDraw();
+      initClickTracking();
+    </script>
+  </body>
+</html>

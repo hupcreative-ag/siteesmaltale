@@ -1,0 +1,41 @@
+:root {
+  /* Cores */
+  --color-pink: #E0609A;
+  --color-pink-dark: #A11E5D;
+  --color-pink-light: #F7C5DC;
+  --color-coral: #E8605A;
+  --color-purple: #6B1F7C;
+  --color-purple-hover: #541862;
+  --color-purple-dark: #2A2428; /* texto */
+  --color-neutral-bg: #FCF5F6;
+  --color-white: #FFFFFF;
+
+  /* Gradientes */
+  --gradient-hero: linear-gradient(-45deg, var(--color-purple), var(--color-pink), var(--color-coral), var(--color-purple));
+  --gradient-cta: linear-gradient(135deg, var(--color-purple), var(--color-pink-dark));
+  --gradient-pink: linear-gradient(135deg, var(--color-pink), var(--color-pink-dark));
+
+  /* Raios */
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-24: 24px;
+  --radius-pill: 100px;
+
+  /* Sombras */
+  --shadow-soft: 0 10px 30px rgba(107, 31, 124, 0.04);
+  --shadow-medium: 0 15px 40px rgba(42, 36, 40, 0.08);
+  --shadow-hover: 0 20px 40px rgba(107, 31, 124, 0.12);
+
+  /* Movimento */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 250ms var(--ease);
+
+  /* Layout */
+  --container: 1200px;
+  --gutter: 24px;
+  --header-h: 72px;
+  --preview-h: 0px;
+
+  /* Tipografia */
+  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}

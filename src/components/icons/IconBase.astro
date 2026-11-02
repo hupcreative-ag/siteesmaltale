@@ -1,0 +1,37 @@
+---
+/**
+ * Base de todos os ícones: grid 24x24, traço 2px, pontas e junções arredondadas,
+ * sem preenchimento, cor via currentColor. Cada path do ícone usa pathLength="1"
+ * para permitir o desenho do traço.
+ *
+ * draw: o ícone se desenha ao entrar na tela (IntersectionObserver em icons-draw.ts).
+ * label: quando informado, o ícone é anunciado; sem label, fica aria-hidden.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+  draw?: boolean;
+  label?: string;
+}
+
+const { size = 24, class: className, draw = false, label } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class:list={['icon', { 'icon--draw': draw }, className]}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <slot />
+</svg>

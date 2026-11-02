@@ -1,0 +1,366 @@
+---
+import { NAV, SITE } from '../../config/site';
+import logoBranca from '../../assets/marca/logo-branca.svg';
+import logoCor from '../../assets/marca/logo-cor.svg';
+import IconMenu from '../icons/IconMenu.astro';
+import IconClose from '../icons/IconClose.astro';
+import IconCalendar from '../icons/IconCalendar.astro';
+
+const atual = Astro.url.pathname;
+const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith(href));
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a href="/" class="site-header__logo" aria-label={`${SITE.nome}, página inicial`}>
+      <img src={logoBranca.src} width="140" height="43" alt="" class="logo logo--branca" />
+      <img src={logoCor.src} width="140" height="43" alt="" class="logo logo--cor" />
+    </a>
+
+    <nav class="site-nav" aria-label="Principal">
+      <ul>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={item.href} aria-current={ativo(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button type="button" class="site-header__cta" data-booking data-booking-origem="header">
+      <IconCalendar size={18} />
+      Agende agora
+    </button>
+
+    <button
+      type="button"
+      class="site-header__toggle"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Abrir menu"
+      data-menu-toggle
+    >
+      <IconMenu />
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" hidden data-mobile-menu>
+  <div class="mobile-menu__top container">
+    <img src={logoBranca.src} width="140" height="43" alt={SITE.nome} class="logo" />
+    <button type="button" class="mobile-menu__close" aria-label="Fechar menu" data-menu-close>
+      <IconClose />
+    </button>
+  </div>
+  <nav aria-label="Menu" class="mobile-menu__nav container">
+    <ul>
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={ativo(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <button type="button" class="specular-button" data-booking data-booking-origem="header">
+      Agende agora
+    </button>
+  </nav>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: var(--preview-h);
+    left: 0;
+    right: 0;
+    z-index: 90;
+    height: var(--header-h);
+    color: var(--color-white);
+    transition: background-color 250ms var(--ease), box-shadow 250ms var(--ease), color 250ms var(--ease);
+  }
+
+  .site-header.is-scrolled {
+    background-color: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-soft), 0 1px 0 rgba(107, 31, 124, 0.06);
+    color: var(--color-purple-dark);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 100%;
+  }
+
+  .site-header__logo {
+    position: relative;
+    display: block;
+    width: 120px;
+    margin-right: auto;
+  }
+
+  .logo {
+    width: 100%;
+    height: auto;
+  }
+
+  .logo--cor {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .logo--branca,
+  .logo--cor {
+    transition: opacity 250ms var(--ease);
+  }
+
+  .is-scrolled .logo--branca {
+    opacity: 0;
+  }
+
+  .is-scrolled .logo--cor {
+    opacity: 1;
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .site-nav a {
+    position: relative;
+    display: block;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: var(--radius-pill);
+    transition: var(--transition);
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 3px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: transform 250ms var(--ease);
+  }
+
+  .site-nav a:hover::after,
+  .site-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .is-scrolled .site-nav a[aria-current='page'] {
+    color: var(--color-purple);
+  }
+
+  .site-header__cta {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-purple);
+    background: var(--color-white);
+    border-radius: var(--radius-pill);
+    box-shadow: 0 6px 18px rgba(42, 36, 40, 0.12);
+    transition: var(--transition);
+  }
+
+  .site-header__cta:hover {
+    transform: translateY(-2px);
+  }
+
+  .is-scrolled .site-header__cta {
+    color: var(--color-white);
+    background: var(--color-purple);
+  }
+
+  .is-scrolled .site-header__cta:hover {
+    background: var(--color-purple-hover);
+  }
+
+  .site-header__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border-radius: 50%;
+  }
+
+  @media (min-width: 1024px) {
+    .site-header__logo {
+      width: 140px;
+    }
+
+    .site-nav,
+    .site-header__cta {
+      display: flex;
+    }
+
+    .site-header__toggle {
+      display: none;
+    }
+  }
+
+  /* ---------- Menu mobile ---------- */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-white);
+    background: var(--gradient-hero);
+    background-size: 400% 400%;
+    animation: heroGradientLoop 15s ease infinite, menuIn 300ms var(--ease);
+    overflow-y: auto;
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  @keyframes menuIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .mobile-menu__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+    margin-top: var(--preview-h);
+  }
+
+  .mobile-menu__top .logo {
+    width: 120px;
+  }
+
+  .mobile-menu__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+  }
+
+  .mobile-menu__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-top: 32px;
+    padding-bottom: 48px;
+  }
+
+  .mobile-menu__nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-menu__nav a {
+    display: inline-block;
+    padding: 8px 0;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    opacity: 0.85;
+  }
+
+  .mobile-menu__nav a[aria-current='page'] {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+  }
+
+  .mobile-menu__nav .specular-button {
+    align-self: flex-start;
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const close = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+
+  // Fundo branco após rolar
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Menu mobile
+  function abrir() {
+    if (!menu || !toggle) return;
+    menu.hidden = false;
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    close?.focus();
+  }
+
+  function fechar(devolverFoco = true) {
+    if (!menu || !toggle || menu.hidden) return;
+    menu.hidden = true;
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    if (devolverFoco) toggle.focus();
+  }
+
+  toggle?.addEventListener('click', abrir);
+  close?.addEventListener('click', () => fechar());
+  menu?.querySelectorAll('a, [data-booking]').forEach((el) =>
+    el.addEventListener('click', () => fechar(false)),
+  );
+
+  document.addEventListener('keydown', (e) => {
+    if (!menu || menu.hidden) return;
+    if (e.key === 'Escape') fechar();
+    // Mantém o foco dentro do painel
+    if (e.key === 'Tab') {
+      const focaveis = menu.querySelectorAll<HTMLElement>('a, button');
+      const primeiro = focaveis[0];
+      const ultimo = focaveis[focaveis.length - 1];
+      if (e.shiftKey && document.activeElement === primeiro) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primeiro.focus();
+      }
+    }
+  });
+
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) fechar(false);
+  });
+</script>

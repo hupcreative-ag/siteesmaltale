@@ -1,0 +1,153 @@
+---
+import { NAV, SITE } from '../../config/site';
+import { unidadesAtivas } from '../../lib/unidades';
+import logoCor from '../../assets/marca/logo-cor.svg';
+import IconInstagram from '../icons/IconInstagram.astro';
+
+const ano = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <img src={logoCor.src} width="150" height="46" alt={SITE.nome} loading="lazy" />
+      <p>{SITE.assinatura}</p>
+      <a
+        href={SITE.instagram}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="site-footer__insta"
+      >
+        <IconInstagram size={18} />
+        {SITE.instagramUsuario}
+      </a>
+    </div>
+
+    <nav aria-label="Rodapé" class="site-footer__col">
+      <h2 class="site-footer__title">Navegue</h2>
+      <ul>
+        {NAV.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__title">Nossas unidades</h2>
+      <ul>
+        {unidadesAtivas.map((u) => <li><a href={`/lojas/#${u.slug}`}>{u.nome}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p>© {ano} {SITE.razao}. Todos os direitos reservados.</p>
+    <p>
+      Desenvolvido por{' '}
+      <a href={SITE.desenvolvedor.url} target="_blank" rel="noopener noreferrer">
+        {SITE.desenvolvedor.nome}
+      </a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--color-neutral-bg);
+    border-top: 1px solid rgba(107, 31, 124, 0.08);
+    padding-top: 48px;
+    padding-bottom: 96px; /* espaço para o botão flutuante */
+    font-size: 0.92rem;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 32px;
+  }
+
+  .site-footer__brand img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 16px;
+  }
+
+  .site-footer__brand p {
+    max-width: 260px;
+    margin-bottom: 16px;
+    color: var(--color-purple-dark);
+    opacity: 0.8;
+  }
+
+  .site-footer__insta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--color-pink-dark);
+    transition: var(--transition);
+  }
+
+  .site-footer__insta:hover {
+    color: var(--color-purple);
+  }
+
+  .site-footer__title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-purple);
+    margin-bottom: 12px;
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+
+  .site-footer__col a {
+    color: var(--color-purple-dark);
+    opacity: 0.8;
+    transition: var(--transition);
+  }
+
+  .site-footer__col a:hover {
+    color: var(--color-pink-dark);
+    opacity: 1;
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(107, 31, 124, 0.08);
+    font-size: 0.8rem;
+    color: var(--color-purple-dark);
+  }
+
+  .site-footer__bottom p {
+    opacity: 0.7;
+  }
+
+  .site-footer__bottom a {
+    color: var(--color-pink-dark);
+    font-weight: 700;
+    transition: var(--transition);
+  }
+
+  .site-footer__bottom a:hover {
+    color: var(--color-purple);
+  }
+
+  @media (min-width: 768px) {
+    .site-footer__grid {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+
+    .site-footer__bottom {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+</style>
