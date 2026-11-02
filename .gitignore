@@ -1,20 +1,17 @@
+# Dependências e build
+node_modules/
+dist/
+.astro/
+
+# Variáveis de ambiente (o exemplo entra no git)
+.env*
+!.env.example
+
 # macOS
 .DS_Store
 ._*
-
-# Google Drive
-.tmp.driveupload/
-.tmp.drivedownload/
-*.gdoc
-*.gsheet
-*.gslides
 
 # Editores
 .vscode/
 .idea/
 *.swp
-
-# Dependências / build
-node_modules/
-dist/
-.env
