@@ -1,0 +1,167 @@
+---
+/**
+ * CTA final no estilo da referência: moldura clara com brilhos e título com "blur text"
+ * (as letras surgem do desfoque quando o bloco entra na tela), e botão que abre o modal.
+ */
+interface Props {
+  titulo: string;
+  origem: string;
+  rotulo?: string;
+}
+
+const { titulo, origem, rotulo = 'Agende agora' } = Astro.props;
+const palavras = titulo.split(' ');
+let i = 0;
+
+// Brilhos de 4 pontas espalhados (posição, tamanho e atraso)
+const BRILHOS = [
+  { x: '8%', y: '22%', t: 18, d: 0 },
+  { x: '16%', y: '72%', t: 12, d: 1.2 },
+  { x: '86%', y: '18%', t: 14, d: 0.6 },
+  { x: '92%', y: '64%', t: 20, d: 1.8 },
+  { x: '74%', y: '86%', t: 10, d: 2.4 },
+  { x: '28%', y: '12%', t: 9, d: 3 },
+];
+const ESTRELA = 'M12 2c.8 5.2 2.8 7.2 8 8-5.2.8-7.2 2.8-8 8-.8-5.2-2.8-7.2-8-8 5.2-.8 7.2-2.8 8-8z';
+---
+
+<section class="section section--white cta-final-wrap">
+  <div class="container">
+    <div class="cta-final" data-reveal="fade">
+      {
+        BRILHOS.map((b) => (
+          <svg
+            class="cta-final__brilho"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            style={`left:${b.x}; top:${b.y}; width:${b.t}px; height:${b.t}px; animation-delay:${b.d}s`}
+          >
+            <path d={ESTRELA} />
+          </svg>
+        ))
+      }
+      <h2 class="cta-final__titulo">
+        <span class="sr-only">{titulo}</span>
+        <span aria-hidden="true">
+          {
+            palavras.map((p, n) => (
+              <Fragment>
+                {n > 0 && ' '}
+                <span class="cta-final__palavra">
+                  {[...p].map((c) => (
+                    <span class="cta-final__letra" style={`--i:${i++}`}>
+                      {c}
+                    </span>
+                  ))}
+                </span>
+              </Fragment>
+            ))
+          }
+        </span>
+      </h2>
+      <button type="button" class="specular-button specular-button--dark cta-final__botao" data-booking data-booking-origem={origem}>
+        {rotulo}
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-final-wrap {
+    padding-block: 32px 72px;
+  }
+
+  .cta-final {
+    position: relative;
+    overflow: hidden;
+    padding: 72px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, #f6dde5 0%, #fbf0f3 48%, #efc0cf 100%);
+    border-radius: 24px;
+  }
+
+  .cta-final__brilho {
+    position: absolute;
+    fill: var(--color-purple);
+    opacity: 0;
+    animation: ctaBrilho 4.2s ease-in-out infinite;
+  }
+
+  @keyframes ctaBrilho {
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0.6) rotate(0deg);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1) rotate(20deg);
+    }
+  }
+
+  .cta-final__titulo {
+    max-width: 18ch;
+    margin: 0 auto 32px;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.08;
+    color: var(--color-purple);
+    text-wrap: balance;
+  }
+
+  .cta-final__palavra {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .cta-final__letra {
+    display: inline-block;
+  }
+
+  /* Blur text: só anima com JS e movimento permitido */
+  html.js .cta-final:not(.is-revealed) .cta-final__letra {
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  html.js .cta-final.is-revealed .cta-final__letra {
+    animation: letraFoco 900ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--i) * 28ms);
+  }
+
+  @keyframes letraFoco {
+    from {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(0.25em);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .cta-final-wrap {
+      padding-block: 48px 112px;
+    }
+
+    .cta-final {
+      padding: 104px 48px;
+      border-radius: 30px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-final__brilho {
+      animation: none;
+      opacity: 0.5;
+    }
+
+    html.js .cta-final .cta-final__letra {
+      opacity: 1;
+      filter: none;
+      animation: none;
+    }
+  }
+</style>

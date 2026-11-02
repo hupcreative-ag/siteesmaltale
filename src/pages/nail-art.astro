@@ -1,0 +1,271 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroInternal from '../components/sections/HeroInternal.astro';
+import Destaque from '../components/sections/Destaque.astro';
+import BlocoLocal from '../components/sections/BlocoLocal.astro';
+import Galeria from '../components/home/Galeria.astro';
+import IconArrow from '../components/icons/IconArrow.astro';
+import { SERVICOS_NAIL_ART } from '../data/nailArt';
+import { SERVICOS } from '../data/servicos';
+import { listaCidades } from '../lib/unidades';
+import { breadcrumb, servico, faq } from '../lib/schema';
+
+const titulo = 'Nail Art, Alongamento e Banho de Gel | Esmaltale';
+const descricao = `Alongamento em fibra de vidro, unhas postiças, banho de cristal e banho de gel em ${listaCidades}. Agende online na Esmaltale.`;
+
+const nailArt = SERVICOS.find((s) => s.slug === 'nail-art');
+const perguntas = SERVICOS_NAIL_ART.flatMap((s) => [s.duracao, ...(s.diferenca ? [s.diferenca] : [])]);
+const schema = [
+  breadcrumb([{ nome: 'Nail Art', caminho: '/nail-art/' }]),
+  ...(nailArt ? [servico(nailArt.nome, nailArt.descricao, '/nail-art/')] : []),
+  ...SERVICOS_NAIL_ART.map((s) => servico(s.nome, s.descricao, `/nail-art/#${s.id}`)),
+  faq(perguntas),
+];
+---
+
+<BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
+  <HeroInternal tag="Nail Art" titulo="Unhas do seu jeito, do formato ao acabamento." trilha="Nail Art">
+    <p>
+      Unha curta que você quer longa, unha fraca que vive quebrando, esmalte que não dura até sexta. Para cada caso existe
+      uma técnica, e todas estão aqui: alongamento em fibra de vidro, unhas postiças, banho de cristal e banho de gel.
+    </p>
+    <p>
+      Qualquer uma delas pode receber nail art no final. Um detalhe em uma unha só ou um desenho em todas, você decide com
+      a profissional na hora do atendimento.
+    </p>
+  </HeroInternal>
+
+  <!-- Navegação em pílulas, fixa no topo ao rolar -->
+  <nav class="pilulas" aria-label="Serviços de nail art" data-pilulas>
+    <ul class="pilulas__lista">
+      {
+        SERVICOS_NAIL_ART.map((s) => (
+          <li>
+            <a href={`#${s.id}`} class="pilulas__item">
+              {s.rotulo}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  {
+    SERVICOS_NAIL_ART.map((s, i) => (
+      <section
+        id={s.id}
+        class:list={['section', 'servico-na', i % 2 ? 'section--neutral' : 'section--white', { 'servico-na--inverso': i % 2 }]}
+        aria-labelledby={`${s.id}-titulo`}
+        data-secao-na
+      >
+        <div class="container servico-na__grid">
+          <div class="servico-na__media" data-reveal>
+            <Picture
+              src={s.imagem}
+              width={900}
+              height={1080}
+              widths={[480, 720, 900]}
+              sizes="(min-width: 1024px) 500px, 92vw"
+              formats={['avif', 'webp']}
+              alt={s.alt}
+              class="servico-na__img"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+          </div>
+
+          <div class="servico-na__texto" data-reveal style="--reveal-delay: 100ms">
+            <h2 class="servico-na__titulo" id={`${s.id}-titulo`}>
+              {s.nome}
+            </h2>
+            <p class="servico-na__lead">{s.descricao}</p>
+
+            <h3 class="servico-na__sub">Para quem é indicado</h3>
+            <p class="servico-na__p">{s.indicado}</p>
+
+            <div class="servico-na__destaques">
+              <Destaque titulo={s.duracao.pergunta}>{s.duracao.resposta}</Destaque>
+              {s.diferenca && <Destaque titulo={s.diferenca.pergunta}>{s.diferenca.resposta}</Destaque>}
+            </div>
+
+            <BlocoLocal titulo={s.local.titulo}>{s.local.texto}</BlocoLocal>
+
+            <button type="button" class="btn-seta servico-na__cta" data-booking data-booking-origem="pagina_servico">
+              Agendar agora<span class="sr-only">: {s.nome}</span>
+              <span class="btn-seta__circulo" aria-hidden="true">
+                <IconArrow size={18} />
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <Galeria />
+</BaseLayout>
+
+<script>
+  // Destaca a pílula da seção que está na tela
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('.pilulas__item')].map((a) => [a.hash.slice(1), a]),
+  );
+  const observador = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (!e.isIntersecting) continue;
+        links.forEach((a, id) => a.toggleAttribute('aria-current', id === e.target.id));
+        // Centraliza a pílula ativa na faixa (celular), sem mexer na rolagem da página
+        const ativo = links.get(e.target.id);
+        const lista = ativo?.closest('ul');
+        if (ativo && lista) {
+          lista.scrollTo({ left: ativo.offsetLeft - (lista.clientWidth - ativo.offsetWidth) / 2, behavior: 'smooth' });
+        }
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  document.querySelectorAll('[data-secao-na]').forEach((s) => observador.observe(s));
+</script>
+
+<style>
+  /* As âncoras param abaixo do header e das pílulas */
+  :global(html:has(.pilulas)) {
+    scroll-padding-top: calc(var(--header-h) + var(--preview-h) + 84px);
+  }
+
+  /* ---------- Pílulas ---------- */
+  .pilulas {
+    position: sticky;
+    top: calc(var(--preview-h) + var(--header-h));
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    padding: 14px var(--gutter);
+    background-color: rgba(255, 255, 255, 0.86);
+    border-bottom: 1px solid var(--color-line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  /* position: relative para o offsetLeft das pílulas ser medido a partir da lista */
+  .pilulas__lista {
+    position: relative;
+    display: flex;
+    gap: 6px;
+    max-width: 100%;
+    overflow-x: auto;
+    list-style: none;
+    scrollbar-width: none;
+  }
+
+  .pilulas__lista::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pilulas__item {
+    display: block;
+    padding: 9px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--color-purple);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    transition: background-color 250ms var(--ease), color 250ms var(--ease), border-color 250ms var(--ease);
+  }
+
+  .pilulas__item:hover {
+    border-color: rgba(99, 32, 102, 0.35);
+  }
+
+  .pilulas__item[aria-current] {
+    color: var(--color-white);
+    background-color: var(--color-purple);
+    border-color: var(--color-purple);
+  }
+
+  /* ---------- Seções de serviço ---------- */
+  .servico-na__grid {
+    display: grid;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .servico-na__media {
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .servico-na__media :global(.servico-na__img) {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+  }
+
+  .servico-na__titulo {
+    margin-bottom: 16px;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+    color: var(--color-purple);
+    text-wrap: balance;
+  }
+
+  .servico-na__lead {
+    margin-bottom: 28px;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--color-purple-dark);
+  }
+
+  .servico-na__sub {
+    margin-bottom: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-pink-dark);
+  }
+
+  .servico-na__p {
+    margin-bottom: 24px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .servico-na__destaques {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .section--neutral :global(.destaque) {
+    background-color: var(--color-white);
+  }
+
+  .servico-na__cta {
+    margin-top: 28px;
+  }
+
+  @media (min-width: 1024px) {
+    .servico-na__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: 72px;
+    }
+
+    /* Imagem acompanha a leitura do texto */
+    .servico-na__media {
+      position: sticky;
+      top: calc(var(--preview-h) + var(--header-h) + 96px);
+    }
+
+    .servico-na__media :global(.servico-na__img) {
+      aspect-ratio: 4 / 5;
+    }
+
+    .servico-na--inverso .servico-na__media {
+      order: 2;
+    }
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+/** Página não encontrada: mesma moldura clara do site, fora dos buscadores e do sitemap. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IconArrow from '../components/icons/IconArrow.astro';
+---
+
+<BaseLayout
+  title="Página não encontrada | Esmaltale"
+  description="Esta página não existe ou mudou de endereço. Volte ao início ou encontre a unidade Esmaltale mais perto de você."
+  noindex
+>
+  <section class="nao-encontrada" data-hero>
+    <div class="nao-encontrada__frame">
+      <div class="nao-encontrada__conteudo">
+        <svg class="nao-encontrada__brilhos" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
+          <path d="M12 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
+          <path d="M32 0c.9 5.4 2.9 7.5 8.1 8.4-5.2.9-7.2 3-8.1 8.4-.9-5.4-2.9-7.5-8.1-8.4 5.2-.9 7.2-3 8.1-8.4z" />
+          <path d="M52 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
+        </svg>
+        <p class="nao-encontrada__codigo" aria-hidden="true">404</p>
+        <h1 class="nao-encontrada__titulo">Esta página não está aqui</h1>
+        <p class="nao-encontrada__texto">O endereço pode ter mudado ou não existir mais. Que tal recomeçar por um destes caminhos?</p>
+        <div class="nao-encontrada__acoes">
+          <a href="/" class="btn-seta">
+            Voltar ao início
+            <span class="btn-seta__circulo" aria-hidden="true"><IconArrow size={18} /></span>
+          </a>
+          <a href="/lojas/" class="nao-encontrada__link">Ver as unidades</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nao-encontrada {
+    padding: calc(var(--preview-h) + var(--frame-inset)) var(--frame-inset) var(--frame-inset);
+    background-color: var(--color-white);
+  }
+
+  .nao-encontrada__frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: max(520px, calc(100svh - var(--preview-h) - 2 * var(--frame-inset)));
+    padding: calc(var(--header-h) + 24px) var(--gutter) 64px;
+    background: linear-gradient(135deg, #f6dde5 0%, #fbf0f3 50%, #efc0cf 100%);
+    border-radius: 18px;
+  }
+
+  .nao-encontrada__conteudo {
+    max-width: 560px;
+    text-align: center;
+  }
+
+  .nao-encontrada__brilhos {
+    width: 52px;
+    margin: 0 auto 12px;
+    fill: var(--color-purple);
+  }
+
+  .nao-encontrada__codigo {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 16vw, 9rem);
+    font-weight: 700;
+    line-height: 1;
+    color: rgba(99, 32, 102, 0.16);
+  }
+
+  .nao-encontrada__titulo {
+    margin-top: -0.2em;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+    color: var(--color-purple);
+    text-wrap: balance;
+  }
+
+  .nao-encontrada__texto {
+    margin-top: 16px;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: #5b3d60;
+  }
+
+  .nao-encontrada__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px 28px;
+    margin-top: 32px;
+  }
+
+  .nao-encontrada__link {
+    font-weight: 600;
+    color: var(--color-purple);
+    text-decoration: underline;
+    text-decoration-color: var(--color-pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+
+  @media (min-width: 768px) {
+    .nao-encontrada__frame {
+      border-radius: 30px;
+    }
+  }
+</style>

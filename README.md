@@ -24,13 +24,15 @@ Build de produção local: `npm run build` (gera `dist/`) e `npm run preview` pa
 | `src/data/galeria.ts` | Fotos da galeria da Home |
 | `src/data/faq.ts` | Perguntas frequentes da Home (também geram o JSON-LD FAQPage) |
 | `src/data/avaliacoes.ts` | Avaliações do Google (só reais; vazio mostra pendência) |
+| `src/data/nailArt.ts` | Os 4 serviços da página Nail Art (texto, duração, bloco local) |
 | `src/lib/schema.ts` | JSON-LD (Organization, WebSite, BeautySalon por unidade, catálogo de serviços) |
 | `src/pages/robots.txt.ts`, `src/pages/llms.txt.ts` | robots.txt por ambiente e resumo da marca para IA, gerados dos dados |
 | `src/config/site.ts` | URL, horário, Instagram, mensagens do WhatsApp, menu |
 | `src/config/tracking.ts` | IDs do GA4 e do Meta Pixel |
 | `src/lib/unidades.ts` | Ordenação, contagem por extenso, listas e links das unidades |
 | `src/styles/` | Tokens (`tokens.css`) e estilos globais (`global.css`) |
-| `src/components/` | Ícones, layout (header, rodapé), modal de agendamento, seções |
+| `src/components/` | Ícones, layout (header, rodapé), modal de agendamento, seções da Home e das páginas internas (`sections/`: hero interno, CTA final, faixa de contato, bloco local, destaque) |
+| `src/pages/` | Home, Sobre, Nail Art, Podologia, Lojas, 404, `robots.txt` e `llms.txt` |
 | `src/assets/` | Imagens usadas no site (otimizadas no build) |
 | `referencia/` | Páginas aprovadas pela cliente (somente leitura) |
 | `conteudo/` | Documento de conteúdo e imagens originais (backup) |

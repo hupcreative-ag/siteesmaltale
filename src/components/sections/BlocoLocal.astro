@@ -1,0 +1,53 @@
+---
+/** Bloco local ("... na Esmaltale em Salvador e Lauro de Freitas"): texto menor com ícone de pin.
+    Destinado a buscadores e IA, sempre visível. */
+import IconPin from '../icons/IconPin.astro';
+
+interface Props {
+  titulo: string;
+}
+
+const { titulo } = Astro.props;
+---
+
+<aside class="bloco-local">
+  <span class="bloco-local__icone"><IconPin size={18} /></span>
+  <div>
+    <h3 class="bloco-local__titulo">{titulo}</h3>
+    <p class="bloco-local__texto"><slot /></p>
+  </div>
+</aside>
+
+<style>
+  .bloco-local {
+    display: flex;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .bloco-local__icone {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: var(--color-pink-dark);
+    background-color: var(--color-blush);
+    border-radius: 50%;
+  }
+
+  .bloco-local__titulo {
+    margin-bottom: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-purple);
+  }
+
+  .bloco-local__texto {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+</style>

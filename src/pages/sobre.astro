@@ -1,0 +1,336 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroInternal from '../components/sections/HeroInternal.astro';
+import CtaFinal from '../components/sections/CtaFinal.astro';
+import { SITE } from '../config/site';
+import { totalUnidades, porExtenso, listaNomes } from '../lib/unidades';
+import { breadcrumb, pagina } from '../lib/schema';
+import sobrePagina from '../assets/sobre/sobre-pagina.jpg';
+import missao from '../assets/sobre/missao.jpg';
+import visao from '../assets/sobre/visao.jpg';
+import IconCuidado from '../components/icons/IconCuidado.astro';
+import IconExcelencia from '../components/icons/IconExcelencia.astro';
+import IconHigiene from '../components/icons/IconHigiene.astro';
+import IconAmbiente from '../components/icons/IconAmbiente.astro';
+import IconProfissionais from '../components/icons/IconProfissionais.astro';
+import IconSocial from '../components/icons/IconSocial.astro';
+
+const titulo = 'Sobre a Esmaltale | Esmalteria em Salvador desde 2017';
+const descricao = `Conheça a Esmaltale: esmalteria fundada em ${SITE.fundacao} em Salvador, com ${porExtenso(totalUnidades)} unidades, esterilização em autoclave e ambiente acolhedor.`;
+
+const VALORES = [
+  { nome: 'Cuidado com o outro', Icone: IconCuidado },
+  { nome: 'Excelência técnica', Icone: IconExcelencia },
+  { nome: 'Higiene como compromisso', Icone: IconHigiene },
+  { nome: 'Ambiente que acolhe', Icone: IconAmbiente },
+  { nome: 'Valorização das profissionais', Icone: IconProfissionais },
+  { nome: 'Comprometimento social', Icone: IconSocial },
+];
+
+const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), breadcrumb([{ nome: 'Sobre', caminho: '/sobre/' }])];
+---
+
+<BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
+  <HeroInternal titulo="Sobre a Esmaltale" trilha="Sobre">
+    <p>A Esmaltale nasceu em Salvador em 2017 com uma convicção: cuidar das unhas é cuidar de si.</p>
+  </HeroInternal>
+
+  <!-- Texto institucional -->
+  <section class="section section--white historia" aria-labelledby="historia-titulo">
+    <div class="container historia__grid">
+      <div class="historia__media" data-reveal>
+        <Picture
+          src={sobrePagina}
+          width={1200}
+          height={1350}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 520px, 92vw"
+          formats={['avif', 'webp']}
+          alt="Cliente escolhendo um esmalte na prateleira de uma unidade Esmaltale"
+          class="historia__img"
+          loading="lazy"
+        />
+      </div>
+      <div class="historia__texto" data-reveal style="--reveal-delay: 120ms">
+        <h2 class="section-title" id="historia-titulo">Nossa história</h2>
+        <p>
+          Começamos com uma unidade. Hoje são {porExtenso(totalUnidades)}, nos principais shoppings da cidade: {listaNomes}.
+        </p>
+        <p>
+          Em cada uma delas, o padrão não muda: o ambiente é pensado para o seu conforto, os instrumentos passam pela
+          autoclave antes de qualquer atendimento e o agendamento é online para encaixar em qualquer momento do seu dia.
+        </p>
+        <p>
+          O que a gente oferece vai além da manicure. Alongamentos, nail art, spa das mãos e dos pés, podologia e um
+          cuidado completo para quem quer se sentir bem de verdade.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="citacao" aria-label="Nossa proposta">
+    <div class="container">
+      <blockquote class="citacao__texto" data-reveal>
+        <svg class="citacao__brilhos" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
+          <path d="M12 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
+          <path d="M32 0c.9 5.4 2.9 7.5 8.1 8.4-5.2.9-7.2 3-8.1 8.4-.9-5.4-2.9-7.5-8.1-8.4 5.2-.9 7.2-3 8.1-8.4z" />
+          <path d="M52 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
+        </svg>
+        <p>
+          Cada visita é pensada para ser uma pausa real. Uma hora em que o dia para, as mãos descansam e você sai diferente
+          de como entrou. É isso que a Esmaltale entrega e é por isso que nós estamos aqui.
+        </p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Missão e Visão -->
+  <section class="section section--neutral" aria-label="Missão e visão">
+    <div class="container mv" data-reveal-stagger="140">
+      <article class="mv__cartao" data-reveal>
+        <Picture
+          src={missao}
+          width={900}
+          height={600}
+          widths={[480, 720, 900]}
+          sizes="(min-width: 900px) 580px, 92vw"
+          formats={['avif', 'webp']}
+          alt="Cliente sorrindo durante a manicure em uma unidade Esmaltale"
+          class="mv__img"
+          style="object-position: center 25%"
+          loading="lazy"
+        />
+        <div class="mv__corpo">
+          <h2 class="mv__titulo">Missão</h2>
+          <p>
+            Proporcionar experiências de bem-estar e elevação da autoestima por meio de serviços de qualidade, em ambiente
+            acolhedor que valoriza cada cliente e cada profissional.
+          </p>
+        </div>
+      </article>
+      <article class="mv__cartao" data-reveal>
+        <Picture
+          src={visao}
+          width={900}
+          height={600}
+          widths={[480, 720, 900]}
+          sizes="(min-width: 900px) 580px, 92vw"
+          formats={['avif', 'webp']}
+          alt="Cliente rindo durante o atendimento em uma unidade Esmaltale"
+          class="mv__img"
+          style="object-position: center 28%"
+          loading="lazy"
+        />
+        <div class="mv__corpo">
+          <h2 class="mv__titulo">Visão</h2>
+          <p>
+            Ser referência nacional no mercado de esmalterias, reconhecida pela excelência no atendimento, pela inovação
+            nos serviços e pelo cuidado genuíno com quem nos escolhe.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Valores -->
+  <section class="section section--white" aria-labelledby="valores-titulo">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 class="section-title" id="valores-titulo">Valores</h2>
+      </div>
+      <ul class="valores" data-reveal-stagger="80">
+        {
+          VALORES.map(({ nome, Icone }) => (
+            <li class="valor icon-host" data-reveal>
+              <span class="valor__icone">
+                <Icone size={34} draw />
+              </span>
+              <h3 class="valor__nome">{nome}</h3>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaFinal titulo={SITE.assinatura} origem="cta_final" />
+</BaseLayout>
+
+<style>
+  /* ---------- História ---------- */
+  .historia__grid {
+    display: grid;
+    gap: 36px;
+    align-items: center;
+  }
+
+  .historia__media {
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .historia__media :global(.historia__img) {
+    width: 100%;
+    aspect-ratio: 4 / 4.5;
+    object-fit: cover;
+    object-position: 70% center;
+  }
+
+  .historia__texto .section-title {
+    margin-bottom: 20px;
+  }
+
+  .historia__texto p {
+    max-width: 58ch;
+    margin-bottom: 16px;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 900px) {
+    .historia__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: 72px;
+    }
+  }
+
+  /* ---------- Citação ---------- */
+  .citacao {
+    padding-block: 64px;
+    background-color: var(--color-creme);
+    border-block: 1px solid var(--color-line);
+  }
+
+  .citacao__texto {
+    max-width: 880px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .citacao__brilhos {
+    width: 48px;
+    margin: 0 auto 20px;
+    fill: var(--color-pink);
+  }
+
+  .citacao__texto p {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-purple);
+    text-wrap: balance;
+  }
+
+  @media (min-width: 768px) {
+    .citacao {
+      padding-block: 96px;
+    }
+  }
+
+  /* ---------- Missão e Visão ---------- */
+  .mv {
+    display: grid;
+    gap: 20px;
+  }
+
+  .mv__cartao {
+    overflow: hidden;
+    background-color: var(--color-white);
+    border: 1px solid rgba(99, 32, 102, 0.08);
+    border-radius: 24px;
+  }
+
+  .mv__cartao :global(.mv__img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .mv__corpo {
+    padding: 28px 28px 32px;
+  }
+
+  .mv__titulo {
+    margin-bottom: 10px;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    line-height: 1.1;
+    color: var(--color-purple);
+  }
+
+  .mv__corpo p {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 900px) {
+    .mv {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .mv__corpo {
+      padding: 32px 36px 40px;
+    }
+  }
+
+  /* ---------- Valores ---------- */
+  .valores {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    list-style: none;
+  }
+
+  .valor {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px 16px;
+    background-color: var(--color-neutral-bg);
+    border-radius: 20px;
+  }
+
+  .valor__icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    color: var(--color-purple);
+    background-color: var(--color-white);
+    border-radius: 50%;
+  }
+
+  .valor__nome {
+    min-width: 0;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-purple);
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  @media (min-width: 768px) {
+    .valores {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .valor {
+      padding: 32px 28px;
+    }
+
+    .valor__nome {
+      font-size: 1.4rem;
+    }
+  }
+</style>

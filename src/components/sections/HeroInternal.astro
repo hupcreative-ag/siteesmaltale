@@ -1,29 +1,42 @@
 ---
 /**
- * Hero das páginas internas: a mesma moldura arredondada e os tons claros do hero da Home,
- * mais baixo. O header fixo fica por cima da moldura.
+ * Hero das páginas internas: a mesma moldura arredondada e o gradiente claro animado da Home,
+ * mais baixo. Trilha de navegação visível (o JSON-LD BreadcrumbList vem da página).
+ * Com o slot "media", vira duas colunas no desktop (texto à esquerda, imagens à direita).
  */
-import type { ImageMetadata } from 'astro';
-import { getImage } from 'astro:assets';
-
 interface Props {
+  /** Etiqueta curta acima do título (só onde o briefing pede, ex.: "Nail Art"). */
   tag?: string;
   titulo: string;
-  /** Foto em baixa opacidade, em tons de cinza (opcional). */
-  fundo?: ImageMetadata;
+  /** Nome da página na trilha (Início / nome). */
+  trilha: string;
 }
 
-const { tag, titulo, fundo } = Astro.props;
-const bg = fundo ? await getImage({ src: fundo, width: 1600, format: 'webp' }) : null;
+const { tag, titulo, trilha } = Astro.props;
+const comMidia = Astro.slots.has('media');
 ---
 
 <section class="hero-internal" data-hero>
-  <div class="hero-internal__frame brand-gradient">
-    {bg && <div class="hero-internal__bg" style={`background-image: url('${bg.src}')`} />}
-    <div class="container hero-internal__content">
-      {tag && <span class="hero-internal__tag">{tag}</span>}
-      <h1 class="hero-internal__title">{titulo}</h1>
-      <slot />
+  <div class:list={['hero-internal__frame', { 'hero-internal__frame--midia': comMidia }]}>
+    <div class="hero-internal__gradiente" aria-hidden="true"></div>
+    <div class="container hero-internal__grid">
+      <div class="hero-internal__texto">
+        <nav class="hero-internal__trilha" aria-label="Trilha de navegação">
+          <a href="/">Início</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{trilha}</span>
+        </nav>
+        {tag && <span class="hero-internal__tag">{tag}</span>}
+        <h1 class="hero-internal__title">{titulo}</h1>
+        <slot />
+      </div>
+      {
+        comMidia && (
+          <div class="hero-internal__midia">
+            <slot name="media" />
+          </div>
+        )
+      }
     </div>
   </div>
 </section>
@@ -38,33 +51,68 @@ const bg = fundo ? await getImage({ src: fundo, width: 1600, format: 'webp' }) :
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    padding-top: calc(var(--header-h) + 40px);
+    padding-top: calc(var(--header-h) + 32px);
     padding-bottom: 56px;
     color: var(--color-purple);
-    text-align: center;
+    background-color: var(--color-blush);
     border-radius: 18px;
   }
 
-  .hero-internal__bg {
+  /* Mesmo gradiente da Home, deslizando por transform (GPU) */
+  .hero-internal__gradiente {
     position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.1;
-    mix-blend-mode: multiply;
-    filter: grayscale(1);
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(-45deg, #f6dde5, #efc0cf, #f9e9ee, #ecb6c8, #f6dde5, #efc0cf);
+    animation: heroInternoDeriva 22s ease-in-out infinite alternate;
+    will-change: transform;
   }
 
-  .hero-internal__content {
-    position: relative;
-    z-index: 1;
-    max-width: 820px;
+  @keyframes heroInternoDeriva {
+    to {
+      transform: translate3d(-66.6%, -66.6%, 0);
+    }
+  }
+
+  .hero-internal__grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .hero-internal__texto {
+    max-width: 760px;
+    margin-inline: auto;
+    text-align: center;
+    animation: heroInternoEntra 1s var(--ease-out-expo) both;
+  }
+
+  .hero-internal__trilha {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 0.8125rem;
+    color: #6b4a6e;
+  }
+
+  .hero-internal__trilha a {
+    text-decoration: underline;
+    text-decoration-color: rgba(99, 32, 102, 0.3);
+    text-underline-offset: 3px;
+    transition: color 250ms var(--ease);
+  }
+
+  .hero-internal__trilha a:hover {
+    color: var(--color-purple);
   }
 
   .hero-internal__tag {
-    display: inline-block;
-    margin-bottom: 16px;
+    display: block;
+    margin-bottom: 14px;
     font-size: 0.8125rem;
     font-style: italic;
     letter-spacing: 0.16em;
@@ -73,24 +121,72 @@ const bg = fundo ? await getImage({ src: fundo, width: 1600, format: 'webp' }) :
   }
 
   .hero-internal__title {
-    font-size: clamp(2.25rem, 5vw, 3.75rem);
-    line-height: 1.05;
-    letter-spacing: -0.01em;
+    font-size: clamp(2.4rem, 5.4vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.012em;
     text-wrap: balance;
   }
 
-  .hero-internal__content :global(p) {
-    margin-top: 20px;
-    font-size: 1.05rem;
+  .hero-internal__texto :global(p) {
+    max-width: 62ch;
+    margin: 20px auto 0;
+    font-size: 1.0625rem;
     line-height: 1.7;
     color: #5b3d60;
   }
 
+  .hero-internal__texto :global(.hero-internal__acoes) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 24px;
+    margin-top: 32px;
+  }
+
+  @keyframes heroInternoEntra {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+
   @media (min-width: 768px) {
     .hero-internal__frame {
-      padding-top: calc(var(--header-h) + 64px);
-      padding-bottom: 80px;
+      padding-top: calc(var(--header-h) + 56px);
+      padding-bottom: 88px;
       border-radius: 30px;
+    }
+  }
+
+  /* Com imagens: texto à esquerda, imagens à direita */
+  @media (min-width: 1024px) {
+    .hero-internal__frame--midia .hero-internal__grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 64px;
+    }
+
+    .hero-internal__frame--midia .hero-internal__texto {
+      margin-inline: 0;
+      text-align: left;
+    }
+
+    .hero-internal__frame--midia .hero-internal__trilha {
+      justify-content: flex-start;
+    }
+
+    .hero-internal__frame--midia .hero-internal__texto :global(p) {
+      margin-inline: 0;
+    }
+
+    .hero-internal__frame--midia .hero-internal__texto :global(.hero-internal__acoes) {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-internal__gradiente,
+    .hero-internal__texto {
+      animation: none;
     }
   }
 </style>

@@ -1,0 +1,36 @@
+---
+/** Caixa de destaque para perguntas como "Quanto tempo dura..." (também viram FAQPage). */
+interface Props {
+  titulo: string;
+}
+
+const { titulo } = Astro.props;
+---
+
+<div class="destaque">
+  <h3 class="destaque__titulo">{titulo}</h3>
+  <p class="destaque__texto"><slot /></p>
+</div>
+
+<style>
+  .destaque {
+    padding: 22px 24px;
+    background-color: var(--color-neutral-bg);
+    border-radius: 18px;
+  }
+
+  .destaque__titulo {
+    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-purple);
+  }
+
+  .destaque__texto {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-purple-dark);
+  }
+</style>

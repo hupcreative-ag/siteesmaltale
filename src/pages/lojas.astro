@@ -1,0 +1,493 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroInternal from '../components/sections/HeroInternal.astro';
+import IconArrow from '../components/icons/IconArrow.astro';
+import IconClock from '../components/icons/IconClock.astro';
+import IconPin from '../components/icons/IconPin.astro';
+import IconPhone from '../components/icons/IconPhone.astro';
+import IconWhatsapp from '../components/icons/IconWhatsapp.astro';
+import IconMap from '../components/icons/IconMap.astro';
+import logoCor from '../assets/marca/logo-cor.svg';
+import { SITE, HORARIO } from '../config/site';
+import {
+  unidadesAtivas,
+  totalUnidades,
+  porExtenso,
+  listaCidades,
+  localizacao,
+  whatsappAgendamento,
+  mapaUrl,
+  formatarTelefone,
+  telefoneHref,
+} from '../lib/unidades';
+import { breadcrumb, pagina, salao } from '../lib/schema';
+
+const titulo = `Unidades Esmaltale em ${listaCidades}`;
+const descricao = `Endereços, horários e contatos das ${porExtenso(totalUnidades)} unidades da Esmaltale nos shoppings de ${listaCidades}. Agende pelo Trinks ou WhatsApp.`;
+
+// Unidades agrupadas por cidade, na ordem de exibição (novidades primeiro)
+const porCidade = new Map<string, typeof unidadesAtivas>();
+for (const u of unidadesAtivas) porCidade.set(u.cidade, [...(porCidade.get(u.cidade) ?? []), u]);
+
+const externo = { target: '_blank', rel: 'noopener noreferrer' };
+
+const saloes = await Promise.all(
+  unidadesAtivas.map(async (u) => {
+    const foto = u.foto ? await getImage({ src: u.foto, width: 1200, format: 'jpg' }) : null;
+    return salao(u, foto ? new URL(foto.src, SITE.url).href : undefined);
+  }),
+);
+const schema = [
+  pagina('CollectionPage', '/lojas/', 'Unidades Esmaltale', descricao),
+  breadcrumb([{ nome: 'Lojas', caminho: '/lojas/' }]),
+  ...saloes,
+];
+---
+
+<BaseLayout title={titulo} description={descricao} schema={schema}>
+  <HeroInternal titulo="Nossas unidades" trilha="Lojas">
+    <p>Estamos nos principais shoppings de Salvador. Escolha a mais perto de você.</p>
+    <ul class="atalhos" aria-label="Ir para a unidade">
+      {
+        unidadesAtivas.map((u) => (
+          <li>
+            <a href={`#${u.slug}`} class="atalhos__item">
+              {u.nome}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </HeroInternal>
+
+  <section class="section section--neutral lojas" aria-label="Unidades e horário">
+    <div class="container">
+      <!-- Horário -->
+      <div class="horario" data-reveal>
+        <span class="horario__icone"><IconClock size={24} /></span>
+        <div class="horario__texto">
+          <h2 class="horario__titulo">Horário de funcionamento</h2>
+          <ul class="horario__linhas">
+            {
+              HORARIO.linhas.map((l) => (
+                <li>
+                  <strong>{l.dias}</strong> {l.horas}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <p class="horario__nota">{HORARIO.nota}</p>
+      </div>
+
+      {
+        [...porCidade].map(([cidade, lista]) => (
+          <div class="cidade">
+            <div class="cidade__cabeca" data-reveal>
+              <h2 class="cidade__nome">{cidade}</h2>
+              <span class="cidade__total">
+                {lista.length} {lista.length === 1 ? 'unidade' : 'unidades'}
+              </span>
+            </div>
+
+            <div class="fichas">
+              {lista.map((u) => (
+                <article class="ficha" id={u.slug} data-unit={u.slug} aria-labelledby={`${u.slug}-nome`} data-reveal>
+                  <div class="ficha__media">
+                    {u.foto ? (
+                      <Picture
+                        src={u.foto}
+                        width={960}
+                        height={720}
+                        widths={[480, 720, 960]}
+                        sizes="(min-width: 1024px) 520px, 92vw"
+                        formats={['avif', 'webp']}
+                        fallbackFormat="jpg"
+                        alt={`Unidade Esmaltale ${u.nome}, esmalteria em ${u.cidade}`}
+                        class="ficha__img"
+                        style={u.fotoPosicao ? `object-position: ${u.fotoPosicao}` : undefined}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div class="ficha__vazia brand-gradient">
+                        <img src={logoCor.src} width="160" height="49" alt="" />
+                      </div>
+                    )}
+                    {u.novidade && <span class="ficha__tag">Nova unidade</span>}
+                  </div>
+
+                  <div class="ficha__corpo">
+                    <h3 class="ficha__nome" id={`${u.slug}-nome`}>
+                      {u.nome}
+                    </h3>
+
+                    <ul class="ficha__dados">
+                      <li>
+                        <IconPin size={18} />
+                        <span>
+                          <span class="ficha__destaque">{localizacao(u, true)}</span>
+                          <span>
+                            {[u.endereco, u.bairro, `${u.cidade} - ${u.uf}`].filter(Boolean).join(' · ')} · CEP {u.cep}
+                          </span>
+                        </span>
+                      </li>
+                      {u.telefone && (
+                        <li>
+                          <IconPhone size={18} />
+                          <a href={telefoneHref(u.telefone)}>{formatarTelefone(u.telefone)}</a>
+                        </li>
+                      )}
+                      <li>
+                        <IconWhatsapp size={18} />
+                        <a href={whatsappAgendamento(u)} {...externo}>
+                          {formatarTelefone(u.whatsapp)}
+                        </a>
+                      </li>
+                    </ul>
+
+                    <div class="ficha__acoes">
+                      {u.trinksUrl && (
+                        <a href={u.trinksUrl} class="btn-seta" {...externo}>
+                          Agendar via Trinks<span class="sr-only">, {u.nome}</span>
+                          <span class="btn-seta__circulo" aria-hidden="true">
+                            <IconArrow size={18} />
+                          </span>
+                        </a>
+                      )}
+                      <a href={whatsappAgendamento(u)} class="ficha__btn" {...externo}>
+                        <IconWhatsapp size={18} />
+                        Falar pelo WhatsApp<span class="sr-only">, {u.nome}</span>
+                      </a>
+                      <a href={mapaUrl(u)} class="ficha__btn" {...externo}>
+                        <IconMap size={18} />
+                        Ver no mapa<span class="sr-only">, {u.nome}</span>
+                      </a>
+                    </div>
+
+                    {u.landingUrl && (
+                      <a href={u.landingUrl} class="ficha__mais" {...externo}>
+                        Conhecer a unidade<span class="sr-only"> {u.nome}</span>
+                        <IconArrow size={14} />
+                      </a>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- Atalhos do hero ---------- */
+  .atalhos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 28px;
+    list-style: none;
+  }
+
+  .atalhos__item {
+    display: block;
+    padding: 9px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-purple);
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(99, 32, 102, 0.12);
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background-color 250ms var(--ease), color 250ms var(--ease);
+  }
+
+  .atalhos__item:hover {
+    color: var(--color-white);
+    background-color: var(--color-purple);
+  }
+
+  /* ---------- Horário ---------- */
+  .horario {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px 18px;
+    align-items: start;
+    margin-bottom: 64px;
+    padding: 24px;
+    background-color: var(--color-white);
+    border: 1px solid rgba(99, 32, 102, 0.08);
+    border-radius: 22px;
+  }
+
+  .horario__icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: var(--color-purple);
+    background-color: var(--color-blush);
+    border-radius: 50%;
+  }
+
+  .horario__titulo {
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+    line-height: 1.15;
+    color: var(--color-purple);
+  }
+
+  .horario__linhas {
+    display: grid;
+    gap: 2px;
+    list-style: none;
+    color: var(--color-purple-dark);
+  }
+
+  .horario__linhas strong {
+    font-weight: 600;
+  }
+
+  .horario__nota {
+    grid-column: 1 / -1;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 900px) {
+    .horario {
+      grid-template-columns: auto auto 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px 32px;
+    }
+
+    .horario__nota {
+      grid-column: auto;
+      max-width: 44ch;
+      justify-self: end;
+      text-align: right;
+    }
+  }
+
+  /* ---------- Cidades e fichas ---------- */
+  .cidade + .cidade {
+    margin-top: 72px;
+  }
+
+  .cidade__cabeca {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .cidade__nome {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.05;
+    color: var(--color-purple);
+  }
+
+  .cidade__total {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .fichas {
+    display: grid;
+    gap: 16px;
+  }
+
+  .ficha {
+    display: grid;
+    overflow: hidden;
+    background-color: var(--color-white);
+    border: 1px solid rgba(99, 32, 102, 0.08);
+    border-radius: 24px;
+  }
+
+  .ficha__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .ficha__media :global(.ficha__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ficha__vazia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .ficha__tag {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 5px 11px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-pink-dark);
+    background-color: rgba(255, 255, 255, 0.94);
+    border-radius: var(--radius-pill);
+  }
+
+  .ficha__corpo {
+    padding: 24px 22px 28px;
+  }
+
+  .ficha__nome {
+    margin-bottom: 16px;
+    font-family: var(--font-display);
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-purple);
+  }
+
+  .ficha__dados {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 24px;
+    list-style: none;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .ficha__dados li {
+    display: flex;
+    gap: 12px;
+  }
+
+  .ficha__dados li > :global(.icon) {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--color-pink-dark);
+  }
+
+  .ficha__dados li > span {
+    display: grid;
+    gap: 2px;
+  }
+
+  .ficha__destaque {
+    font-weight: 600;
+    color: var(--color-purple-dark);
+  }
+
+  .ficha__dados a {
+    color: var(--color-purple-dark);
+    text-decoration: underline;
+    text-decoration-color: rgba(99, 32, 102, 0.25);
+    text-underline-offset: 3px;
+    transition: color 250ms var(--ease);
+  }
+
+  .ficha__dados a:hover {
+    color: var(--color-pink-dark);
+  }
+
+  .ficha__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ficha__acoes :global(.btn-seta) {
+    height: 46px;
+    gap: 12px;
+    padding-left: 18px;
+    font-size: 0.875rem;
+  }
+
+  .ficha__acoes :global(.btn-seta__circulo) {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ficha__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-purple);
+    border: 1px solid rgba(99, 32, 102, 0.22);
+    border-radius: var(--radius-pill);
+    transition: background-color 250ms var(--ease), border-color 250ms var(--ease);
+  }
+
+  .ficha__btn:hover {
+    background-color: var(--color-neutral-bg);
+    border-color: var(--color-purple);
+  }
+
+  .ficha__mais {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-purple-dark);
+    text-decoration: underline;
+    text-decoration-color: rgba(99, 32, 102, 0.3);
+    text-underline-offset: 3px;
+    transition: color 250ms var(--ease);
+  }
+
+  .ficha__mais:hover {
+    color: var(--color-pink-dark);
+  }
+
+  @media (max-width: 639px) {
+    .ficha__acoes > * {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+
+    .ficha__acoes :global(.btn-seta) {
+      justify-content: space-between;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .ficha {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    }
+
+    .ficha__media {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+
+    .ficha__corpo {
+      align-self: center;
+      padding: 40px 34px 40px 40px;
+    }
+
+    .ficha__nome {
+      font-size: 2.25rem;
+    }
+  }
+</style>

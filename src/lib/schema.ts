@@ -89,6 +89,60 @@ export function catalogoServicos() {
   };
 }
 
+/** Trilha de navegação (BreadcrumbList); o primeiro item é sempre o Início. */
+export function breadcrumb(itens: { nome: string; caminho: string }[]) {
+  const todos = [{ nome: 'Início', caminho: '/' }, ...itens];
+  return {
+    '@type': 'BreadcrumbList',
+    itemListElement: todos.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.nome,
+      item: `${SITE.url}${it.caminho}`,
+    })),
+  };
+}
+
+/** Página com tipo específico (AboutPage, CollectionPage...) ligada ao site e à organização. */
+export function pagina(tipo: string, caminho: string, nome: string, descricao: string) {
+  return {
+    '@type': tipo,
+    '@id': `${SITE.url}${caminho}#pagina`,
+    url: `${SITE.url}${caminho}`,
+    name: nome,
+    description: descricao,
+    inLanguage: 'pt-BR',
+    isPartOf: { '@id': SITE_ID },
+    about: { '@id': ORG_ID },
+  };
+}
+
+/** Serviço oferecido pela Esmaltale nas unidades ativas. */
+export function servico(nome: string, descricao: string, caminho: string, extra: object = {}) {
+  return {
+    '@type': 'Service',
+    name: nome,
+    description: descricao,
+    url: `${SITE.url}${caminho}`,
+    serviceType: nome,
+    provider: { '@id': ORG_ID },
+    areaServed: [...new Set(unidadesAtivas.map((u) => u.cidade))].map((c) => ({ '@type': 'City', name: c })),
+    ...extra,
+  };
+}
+
+/** FAQPage a partir de pares pergunta/resposta visíveis na página. */
+export function faq(itens: { pergunta: string; resposta: string }[]) {
+  return {
+    '@type': 'FAQPage',
+    mainEntity: itens.map((f) => ({
+      '@type': 'Question',
+      name: f.pergunta,
+      acceptedAnswer: { '@type': 'Answer', text: f.resposta },
+    })),
+  };
+}
+
 /** Envolve vários nós num único @graph. */
 export function grafo(...nos: object[]) {
   return { '@context': 'https://schema.org', '@graph': nos };

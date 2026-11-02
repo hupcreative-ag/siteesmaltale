@@ -1,0 +1,319 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroInternal from '../components/sections/HeroInternal.astro';
+import IconArrow from '../components/icons/IconArrow.astro';
+import IconEncravada from '../components/icons/IconEncravada.astro';
+import IconCalo from '../components/icons/IconCalo.astro';
+import IconFissura from '../components/icons/IconFissura.astro';
+import IconInfeccao from '../components/icons/IconInfeccao.astro';
+import IconBolha from '../components/icons/IconBolha.astro';
+import { unidadesAtivas, listaCidades } from '../lib/unidades';
+import { breadcrumb, servico } from '../lib/schema';
+import podologia01 from '../assets/podologia/podologia-01.jpg';
+import podologia02 from '../assets/podologia/podologia-02.jpg';
+import encerramento from '../assets/podologia/podologia-encerramento.jpg';
+
+const titulo = `Podologia em ${listaCidades} | Esmaltale`;
+const descricao =
+  'Tratamento de unhas encravadas, calos, fissuras, micoses e bolhas com profissionais treinadas e instrumentos esterilizados em autoclave.';
+const intro =
+  'Os pés carregam o peso do dia todo e merecem o mesmo cuidado que qualquer outra parte do corpo. Podologia não é estética: é saúde. Na Esmaltale, o serviço é realizado por profissionais treinadas para identificar, tratar e prevenir problemas reais.';
+
+const TRATAMENTOS = [
+  {
+    nome: 'Unhas encravadas',
+    texto: 'Tratamento do encravamento sem cirurgia, com técnica adequada para cada grau de severidade e orientação para prevenção.',
+    Icone: IconEncravada,
+  },
+  {
+    nome: 'Calos e hiperqueratose',
+    texto: 'Remoção segura de calos, durezas e pele grossa nas regiões de pressão dos pés.',
+    Icone: IconCalo,
+  },
+  {
+    nome: 'Fissuras e rachaduras',
+    texto: 'Tratamento de fissuras nos calcanhares com hidratação profunda e remoção da pele seca acumulada.',
+    Icone: IconFissura,
+  },
+  {
+    nome: 'Infecções e micoses',
+    texto:
+      'Identificação e manejo inicial de micoses nas unhas e entre os dedos, com orientação sobre cuidados e encaminhamento quando necessário.',
+    Icone: IconInfeccao,
+  },
+  { nome: 'Bolhas e úlceras', texto: 'Cuidado com lesões nos pés com protocolo de higiene rigoroso.', Icone: IconBolha },
+];
+
+// "em Salvador ou em Lauro de Freitas", a partir das cidades das unidades ativas
+const cidadesOu = [...new Set(unidadesAtivas.map((u) => u.cidade))].join(' ou em ');
+
+const schema = [
+  breadcrumb([{ nome: 'Podologia', caminho: '/podologia/' }]),
+  servico('Podologia', intro, '/podologia/', {
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Tratamentos de podologia',
+      itemListElement: TRATAMENTOS.map((t) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: t.nome, description: t.texto },
+      })),
+    },
+  }),
+];
+---
+
+<BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
+  <HeroInternal titulo="Podologia" trilha="Podologia">
+    <p>{intro}</p>
+    <div class="hero-internal__acoes">
+      <button type="button" class="btn-seta" data-booking data-booking-origem="pagina_servico">
+        Agendar agora
+        <span class="btn-seta__circulo" aria-hidden="true"><IconArrow size={18} /></span>
+      </button>
+    </div>
+
+    <div slot="media" class="composicao">
+      <Picture
+        src={podologia02}
+        width={800}
+        height={960}
+        widths={[400, 640, 800]}
+        sizes="(min-width: 1024px) 380px, 62vw"
+        formats={['avif', 'webp']}
+        alt="Podóloga atendendo uma cliente em uma unidade Esmaltale"
+        class="composicao__principal"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <Picture
+        src={podologia01}
+        width={560}
+        height={560}
+        widths={[280, 420, 560]}
+        sizes="(min-width: 1024px) 240px, 40vw"
+        formats={['avif', 'webp']}
+        alt="Procedimento de podologia com lixa elétrica e luvas descartáveis"
+        class="composicao__detalhe"
+        loading="eager"
+      />
+      <svg class="composicao__brilhos" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
+        <path d="M12 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
+        <path d="M32 0c.9 5.4 2.9 7.5 8.1 8.4-5.2.9-7.2 3-8.1 8.4-.9-5.4-2.9-7.5-8.1-8.4 5.2-.9 7.2-3 8.1-8.4z" />
+        <path d="M52 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
+      </svg>
+    </div>
+  </HeroInternal>
+
+  <!-- O que tratamos -->
+  <section class="section section--white" aria-labelledby="tratamos-titulo">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2 class="section-title" id="tratamos-titulo">O que tratamos</h2>
+      </div>
+      <ul class="tratamentos" data-reveal-stagger="90">
+        {
+          TRATAMENTOS.map(({ nome, texto, Icone }) => (
+            <li class="tratamento icon-host" data-reveal>
+              <span class="tratamento__icone">
+                <Icone size={34} draw />
+              </span>
+              <h3 class="tratamento__nome">{nome}</h3>
+              <p class="tratamento__texto">{texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Por que fazer Podologia na Esmaltale -->
+  <section class="section section--neutral porque" aria-labelledby="porque-titulo">
+    <div class="container porque__grid">
+      <div class="porque__media" data-reveal>
+        <Picture
+          src={encerramento}
+          width={800}
+          height={1000}
+          widths={[400, 640, 800]}
+          sizes="(min-width: 1024px) 460px, 92vw"
+          formats={['avif', 'webp']}
+          alt="Podóloga tratando o calcanhar de uma cliente com lixa elétrica, em sala preparada para o procedimento"
+          class="porque__img"
+          loading="lazy"
+        />
+      </div>
+      <div class="porque__texto" data-reveal style="--reveal-delay: 120ms">
+        <h2 class="section-title" id="porque-titulo">Por que fazer Podologia na Esmaltale</h2>
+        <p>
+          A podologia exige um nível de cuidado que vai além do equipamento certo. Na Esmaltale, todos os instrumentos
+          utilizados nos procedimentos são esterilizados em autoclave antes de cada atendimento, seguindo os protocolos de
+          biossegurança que o serviço exige. O ambiente é preparado especificamente para a realização dos procedimentos,
+          com organização e higiene em cada etapa.
+        </p>
+        <p>
+          Para quem busca podologia em {cidadesOu}, a Esmaltale oferece um atendimento clínico realizado em espaço
+          adequado, por profissionais treinadas e com os padrões de segurança necessários para um procedimento feito com
+          responsabilidade.
+        </p>
+        <button type="button" class="btn-seta porque__cta" data-booking data-booking-origem="pagina_servico">
+          Agendar agora
+          <span class="btn-seta__circulo" aria-hidden="true"><IconArrow size={18} /></span>
+        </button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- Composição do hero ---------- */
+  .composicao {
+    position: relative;
+    max-width: 460px;
+    margin-inline: auto;
+    padding: 0 0 48px 18%;
+  }
+
+  .composicao :global(.composicao__principal) {
+    width: 100%;
+    aspect-ratio: 5 / 6;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px -30px rgba(54, 33, 58, 0.45);
+  }
+
+  .composicao :global(.composicao__detalhe) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 46%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 6px solid var(--color-white);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px -20px rgba(54, 33, 58, 0.45);
+  }
+
+  .composicao__brilhos {
+    position: absolute;
+    top: 8%;
+    left: 2%;
+    width: 52px;
+    fill: var(--color-purple);
+  }
+
+  /* ---------- O que tratamos ---------- */
+  .tratamentos {
+    display: grid;
+    gap: 12px;
+    list-style: none;
+  }
+
+  .tratamento {
+    padding: 28px 24px;
+    background-color: var(--color-neutral-bg);
+    border-radius: 22px;
+  }
+
+  .tratamento__icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+    color: var(--color-purple);
+    background-color: var(--color-white);
+    border-radius: 50%;
+  }
+
+  .tratamento__nome {
+    margin-bottom: 8px;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--color-purple);
+  }
+
+  .tratamento__texto {
+    font-size: 0.975rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 640px) {
+    .tratamentos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Desktop: 3 + 2 centralizados */
+  @media (min-width: 1024px) {
+    .tratamentos {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .tratamento {
+      grid-column: span 2;
+      padding: 32px 28px;
+    }
+
+    .tratamento:nth-child(4) {
+      grid-column: 2 / span 2;
+    }
+
+    .tratamento:nth-child(5) {
+      grid-column: 4 / span 2;
+    }
+  }
+
+  /* ---------- Por que ---------- */
+  .porque__grid {
+    display: grid;
+    gap: 36px;
+    align-items: center;
+  }
+
+  .porque__media {
+    overflow: hidden;
+    border-radius: 24px;
+  }
+
+  .porque__media :global(.porque__img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 60%;
+  }
+
+  .porque__texto .section-title {
+    margin-bottom: 20px;
+  }
+
+  .porque__texto p {
+    max-width: 58ch;
+    margin-bottom: 16px;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-text-muted);
+  }
+
+  .porque__cta {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 1023px) {
+    .porque__media :global(.porque__img) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .porque__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: 72px;
+    }
+  }
+</style>

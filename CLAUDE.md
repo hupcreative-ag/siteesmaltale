@@ -12,6 +12,8 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - `src/data/servicos.ts` — os 11 cards de serviço da Home. Sem `imagem`, o card usa o gradiente da marca com o ícone branco.
 - `src/data/galeria.ts`, `src/data/faq.ts` (rascunho aprovado pelo usuário vira texto oficial), `src/data/avaliacoes.ts` (SOMENTE avaliações reais do Google; nunca inventar).
 - Animação de entrada: atributo `data-reveal` (e `data-reveal-stagger` no pai) via `src/scripts/reveal.ts`.
+- `src/data/nailArt.ts` — os 4 serviços da página Nail Art. `src/lib/schema.ts` — JSON-LD (organização, unidades, serviços, FAQ, breadcrumb); toda página interna passa `schema` ao BaseLayout com pelo menos o breadcrumb.
+- Páginas internas usam `HeroInternal` (prop `trilha` obrigatória; slot `media` opcional) e, onde o briefing pede, `contactStrip` no BaseLayout.
 - `src/config/site.ts` — URL, ambiente, Instagram, horário, mensagens do WhatsApp, menu. `src/config/tracking.ts` — IDs GA4 e Pixel.
 - `PENDENCIAS.md` — tudo que falta da cliente. Atualizar sempre que algo entrar ou sair.
 

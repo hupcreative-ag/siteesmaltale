@@ -1,6 +1,6 @@
 # Pendências
 
-Atualizado em 2026-11-02 (Fase 2).
+Atualizado em 2026-11-02 (Fase 3).
 
 ## Dados das unidades
 
@@ -43,6 +43,8 @@ Carrossel da Home ligado no preview, só com o hero institucional e o banner Exp
 
 ## Textos
 
+- [ ] **Valores (página Sobre):** o documento traz só os títulos dos 6 valores. Hoje aparecem título e ícone. Se a cliente quiser uma frase curta para cada um, mandar o texto.
+
 - [ ] **FAQ da Home (rascunho para aprovação)** em `src/data/faq.ts`: 8 perguntas com respostas montadas só com fatos do documento e dos dados das unidades. Aprovar, cortar ou pedir outras perguntas.
 - [ ] **Avaliações do Google**: a seção mostra cards de [TEXTO PENDENTE]. Opções: (a) a cliente manda 6 a 9 avaliações reais (nome como aparece no Google, nota, texto, unidade e mês) e a nota geral com o total de avaliações; ou (b) chave da Google Places API e o ID de cada unidade no Google, para puxar as avaliações automaticamente no build. Nunca inventar avaliações.
 
@@ -58,6 +60,15 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
 | `lojas/shopping-barra` (definitiva) | 4:3 horizontal | 1600 × 1200 px | Igual às outras fotos de loja |
 
 ## Decisões registradas
+
+- Fase 3 (2026-11-02): páginas Sobre, Nail Art, Podologia, Lojas e 404 na identidade da Home (moldura clara, Gazpacho, tons do Beauty Ticket).
+  - Heros internos com trilha de navegação visível (Início / página) e o JSON-LD BreadcrumbList.
+  - Sobre: a primeira frase do texto institucional abre o hero; os demais parágrafos ficam em "Nossa história" (título de seção criado, conversa com o link "Conheça nossa história" da Home); o último parágrafo vira citação em destaque. Contagem e lista de unidades geradas ("Hoje são seis... Salvador Shopping, ..., Parque Shopping Bahia e Shopping Barra"). Corrigido "o padrão não muda: O ambiente" para "o ambiente".
+  - Nail Art: pílulas fixas com a seção ativa destacada, imagem que acompanha o texto no desktop, caixas de destaque e blocos locais com a lista de unidades gerada; galeria em polaroid no fim da página.
+  - Podologia: composição das duas fotos de abertura no hero; "O que tratamos" em 3 + 2 cards; texto "em Salvador ou em Lauro de Freitas" gerado pelas cidades das unidades.
+  - Lojas: atalhos para cada unidade no hero, cartão de horário com a nota dos shoppings, unidades agrupadas por cidade (títulos "Salvador" e "Lauro de Freitas") e ficha completa com CEP. Sem faixa de contato, como no briefing.
+  - 404: título "Esta página não está aqui" e caminhos para o início e para as unidades (microtexto nosso); fora dos buscadores.
+  - Faixa de contato e rodapé refeitos no estilo claro; rodapé ganhou coluna de horário.
 
 - Identidade visual (2026-11-02): paleta e elementos do kit de marca e do panfleto Beauty Ticket 2026 (roxo #632066, rosa #E15297, laranja #E5602E, rosa de fundo #EDB2BD, creme #F9F6EA). Tons fortes trocados por tons claros: hero e menu do celular em rosa claro com texto roxo, botões em roxo da marca.
 - Títulos em Gazpacho Bold (arquivos da cliente, convertidos para woff2 em `src/assets/fontes/`). Texto corrido continua em Poppins.

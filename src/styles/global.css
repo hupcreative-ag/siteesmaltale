@@ -406,6 +406,42 @@ h4 {
   border-radius: var(--radius-pill);
 }
 
+/* Pílula roxa com círculo branco e seta (mesmo desenho do botão dos cards de serviço) */
+.btn-seta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 52px;
+  padding: 0 6px 0 22px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-white);
+  background-color: var(--color-purple);
+  border-radius: var(--radius-pill);
+  transition: background-color 250ms var(--ease);
+}
+
+.btn-seta__circulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--color-purple);
+  background-color: var(--color-white);
+  border-radius: 50%;
+  transition: transform 500ms var(--ease-out-expo);
+}
+
+.btn-seta:hover {
+  background-color: var(--color-purple-hover);
+}
+
+.btn-seta:hover .btn-seta__circulo {
+  transform: rotate(-45deg);
+}
+
 /* Link com seta */
 .link-arrow {
   display: inline-flex;
