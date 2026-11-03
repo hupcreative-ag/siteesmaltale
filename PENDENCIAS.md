@@ -1,6 +1,6 @@
 # Pendências
 
-Atualizado em 2026-11-02 (Fase 3).
+Atualizado em 2026-11-03 (avaliações do Google e ajustes pós-Fase 3).
 
 ## Dados das unidades
 
@@ -16,6 +16,13 @@ Atualizado em 2026-11-02 (Fase 3).
 | Arquivo esperado | Onde aparece |
 |---|---|
 | `servicos/spa-das-maos` | Card SPA das Mãos (Home). A cliente não tem foto; o card fica no gradiente da marca até chegar uma. |
+| `podologia/tratamento-unhas-encravadas.jpg` | Podologia, "O que tratamos" (card grande). Imagem gerada com IA pelo usuário; o card mostra o gradiente e o nome do arquivo até chegar. |
+| `podologia/tratamento-calos.jpg` | Podologia, "O que tratamos". |
+| `podologia/tratamento-fissuras.jpg` | Podologia, "O que tratamos". |
+| `podologia/tratamento-micoses.jpg` | Podologia, "O que tratamos". |
+| `podologia/tratamento-bolhas.jpg` | Podologia, "O que tratamos". |
+
+As fotos dos tratamentos entram sozinhas: basta salvar em `src/assets/podologia/` com esses nomes (qualquer extensão jpg, png ou webp).
 
 Fotos da página Sobre recebidas em 2026-11-02 (originais em `conteudo/Imagens/Sobre/`). Distribuição feita por nós, confirmar:
 - `sobre-home` ← interior da loja com o logo (Sobre resumida, Home)
@@ -39,14 +46,15 @@ Carrossel da Home ligado no preview, só com o hero institucional e o banner Exp
 - [x] `robots.txt` por ambiente (preview bloqueado; produção liberada, com os robôs de IA citados) e `/llms.txt` gerado dos dados (marca, serviços, unidades, horário, FAQ, links).
 - [x] FAQ reescrito como as pessoas perguntam a buscadores e IAs (com marca e cidade) + pergunta "Quais serviços a Esmaltale oferece?". Textos alternativos das fotos com serviço e cidade.
 - [ ] **Perfil do Google (Google Meu Negócio) de cada unidade:** mandar o link de cada um. Entra no `sameAs` de cada BeautySalon e ajuda o Google e as IAs a ligarem o site às avaliações e ao mapa.
-- [ ] **Avaliações reais** (ver Textos): com elas, dá para marcar a nota no schema (AggregateRating) só quando vierem do próprio site; avaliações do Google não podem ser marcadas como do site.
+- [x] Avaliações reais do Google na Home (2026-11-03). Ficam fora do schema: avaliações do Google não podem ser marcadas como AggregateRating do site.
 
 ## Textos
 
 - [ ] **Valores (página Sobre):** o documento traz só os títulos dos 6 valores. Hoje aparecem título e ícone. Se a cliente quiser uma frase curta para cada um, mandar o texto.
 
 - [ ] **FAQ da Home (rascunho para aprovação)** em `src/data/faq.ts`: 8 perguntas com respostas montadas só com fatos do documento e dos dados das unidades. Aprovar, cortar ou pedir outras perguntas.
-- [ ] **Avaliações do Google**: a seção mostra cards de [TEXTO PENDENTE]. Opções: (a) a cliente manda 6 a 9 avaliações reais (nome como aparece no Google, nota, texto, unidade e mês) e a nota geral com o total de avaliações; ou (b) chave da Google Places API e o ID de cada unidade no Google, para puxar as avaliações automaticamente no build. Nunca inventar avaliações.
+- [x] **Avaliações do Google** (2026-11-03): 8 avaliações reais copiadas dos prints enviados, em carrossel com setas na Home, todos com a mesma altura; texto longo abre pela setinha no canto do card. Texto como a cliente escreveu (só espaçamento corrigido). Unidade aparece só quando a cliente cita (Paralela e Parque Shopping). A avaliação da foto das unhas azuis ficou fora por não ter o nome da cliente.
+- [ ] **Nota geral e total de avaliações no Google** (e o link do perfil): com eles aparece o resumo com a nota, as estrelas, o total de avaliações e o link "Ver no Google" acima do carrossel. Mandar também o nome da cliente da avaliação das unhas azuis, se quiser incluí-la.
 
 - [x] Títulos (h1) dos heros aprovados: "Sobre a Esmaltale", "Podologia" e "Nossas unidades" (2026-11-02).
 
@@ -69,6 +77,14 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
   - Lojas: atalhos para cada unidade no hero, cartão de horário com a nota dos shoppings, unidades agrupadas por cidade (títulos "Salvador" e "Lauro de Freitas") e ficha completa com CEP. Sem faixa de contato, como no briefing.
   - 404: título "Esta página não está aqui" e caminhos para o início e para as unidades (microtexto nosso); fora dos buscadores.
   - Faixa de contato e rodapé refeitos no estilo claro; rodapé ganhou coluna de horário.
+
+- Ajustes pós-Fase 3 (2026-11-02):
+  - Gradiente da marca recriado em CSS a partir da imagem enviada pelo usuário (`conteudo/Imagens/Marca/gradiente-rosa.webp`, só referência): manchas de cor sempre em movimento e granulado fixo por cima, sem arquivo para baixar. Usado nos heros internos, CTA final, 404 e menu do celular.
+  - Sobre: hero com grid de fotos das lojas em movimento (como na referência hormn.com/weight-loss); a foto provisória do tapume do Shopping Barra fica fora (`fotoProvisoria` em `src/data/unidades.ts`). Missão e Visão em cartões roxo e rosa com a foto como textura. Valores em pílulas. CTA final com a foto da cliente (`sobre/cliente-maos.webp`, enviada pelo usuário) saindo da moldura.
+  - Nail Art: hero sem os dois parágrafos de apresentação (pedido do usuário), com brilhos piscando.
+  - Podologia: brilhos piscando ao redor das fotos do hero; "O que tratamos" em cards com foto de fundo (bento no desktop, carrossel no celular), sem ícones.
+  - Brilhos piscando também em "Nossas unidades" (Home).
+  - Espaço entre seções reduzido no site todo (56 / 80 / 96 px).
 
 - Identidade visual (2026-11-02): paleta e elementos do kit de marca e do panfleto Beauty Ticket 2026 (roxo #632066, rosa #E15297, laranja #E5602E, rosa de fundo #EDB2BD, creme #F9F6EA). Tons fortes trocados por tons claros: hero e menu do celular em rosa claro com texto roxo, botões em roxo da marca.
 - Títulos em Gazpacho Bold (arquivos da cliente, convertidos para woff2 em `src/assets/fontes/`). Texto corrido continua em Poppins.

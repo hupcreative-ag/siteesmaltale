@@ -1,0 +1,181 @@
+---
+/**
+ * Grid de fotos das lojas em movimento contínuo (hero da Sobre).
+ * Desktop: 3 colunas rolando na vertical, a do meio no sentido contrário.
+ * Celular e tablet: 2 faixas rolando na horizontal.
+ * As fotos vêm das unidades (src/data/unidades.ts), mais as fotos extras de algumas lojas.
+ * Cada trilha repete a lista uma vez (cópia escondida dos leitores de tela) para o loop não ter emenda.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { unidadesAtivas } from '../../lib/unidades';
+import salvadorShopping02 from '../../assets/lojas/salvador-shopping-02.jpg';
+import shoppingDaBahia02 from '../../assets/lojas/shopping-da-bahia-02.jpg';
+import parqueShoppingBahia02 from '../../assets/lojas/parque-shopping-bahia-02.jpg';
+
+interface Foto {
+  src: ImageMetadata;
+  nome: string;
+  posicao?: string;
+}
+
+const EXTRAS: Record<string, ImageMetadata> = {
+  'salvador-shopping': salvadorShopping02,
+  'shopping-da-bahia': shoppingDaBahia02,
+  'parque-shopping-bahia': parqueShoppingBahia02,
+};
+
+const principais: Foto[] = unidadesAtivas
+  .filter((u) => u.foto && !u.fotoProvisoria)
+  .map((u) => ({ src: u.foto!, nome: u.nome, posicao: u.fotoPosicao }));
+const extras: Foto[] = unidadesAtivas
+  .filter((u) => EXTRAS[u.slug])
+  .map((u) => ({ src: EXTRAS[u.slug], nome: u.nome }));
+const fotos = [...principais, ...extras];
+
+// Distribui as fotos em 3 colunas alternando, para lojas iguais não ficarem lado a lado
+const colunas: Foto[][] = [[], [], []];
+fotos.forEach((f, n) => colunas[n % 3].push(f));
+---
+
+<div class="mosaico" aria-label="Fotos das unidades Esmaltale" role="group">
+  {
+    colunas.map((coluna, c) => (
+      <div class:list={['mosaico__coluna', `mosaico__coluna--${c + 1}`]}>
+        <div class="mosaico__trilho">
+          {[0, 1].map((copia) =>
+            coluna.map((f) => (
+              <div class="mosaico__item" aria-hidden={copia ? 'true' : undefined}>
+                <Image
+                  src={f.src}
+                  widths={[240, 360, 480]}
+                  sizes="(min-width: 1024px) 190px, 200px"
+                  alt={copia ? '' : `Unidade Esmaltale ${f.nome}`}
+                  style={f.posicao ? `object-position: ${f.posicao}` : undefined}
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+            )),
+          )}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .mosaico {
+    --mosaico-gap: 10px;
+    display: grid;
+    gap: var(--mosaico-gap);
+    padding-bottom: var(--mosaico-gap);
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .mosaico__coluna--3 {
+    display: none;
+  }
+
+  /* Margem em vez de gap: metade exata da trilha = uma volta completa, sem emenda */
+  .mosaico__trilho {
+    display: flex;
+    width: max-content;
+    animation: mosaicoX 48s linear infinite;
+    will-change: transform;
+  }
+
+  .mosaico__coluna--2 .mosaico__trilho {
+    animation-direction: reverse;
+    animation-duration: 56s;
+  }
+
+  .mosaico__item {
+    flex: 0 0 auto;
+    width: 200px;
+    margin-right: var(--mosaico-gap);
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 16px 32px -24px rgba(54, 33, 58, 0.5);
+  }
+
+  .mosaico__item :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .mosaico:hover .mosaico__trilho {
+    animation-play-state: paused;
+  }
+
+  @keyframes mosaicoX {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes mosaicoY {
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mosaico {
+      --mosaico-gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      height: 100%;
+      min-height: 520px;
+      padding-bottom: 0;
+      mask-image: linear-gradient(180deg, transparent, #000 14%, #000 88%, transparent);
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 88%, transparent);
+    }
+
+    .mosaico__coluna {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mosaico__coluna--3 {
+      display: block;
+    }
+
+    .mosaico__trilho {
+      position: absolute;
+      inset: 0 0 auto;
+      flex-direction: column;
+      width: auto;
+      animation-name: mosaicoY;
+      animation-duration: 40s;
+    }
+
+    .mosaico__coluna--2 .mosaico__trilho {
+      animation-duration: 48s;
+    }
+
+    .mosaico__coluna--3 .mosaico__trilho {
+      animation-duration: 44s;
+      animation-delay: -12s;
+    }
+
+    .mosaico__item {
+      width: auto;
+      margin: 0 0 var(--mosaico-gap);
+      border-radius: 20px;
+    }
+
+    .mosaico__item :global(img) {
+      aspect-ratio: 3 / 4;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mosaico__trilho {
+      animation: none;
+    }
+  }
+</style>

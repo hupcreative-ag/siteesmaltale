@@ -157,7 +157,7 @@ h4 {
 }
 
 .section {
-  padding-block: 64px;
+  padding-block: 56px;
 }
 
 .section--white {
@@ -170,13 +170,13 @@ h4 {
 
 @media (min-width: 768px) {
   .section {
-    padding-block: 96px;
+    padding-block: 80px;
   }
 }
 
 @media (min-width: 1200px) {
   .section {
-    padding-block: 112px;
+    padding-block: 96px;
   }
 }
 
@@ -246,22 +246,63 @@ h4 {
   }
 }
 
-/* ---------- Gradiente animado da marca ---------- */
-@keyframes heroGradientLoop {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* ---------- Gradiente da marca ----------
+   Recriado em CSS a partir da imagem de referência (nenhum arquivo para baixar).
+   Camada: <div class="gradiente-marca" aria-hidden="true"></div> dentro de um pai com
+   position e isolation. ::before = manchas de cor em radial, sempre em movimento (só transform, GPU);
+   ::after = granulado (ruído SVG embutido), parado por cima de tudo. */
+.gradiente-marca {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: #F5ADC9;
+  background-image: var(--gradient-marca);
 }
 
-@keyframes ctaSparkleBlink {
-  0%, 100% { opacity: 0; transform: scale(0.5); }
-  50% { opacity: 0.8; transform: scale(1.4); }
+/* Manchas: rosa-lilás claro (esquerda), pêssego (canto superior direito),
+   coral (direita, embaixo) e rosa (embaixo, à esquerda). A rotação faz cada uma andar para um lado. */
+.gradiente-marca::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(26% 32% at 32% 42%, rgba(249, 196, 224, 0.95), rgba(249, 196, 224, 0) 100%),
+    radial-gradient(18% 18% at 74% 30%, rgba(250, 210, 216, 0.9), rgba(250, 210, 216, 0) 100%),
+    radial-gradient(26% 28% at 68% 64%, rgba(240, 128, 154, 0.85), rgba(240, 128, 154, 0) 100%),
+    radial-gradient(20% 20% at 36% 72%, rgba(246, 176, 196, 0.85), rgba(246, 176, 196, 0) 100%);
+  animation: gradienteMarca 18s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
+/* Granulado fixo: não acompanha o movimento */
+.gradiente-marca::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.7;
+}
+
+@keyframes gradienteMarca {
+  0% { transform: translate3d(-7%, -5%, 0) rotate(0deg) scale(1); }
+  35% { transform: translate3d(5%, 3%, 0) rotate(14deg) scale(1.06); }
+  70% { transform: translate3d(-3%, 7%, 0) rotate(-10deg) scale(0.97); }
+  100% { transform: translate3d(6%, -6%, 0) rotate(8deg) scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradiente-marca::before {
+    animation: none;
+  }
+}
+
+/* Versão estática (fundos de cards sem foto) */
 .brand-gradient {
-  background: var(--gradient-hero);
-  background-size: 400% 400%;
-  animation: heroGradientLoop 15s ease infinite;
+  background-color: #F5ADC9;
+  background-image: var(--gradient-marca);
 }
 
 /* ---------- Botões ---------- */

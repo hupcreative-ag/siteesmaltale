@@ -1,8 +1,9 @@
 ---
 /**
- * Hero das páginas internas: a mesma moldura arredondada e o gradiente claro animado da Home,
- * mais baixo. Trilha de navegação visível (o JSON-LD BreadcrumbList vem da página).
+ * Hero das páginas internas: a mesma moldura arredondada da Home, com o gradiente da marca
+ * sempre em movimento. Trilha de navegação visível (o JSON-LD BreadcrumbList vem da página).
  * Com o slot "media", vira duas colunas no desktop (texto à esquerda, imagens à direita).
+ * Slot "decor": camada decorativa sobre o gradiente (ex.: brilhos).
  */
 interface Props {
   /** Etiqueta curta acima do título (só onde o briefing pede, ex.: "Nail Art"). */
@@ -10,15 +11,23 @@ interface Props {
   titulo: string;
   /** Nome da página na trilha (Início / nome). */
   trilha: string;
+  /** A mídia encosta na borda inferior da moldura (ex.: grid de fotos em movimento). */
+  midiaSangrada?: boolean;
 }
 
-const { tag, titulo, trilha } = Astro.props;
+const { tag, titulo, trilha, midiaSangrada = false } = Astro.props;
 const comMidia = Astro.slots.has('media');
 ---
 
 <section class="hero-internal" data-hero>
-  <div class:list={['hero-internal__frame', { 'hero-internal__frame--midia': comMidia }]}>
-    <div class="hero-internal__gradiente" aria-hidden="true"></div>
+  <div
+    class:list={[
+      'hero-internal__frame',
+      { 'hero-internal__frame--midia': comMidia, 'hero-internal__frame--sangrada': comMidia && midiaSangrada },
+    ]}
+  >
+    <div class="gradiente-marca" aria-hidden="true"></div>
+    <slot name="decor" />
     <div class="container hero-internal__grid">
       <div class="hero-internal__texto">
         <nav class="hero-internal__trilha" aria-label="Trilha de navegação">
@@ -58,29 +67,17 @@ const comMidia = Astro.slots.has('media');
     border-radius: 18px;
   }
 
-  /* Mesmo gradiente da Home, deslizando por transform (GPU) */
-  .hero-internal__gradiente {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 300%;
-    height: 300%;
-    background: linear-gradient(-45deg, #f6dde5, #efc0cf, #f9e9ee, #ecb6c8, #f6dde5, #efc0cf);
-    animation: heroInternoDeriva 22s ease-in-out infinite alternate;
-    will-change: transform;
-  }
-
-  @keyframes heroInternoDeriva {
-    to {
-      transform: translate3d(-66.6%, -66.6%, 0);
-    }
-  }
-
   .hero-internal__grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: 40px;
     align-items: center;
+  }
+
+  /* min-width 0: trilhas largas (ex.: grid de fotos) não alargam a coluna */
+  .hero-internal__midia {
+    min-width: 0;
   }
 
   .hero-internal__texto {
@@ -96,12 +93,12 @@ const comMidia = Astro.slots.has('media');
     gap: 8px;
     margin-bottom: 20px;
     font-size: 0.8125rem;
-    color: #6b4a6e;
+    color: var(--color-purple-dark);
   }
 
   .hero-internal__trilha a {
     text-decoration: underline;
-    text-decoration-color: rgba(99, 32, 102, 0.3);
+    text-decoration-color: rgba(54, 33, 58, 0.35);
     text-underline-offset: 3px;
     transition: color 250ms var(--ease);
   }
@@ -117,7 +114,7 @@ const comMidia = Astro.slots.has('media');
     font-style: italic;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-pink-dark);
+    color: var(--color-purple-dark);
   }
 
   .hero-internal__title {
@@ -132,7 +129,7 @@ const comMidia = Astro.slots.has('media');
     margin: 20px auto 0;
     font-size: 1.0625rem;
     line-height: 1.7;
-    color: #5b3d60;
+    color: var(--color-purple-dark);
   }
 
   .hero-internal__texto :global(.hero-internal__acoes) {
@@ -181,10 +178,34 @@ const comMidia = Astro.slots.has('media');
     .hero-internal__frame--midia .hero-internal__texto :global(.hero-internal__acoes) {
       justify-content: flex-start;
     }
+
+    /* Mídia sangrada: ocupa a altura toda abaixo do header e encosta na borda inferior */
+    .hero-internal__frame--sangrada {
+      padding-bottom: 0;
+    }
+
+    .hero-internal__frame--sangrada .hero-internal__grid {
+      align-items: stretch;
+    }
+
+    .hero-internal__frame--sangrada .hero-internal__texto {
+      align-self: center;
+      padding-bottom: 88px;
+    }
+  }
+
+  /* Celular e tablet: a mídia sangrada encosta nas bordas da moldura */
+  @media (max-width: 1023px) {
+    .hero-internal__frame--sangrada {
+      padding-bottom: 0;
+    }
+
+    .hero-internal__frame--sangrada .hero-internal__midia {
+      margin-inline: calc(-1 * var(--gutter));
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-internal__gradiente,
     .hero-internal__texto {
       animation: none;
     }

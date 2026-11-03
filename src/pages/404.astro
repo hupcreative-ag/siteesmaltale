@@ -11,6 +11,7 @@ import IconArrow from '../components/icons/IconArrow.astro';
 >
   <section class="nao-encontrada" data-hero>
     <div class="nao-encontrada__frame">
+      <div class="gradiente-marca" aria-hidden="true"></div>
       <div class="nao-encontrada__conteudo">
         <svg class="nao-encontrada__brilhos" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
           <path d="M12 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
@@ -44,7 +45,9 @@ import IconArrow from '../components/icons/IconArrow.astro';
     justify-content: center;
     min-height: max(520px, calc(100svh - var(--preview-h) - 2 * var(--frame-inset)));
     padding: calc(var(--header-h) + 24px) var(--gutter) 64px;
-    background: linear-gradient(135deg, #f6dde5 0%, #fbf0f3 50%, #efc0cf 100%);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     border-radius: 18px;
   }
 
@@ -64,7 +67,7 @@ import IconArrow from '../components/icons/IconArrow.astro';
     font-size: clamp(5rem, 16vw, 9rem);
     font-weight: 700;
     line-height: 1;
-    color: rgba(99, 32, 102, 0.16);
+    color: rgba(99, 32, 102, 0.2);
   }
 
   .nao-encontrada__titulo {
@@ -79,7 +82,7 @@ import IconArrow from '../components/icons/IconArrow.astro';
     margin-top: 16px;
     font-size: 1.0625rem;
     line-height: 1.65;
-    color: #5b3d60;
+    color: var(--color-purple-dark);
   }
 
   .nao-encontrada__acoes {

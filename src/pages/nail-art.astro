@@ -6,6 +6,7 @@ import Destaque from '../components/sections/Destaque.astro';
 import BlocoLocal from '../components/sections/BlocoLocal.astro';
 import Galeria from '../components/home/Galeria.astro';
 import IconArrow from '../components/icons/IconArrow.astro';
+import Brilhos from '../components/sections/Brilhos.astro';
 import { SERVICOS_NAIL_ART } from '../data/nailArt';
 import { SERVICOS } from '../data/servicos';
 import { listaCidades } from '../lib/unidades';
@@ -26,14 +27,18 @@ const schema = [
 
 <BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
   <HeroInternal tag="Nail Art" titulo="Unhas do seu jeito, do formato ao acabamento." trilha="Nail Art">
-    <p>
-      Unha curta que você quer longa, unha fraca que vive quebrando, esmalte que não dura até sexta. Para cada caso existe
-      uma técnica, e todas estão aqui: alongamento em fibra de vidro, unhas postiças, banho de cristal e banho de gel.
-    </p>
-    <p>
-      Qualquer uma delas pode receber nail art no final. Um detalhe em uma unha só ou um desenho em todas, você decide com
-      a profissional na hora do atendimento.
-    </p>
+    <Brilhos
+      slot="decor"
+      itens={[
+        { x: '9%', y: '34%', t: 22, d: 0 },
+        { x: '16%', y: '70%', t: 12, d: 1.1 },
+        { x: '24%', y: '22%', t: 10, d: 2.3 },
+        { x: '78%', y: '26%', t: 14, d: 0.5 },
+        { x: '88%', y: '58%', t: 24, d: 1.7 },
+        { x: '72%', y: '80%', t: 10, d: 2.9 },
+        { x: '50%', y: '90%', t: 9, d: 3.4 },
+      ]}
+    />
   </HeroInternal>
 
   <!-- Navegação em pílulas, fixa no topo ao rolar -->
@@ -199,7 +204,7 @@ const schema = [
 
   .servico-na__media :global(.servico-na__img) {
     width: 100%;
-    aspect-ratio: 5 / 4;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
   }
 
@@ -261,7 +266,7 @@ const schema = [
     }
 
     .servico-na__media :global(.servico-na__img) {
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 1 / 1;
     }
 
     .servico-na--inverso .servico-na__media {

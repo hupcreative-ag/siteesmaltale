@@ -29,8 +29,13 @@ import IconWhatsapp from '../icons/IconWhatsapp.astro';
 
 <style>
   .contact-strip {
-    padding-block: 0 56px;
+    padding-block: 40px 56px;
     background-color: var(--color-white);
+  }
+
+  /* Depois do CTA final (fundo branco) o respiro já existe */
+  :global(main:has(> .cta-final-wrap:last-child)) + .contact-strip {
+    padding-top: 0;
   }
 
   .contact-strip__cartao {
@@ -76,7 +81,7 @@ import IconWhatsapp from '../icons/IconWhatsapp.astro';
 
   @media (min-width: 768px) {
     .contact-strip {
-      padding-bottom: 88px;
+      padding-block: 56px 88px;
     }
 
     .contact-strip__cartao {

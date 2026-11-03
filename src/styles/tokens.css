@@ -16,6 +16,7 @@
 
   /* Gradientes */
   --gradient-hero: linear-gradient(-45deg, #F3D2DD, #ECB4C6, #F7E2E8, #E7A9BF);
+  --gradient-marca: linear-gradient(120deg, #F8BEDB 0%, #F6B4D2 34%, #F49AB6 68%, #F2879F 100%);
   --gradient-cta: linear-gradient(135deg, #632066, #8A3477);
   --gradient-pink: linear-gradient(135deg, #E15297, #C2437F);
 

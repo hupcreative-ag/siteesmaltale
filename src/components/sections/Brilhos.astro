@@ -1,0 +1,85 @@
+---
+/**
+ * Brilhos de 4 pontas que aparecem e somem (piscando), espalhados sobre o elemento pai.
+ * O pai precisa de position: relative. Posições em % do pai; t = tamanho em px; d = atraso em s.
+ */
+interface Brilho {
+  x: string;
+  y: string;
+  t: number;
+  d?: number;
+}
+
+interface Props {
+  itens: Brilho[];
+  cor?: 'roxo' | 'rosa' | 'branco';
+  class?: string;
+}
+
+const { itens, cor = 'roxo', class: classe } = Astro.props;
+const ESTRELA = 'M12 2c.8 5.2 2.8 7.2 8 8-5.2.8-7.2 2.8-8 8-.8-5.2-2.8-7.2-8-8 5.2-.8 7.2-2.8 8-8z';
+---
+
+<div class:list={['brilhos', `brilhos--${cor}`, classe]} aria-hidden="true">
+  {
+    itens.map((b, n) => (
+      <svg
+        class="brilhos__item"
+        viewBox="0 0 24 24"
+        focusable="false"
+        style={`left:${b.x}; top:${b.y}; width:${b.t}px; height:${b.t}px; animation-delay:${b.d ?? n * 0.7}s; animation-duration:${3.6 + (n % 3) * 0.8}s`}
+      >
+        <path d={ESTRELA} />
+      </svg>
+    ))
+  }
+</div>
+
+<style>
+  .brilhos {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .brilhos__item {
+    position: absolute;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+    animation: brilhoPisca 4.2s ease-in-out infinite;
+  }
+
+  .brilhos--roxo {
+    fill: var(--color-purple);
+  }
+
+  .brilhos--rosa {
+    fill: var(--color-pink);
+  }
+
+  .brilhos--branco {
+    fill: var(--color-white);
+  }
+
+  @keyframes brilhoPisca {
+    0%,
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+    }
+    45%,
+    55% {
+      opacity: 0.85;
+      transform: translate(-50%, -50%) scale(1) rotate(20deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brilhos__item {
+      animation: none;
+      opacity: 0.5;
+      transform: translate(-50%, -50%);
+    }
+  }
+</style>

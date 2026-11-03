@@ -3,12 +3,15 @@ import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroInternal from '../components/sections/HeroInternal.astro';
 import CtaFinal from '../components/sections/CtaFinal.astro';
+import MosaicoLojas from '../components/sections/MosaicoLojas.astro';
+import Brilhos from '../components/sections/Brilhos.astro';
 import { SITE } from '../config/site';
 import { totalUnidades, porExtenso, listaNomes } from '../lib/unidades';
 import { breadcrumb, pagina } from '../lib/schema';
 import sobrePagina from '../assets/sobre/sobre-pagina.jpg';
 import missao from '../assets/sobre/missao.jpg';
 import visao from '../assets/sobre/visao.jpg';
+import clienteMaos from '../assets/sobre/cliente-maos.webp';
 import IconCuidado from '../components/icons/IconCuidado.astro';
 import IconExcelencia from '../components/icons/IconExcelencia.astro';
 import IconHigiene from '../components/icons/IconHigiene.astro';
@@ -32,8 +35,9 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
 ---
 
 <BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
-  <HeroInternal titulo="Sobre a Esmaltale" trilha="Sobre">
+  <HeroInternal titulo="Sobre a Esmaltale" trilha="Sobre" midiaSangrada>
     <p>A Esmaltale nasceu em Salvador em 2017 com uma convicção: cuidar das unhas é cuidar de si.</p>
+    <MosaicoLojas slot="media" />
   </HeroInternal>
 
   <!-- Texto institucional -->
@@ -85,7 +89,7 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
     </div>
   </section>
 
-  <!-- Missão e Visão -->
+  <!-- Missão e Visão: a foto é só fundo, o texto é o protagonista -->
   <section class="section section--neutral" aria-label="Missão e visão">
     <div class="container mv" data-reveal-stagger="140">
       <article class="mv__cartao" data-reveal>
@@ -94,10 +98,10 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
           width={900}
           height={600}
           widths={[480, 720, 900]}
-          sizes="(min-width: 900px) 580px, 92vw"
+          sizes="(min-width: 900px) 600px, 92vw"
           formats={['avif', 'webp']}
-          alt="Cliente sorrindo durante a manicure em uma unidade Esmaltale"
-          class="mv__img"
+          alt=""
+          class="mv__fundo"
           style="object-position: center 25%"
           loading="lazy"
         />
@@ -115,10 +119,10 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
           width={900}
           height={600}
           widths={[480, 720, 900]}
-          sizes="(min-width: 900px) 580px, 92vw"
+          sizes="(min-width: 900px) 600px, 92vw"
           formats={['avif', 'webp']}
-          alt="Cliente rindo durante o atendimento em uma unidade Esmaltale"
-          class="mv__img"
+          alt=""
+          class="mv__fundo"
           style="object-position: center 28%"
           loading="lazy"
         />
@@ -133,20 +137,29 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
     </div>
   </section>
 
-  <!-- Valores -->
-  <section class="section section--white" aria-labelledby="valores-titulo">
+  <!-- Valores: pílulas que fluem no tamanho de cada nome -->
+  <section class="section section--white valores-secao" aria-labelledby="valores-titulo">
+    <Brilhos
+      itens={[
+        { x: '12%', y: '22%', t: 16, d: 0 },
+        { x: '86%', y: '18%', t: 12, d: 1.4 },
+        { x: '8%', y: '78%', t: 10, d: 2.2 },
+        { x: '92%', y: '74%', t: 18, d: 0.8 },
+      ]}
+      cor="rosa"
+    />
     <div class="container">
-      <div class="section-head" data-reveal>
-        <h2 class="section-title" id="valores-titulo">Valores</h2>
-      </div>
+      <h2 class="section-title valores-secao__titulo" id="valores-titulo" data-reveal>Valores</h2>
       <ul class="valores" data-reveal-stagger="80">
         {
           VALORES.map(({ nome, Icone }) => (
-            <li class="valor icon-host" data-reveal>
-              <span class="valor__icone">
-                <Icone size={34} draw />
-              </span>
-              <h3 class="valor__nome">{nome}</h3>
+            <li class="valor icon-host" data-reveal data-valor>
+              <div class="valor__pilula">
+                <span class="valor__icone">
+                  <Icone size={24} draw />
+                </span>
+                <h3 class="valor__nome">{nome}</h3>
+              </div>
             </li>
           ))
         }
@@ -154,8 +167,34 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
     </div>
   </section>
 
-  <CtaFinal titulo={SITE.assinatura} origem="cta_final" />
+  <CtaFinal
+    titulo={SITE.assinatura}
+    origem="cta_final"
+    imagem={clienteMaos}
+    imagemAlt="Cliente sorrindo com a mão no rosto, unhas curtas em esmalte rosa-claro"
+  />
 </BaseLayout>
+
+<script>
+  // Valores: a pílula é "atraída" pelo mouse e o ícone acompanha um pouco mais (paralaxe)
+  const mouseFino = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (mouseFino && !reduzir) {
+    document.querySelectorAll<HTMLElement>('[data-valor]').forEach((valor) => {
+      valor.addEventListener('pointermove', (e) => {
+        const r = valor.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        valor.style.setProperty('--mx', x.toFixed(3));
+        valor.style.setProperty('--my', y.toFixed(3));
+      });
+      valor.addEventListener('pointerleave', () => {
+        valor.style.setProperty('--mx', '0');
+        valor.style.setProperty('--my', '0');
+      });
+    });
+  }
+</script>
 
 <style>
   /* ---------- História ---------- */
@@ -189,6 +228,37 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
     color: var(--color-text-muted);
   }
 
+  /* Celular: foto mais baixa, se dissolvendo no branco da metade para baixo, com o texto começando por cima */
+  @media (max-width: 899px) {
+    .historia__grid {
+      gap: 0;
+    }
+
+    /* Cantos de baixo retos: a foto some no branco sem deixar contorno */
+    .historia__media {
+      position: relative;
+      border-radius: 24px 24px 0 0;
+    }
+
+    .historia__media::after {
+      content: '';
+      position: absolute;
+      inset: 0 0 -1px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.85) 76%, #fff 92%);
+      pointer-events: none;
+    }
+
+    .historia__media :global(.historia__img) {
+      aspect-ratio: 4 / 3.4;
+      object-position: 70% 30%;
+    }
+
+    .historia__texto {
+      position: relative;
+      margin-top: -60px;
+    }
+  }
+
   @media (min-width: 900px) {
     .historia__grid {
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
@@ -198,7 +268,7 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
 
   /* ---------- Citação ---------- */
   .citacao {
-    padding-block: 64px;
+    padding-block: 56px;
     background-color: var(--color-creme);
     border-block: 1px solid var(--color-line);
   }
@@ -227,27 +297,43 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
 
   @media (min-width: 768px) {
     .citacao {
-      padding-block: 96px;
+      padding-block: 80px;
     }
   }
 
   /* ---------- Missão e Visão ---------- */
   .mv {
     display: grid;
-    gap: 20px;
+    gap: 16px;
   }
 
+  /* Cartão em cor sólida; a foto entra como textura em tom único (luminosity), só de apoio */
   .mv__cartao {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 340px;
     overflow: hidden;
-    background-color: var(--color-white);
-    border: 1px solid rgba(99, 32, 102, 0.08);
+    color: var(--color-white);
+    background-color: var(--color-purple);
     border-radius: 24px;
   }
 
-  .mv__cartao :global(.mv__img) {
+  .mv__cartao + .mv__cartao {
+    background-color: var(--color-pink-dark);
+  }
+
+  .mv__cartao :global(.mv__fundo) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     width: 100%;
-    aspect-ratio: 3 / 2;
+    height: 100%;
     object-fit: cover;
+    opacity: 0.22;
+    mix-blend-mode: luminosity;
+    transition: transform 1.2s var(--ease-out-expo), opacity 600ms var(--ease);
   }
 
   .mv__corpo {
@@ -256,77 +342,192 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
 
   .mv__titulo {
     margin-bottom: 10px;
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    line-height: 1.1;
-    color: var(--color-purple);
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    line-height: 1.05;
   }
 
   .mv__corpo p {
+    max-width: 46ch;
     font-size: 1.0625rem;
     line-height: 1.7;
-    color: var(--color-text-muted);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mv__cartao:hover :global(.mv__fundo) {
+      opacity: 0.3;
+      transform: scale(1.04);
+    }
   }
 
   @media (min-width: 900px) {
     .mv {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px;
+      gap: 24px;
+    }
+
+    .mv__cartao {
+      min-height: 400px;
     }
 
     .mv__corpo {
-      padding: 32px 36px 40px;
+      padding: 40px 44px 44px;
     }
   }
 
   /* ---------- Valores ---------- */
+  .valores-secao {
+    position: relative;
+    isolation: isolate;
+    padding-bottom: 16px;
+  }
+
+  .valores-secao :global(.brilhos) {
+    z-index: -1;
+  }
+
+  .valores-secao__titulo {
+    margin-bottom: 36px;
+    text-align: center;
+  }
+
   .valores {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 980px;
+    margin-inline: auto;
     list-style: none;
   }
 
+  /* O li cuida da entrada (reveal); a pílula flutua sozinha e é puxada pelo mouse (--mx/--my, de -0.5 a 0.5) */
   .valor {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    min-width: 0;
-    padding: 20px 16px;
+    --mx: 0;
+    --my: 0;
+  }
+
+  .valor__pilula {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 18px 6px 6px;
     background-color: var(--color-neutral-bg);
-    border-radius: 20px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    translate: calc(var(--mx) * 14px) calc(var(--my) * 10px);
+    animation: valorFlutua 5.6s ease-in-out infinite;
+    transition:
+      translate 500ms var(--ease-out-expo),
+      background-color 300ms var(--ease),
+      border-color 300ms var(--ease),
+      box-shadow 400ms var(--ease);
+  }
+
+  .valor:nth-child(2) .valor__pilula {
+    animation-duration: 6.4s;
+    animation-delay: -1.8s;
+  }
+
+  .valor:nth-child(3) .valor__pilula {
+    animation-duration: 5.2s;
+    animation-delay: -3.1s;
+  }
+
+  .valor:nth-child(4) .valor__pilula {
+    animation-duration: 6.8s;
+    animation-delay: -0.9s;
+  }
+
+  .valor:nth-child(5) .valor__pilula {
+    animation-duration: 5.9s;
+    animation-delay: -4.2s;
+  }
+
+  .valor:nth-child(6) .valor__pilula {
+    animation-duration: 6.1s;
+    animation-delay: -2.5s;
+  }
+
+  .valor:nth-child(3n + 2) .valor__pilula {
+    background-color: var(--color-creme);
+  }
+
+  .valor:nth-child(3n) .valor__pilula {
+    background-color: var(--color-blush);
+  }
+
+  @keyframes valorFlutua {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    30% {
+      transform: translateY(-5px) rotate(-0.6deg);
+    }
+    70% {
+      transform: translateY(3px) rotate(0.5deg);
+    }
   }
 
   .valor__icone {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 64px;
-    height: 64px;
-    color: var(--color-purple);
-    background-color: var(--color-white);
+    width: 44px;
+    height: 44px;
+    color: var(--color-white);
+    background-color: var(--color-purple);
     border-radius: 50%;
+    translate: calc(var(--mx) * 10px) calc(var(--my) * 8px);
+    transition:
+      translate 500ms var(--ease-out-expo),
+      transform 500ms var(--ease-out-expo),
+      background-color 300ms var(--ease);
   }
 
   .valor__nome {
-    min-width: 0;
     font-family: var(--font-display);
-    font-size: 1.05rem;
+    font-size: 0.98rem;
     font-weight: 700;
     line-height: 1.2;
     color: var(--color-purple);
-    overflow-wrap: break-word;
-    hyphens: auto;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .valor:hover .valor__pilula {
+      background-color: var(--color-white);
+      border-color: rgba(225, 82, 151, 0.45);
+      box-shadow: 0 14px 32px -18px rgba(99, 32, 102, 0.45);
+      animation-play-state: paused;
+    }
+
+    .valor:hover .valor__icone {
+      background-color: var(--color-pink-dark);
+      transform: rotate(-12deg) scale(1.08);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .valor__pilula {
+      animation: none;
+    }
   }
 
   @media (min-width: 768px) {
     .valores {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      gap: 14px;
     }
 
-    .valor {
-      padding: 32px 28px;
+    .valor__pilula {
+      gap: 16px;
+      padding: 10px 30px 10px 10px;
+    }
+
+    .valor__icone {
+      width: 56px;
+      height: 56px;
     }
 
     .valor__nome {

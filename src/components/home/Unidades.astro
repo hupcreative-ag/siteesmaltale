@@ -5,9 +5,20 @@
  */
 import { unidadesAtivas } from '../../lib/unidades';
 import UnitCard from '../unidades/UnitCard.astro';
+import Brilhos from '../sections/Brilhos.astro';
 ---
 
-<section class="section section--neutral" id="unidades" aria-labelledby="unidades-titulo">
+<section class="section section--neutral unidades" id="unidades" aria-labelledby="unidades-titulo">
+  <Brilhos
+    itens={[
+      { x: '4%', y: '9%', t: 18, d: 0 },
+      { x: '46%', y: '5%', t: 10, d: 1.6 },
+      { x: '96%', y: '12%', t: 14, d: 0.8 },
+      { x: '2%', y: '56%', t: 10, d: 2.4 },
+      { x: '98%', y: '62%', t: 20, d: 1.2 },
+      { x: '50%', y: '97%', t: 12, d: 3 },
+    ]}
+  />
   <div class="container">
     <div class="section-head" data-reveal>
       <h2 class="section-title" id="unidades-titulo">Nossas unidades</h2>
@@ -27,6 +38,15 @@ import UnitCard from '../unidades/UnitCard.astro';
 </section>
 
 <style>
+  .unidades {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .unidades :global(.brilhos) {
+    z-index: -1;
+  }
+
   .unidades__lista {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

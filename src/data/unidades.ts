@@ -39,6 +39,8 @@ export interface Unidade {
   foto?: ImageMetadata;
   /** object-position da foto nos cards. */
   fotoPosicao?: string;
+  /** Foto provisória (ex.: tapume): aparece no card, mas fica fora do grid de fotos da Sobre. */
+  fotoProvisoria?: boolean;
 }
 
 export const UNIDADES: Unidade[] = [
@@ -59,6 +61,7 @@ export const UNIDADES: Unidade[] = [
     trinksUrl: 'https://www.trinks.com/esmaltale-shopping-barra',
     foto: shoppingBarra,
     fotoPosicao: 'center 34%',
+    fotoProvisoria: true,
   },
   {
     slug: 'salvador-shopping',

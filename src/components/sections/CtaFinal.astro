@@ -1,102 +1,120 @@
 ---
 /**
- * CTA final no estilo da referência: moldura clara com brilhos e título com "blur text"
- * (as letras surgem do desfoque quando o bloco entra na tela), e botão que abre o modal.
+ * CTA final: moldura com o gradiente da marca em movimento, brilhos piscando e título com
+ * "blur text" (as letras surgem do desfoque quando o bloco entra na tela).
+ * Com `imagem` (recorte em PNG/WebP com transparência), vira duas colunas no desktop e a
+ * pessoa "sai" da moldura por cima.
  */
+import type { ImageMetadata } from 'astro';
+import { Picture } from 'astro:assets';
+import Brilhos from './Brilhos.astro';
+
 interface Props {
   titulo: string;
   origem: string;
   rotulo?: string;
+  imagem?: ImageMetadata;
+  imagemAlt?: string;
 }
 
-const { titulo, origem, rotulo = 'Agende agora' } = Astro.props;
+const { titulo, origem, rotulo = 'Agende agora', imagem, imagemAlt = '' } = Astro.props;
 const palavras = titulo.split(' ');
 let i = 0;
 
-// Brilhos de 4 pontas espalhados (posição, tamanho e atraso)
-const BRILHOS = [
-  { x: '8%', y: '22%', t: 18, d: 0 },
-  { x: '16%', y: '72%', t: 12, d: 1.2 },
-  { x: '86%', y: '18%', t: 14, d: 0.6 },
-  { x: '92%', y: '64%', t: 20, d: 1.8 },
-  { x: '74%', y: '86%', t: 10, d: 2.4 },
-  { x: '28%', y: '12%', t: 9, d: 3 },
-];
-const ESTRELA = 'M12 2c.8 5.2 2.8 7.2 8 8-5.2.8-7.2 2.8-8 8-.8-5.2-2.8-7.2-8-8 5.2-.8 7.2-2.8 8-8z';
+const BRILHOS = imagem
+  ? [
+      { x: '6%', y: '20%', t: 18, d: 0 },
+      { x: '12%', y: '82%', t: 12, d: 1.2 },
+      { x: '44%', y: '14%', t: 10, d: 2.6 },
+      { x: '56%', y: '72%', t: 16, d: 0.6 },
+      { x: '92%', y: '30%', t: 14, d: 1.8 },
+      { x: '88%', y: '80%', t: 10, d: 3.1 },
+    ]
+  : [
+      { x: '8%', y: '22%', t: 18, d: 0 },
+      { x: '16%', y: '72%', t: 12, d: 1.2 },
+      { x: '86%', y: '18%', t: 14, d: 0.6 },
+      { x: '92%', y: '64%', t: 20, d: 1.8 },
+      { x: '74%', y: '86%', t: 10, d: 2.4 },
+      { x: '28%', y: '12%', t: 9, d: 3 },
+    ];
 ---
 
 <section class="section section--white cta-final-wrap">
   <div class="container">
-    <div class="cta-final" data-reveal="fade">
+    <div class:list={['cta-final', { 'cta-final--imagem': imagem }]} data-reveal="fade">
+      <div class="cta-final__fundo">
+        <div class="gradiente-marca" aria-hidden="true"></div>
+        <Brilhos itens={BRILHOS} />
+      </div>
+
+      <div class="cta-final__texto">
+        <h2 class="cta-final__titulo">
+          <span class="sr-only">{titulo}</span>
+          <span aria-hidden="true">
+            {
+              palavras.map((p, n) => (
+                <Fragment>
+                  {n > 0 && ' '}
+                  <span class="cta-final__palavra">
+                    {[...p].map((c) => (
+                      <span class="cta-final__letra" style={`--i:${i++}`}>
+                        {c}
+                      </span>
+                    ))}
+                  </span>
+                </Fragment>
+              ))
+            }
+          </span>
+        </h2>
+        <button type="button" class="specular-button specular-button--dark cta-final__botao" data-booking data-booking-origem={origem}>
+          {rotulo}
+        </button>
+      </div>
+
       {
-        BRILHOS.map((b) => (
-          <svg
-            class="cta-final__brilho"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            style={`left:${b.x}; top:${b.y}; width:${b.t}px; height:${b.t}px; animation-delay:${b.d}s`}
-          >
-            <path d={ESTRELA} />
-          </svg>
-        ))
+        imagem && (
+          <Picture
+            src={imagem}
+            widths={[320, 480, 640, 910]}
+            sizes="(min-width: 1024px) 420px, 300px"
+            formats={['avif', 'webp']}
+            fallbackFormat="webp"
+            alt={imagemAlt}
+            class="cta-final__pessoa"
+            loading="lazy"
+          />
+        )
       }
-      <h2 class="cta-final__titulo">
-        <span class="sr-only">{titulo}</span>
-        <span aria-hidden="true">
-          {
-            palavras.map((p, n) => (
-              <Fragment>
-                {n > 0 && ' '}
-                <span class="cta-final__palavra">
-                  {[...p].map((c) => (
-                    <span class="cta-final__letra" style={`--i:${i++}`}>
-                      {c}
-                    </span>
-                  ))}
-                </span>
-              </Fragment>
-            ))
-          }
-        </span>
-      </h2>
-      <button type="button" class="specular-button specular-button--dark cta-final__botao" data-booking data-booking-origem={origem}>
-        {rotulo}
-      </button>
     </div>
   </div>
 </section>
 
 <style>
   .cta-final-wrap {
-    padding-block: 32px 72px;
+    padding-block: 32px 56px;
   }
 
   .cta-final {
     position: relative;
-    overflow: hidden;
+    isolation: isolate;
     padding: 72px 24px;
     text-align: center;
-    background: linear-gradient(135deg, #f6dde5 0%, #fbf0f3 48%, #efc0cf 100%);
+  }
+
+  /* O fundo é recortado; a pessoa pode passar da borda de cima */
+  .cta-final__fundo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    isolation: isolate;
     border-radius: 24px;
   }
 
-  .cta-final__brilho {
-    position: absolute;
-    fill: var(--color-purple);
-    opacity: 0;
-    animation: ctaBrilho 4.2s ease-in-out infinite;
-  }
-
-  @keyframes ctaBrilho {
-    0%,
-    100% {
-      opacity: 0;
-      transform: scale(0.6) rotate(0deg);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1) rotate(20deg);
-    }
+  .cta-final__texto {
+    position: relative;
   }
 
   .cta-final__titulo {
@@ -115,6 +133,70 @@ const ESTRELA = 'M12 2c.8 5.2 2.8 7.2 8 8-5.2.8-7.2 2.8-8 8-.8-5.2-2.8-7.2-8-8 5
 
   .cta-final__letra {
     display: inline-block;
+  }
+
+  /* ---------- Com imagem ---------- */
+  .cta-final--imagem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  .cta-final--imagem :global(.cta-final__pessoa) {
+    display: block;
+    width: min(300px, 78%);
+    height: auto;
+    margin-top: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .cta-final-wrap {
+      padding-block: 40px 80px;
+    }
+
+    .cta-final {
+      padding: 104px 48px;
+    }
+
+    .cta-final__fundo {
+      border-radius: 30px;
+    }
+  }
+
+  /* Desktop: texto à esquerda, pessoa à direita saindo pela borda de cima */
+  @media (min-width: 1024px) {
+    /* Espaço só para a cabeça que passa da moldura */
+    .cta-final-wrap:has(.cta-final--imagem) {
+      padding-top: 100px;
+    }
+
+    .cta-final--imagem {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 48px;
+      min-height: 420px;
+      padding: 72px 0 0 80px;
+      text-align: left;
+    }
+
+    .cta-final--imagem .cta-final__texto {
+      flex: 1 1 0;
+      padding-bottom: 72px;
+    }
+
+    .cta-final--imagem .cta-final__titulo {
+      max-width: 14ch;
+      margin-inline: 0;
+    }
+
+    .cta-final--imagem :global(.cta-final__pessoa) {
+      flex: 0 0 auto;
+      align-self: flex-end;
+      width: 420px;
+      margin: -136px 56px 0 0;
+    }
   }
 
   /* Blur text: só anima com JS e movimento permitido */
@@ -141,23 +223,7 @@ const ESTRELA = 'M12 2c.8 5.2 2.8 7.2 8 8-5.2.8-7.2 2.8-8 8-.8-5.2-2.8-7.2-8-8 5
     }
   }
 
-  @media (min-width: 768px) {
-    .cta-final-wrap {
-      padding-block: 48px 112px;
-    }
-
-    .cta-final {
-      padding: 104px 48px;
-      border-radius: 30px;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .cta-final__brilho {
-      animation: none;
-      opacity: 0.5;
-    }
-
     html.js .cta-final .cta-final__letra {
       opacity: 1;
       filter: none;

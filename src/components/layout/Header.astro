@@ -48,6 +48,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
 </header>
 
 <div class="mobile-menu" id="mobile-menu" hidden data-mobile-menu>
+  <div class="gradiente-marca mobile-menu__fundo" aria-hidden="true"></div>
   <div class="mobile-menu__top container">
     <img src={logoCor.src} width="140" height="43" alt={SITE.nome} class="logo" />
     <button type="button" class="mobile-menu__close" aria-label="Fechar menu" data-menu-close>
@@ -221,10 +222,14 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     display: flex;
     flex-direction: column;
     color: var(--color-purple);
-    background: var(--gradient-hero);
-    background-size: 400% 400%;
-    animation: heroGradientLoop 15s ease infinite, menuIn 300ms var(--ease);
+    isolation: isolate;
+    animation: menuIn 300ms var(--ease);
     overflow-y: auto;
+  }
+
+  /* O gradiente fica preso à tela enquanto o menu rola */
+  .mobile-menu__fundo {
+    position: fixed;
   }
 
   .mobile-menu[hidden] {

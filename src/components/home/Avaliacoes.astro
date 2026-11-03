@@ -3,9 +3,11 @@
  * Avaliações do Google. Lê src/data/avaliacoes.ts, que só pode ter avaliações reais.
  * Sem avaliações cadastradas, mostra três cards de [TEXTO PENDENTE] (ver PENDENCIAS.md).
  * Sem nota geral, esconde o resumo.
+ * Carrossel em rolagem nativa com scroll-snap; as setas só deslocam a rolagem (mesmo padrão de Serviços).
  */
 import { AVALIACOES, RESUMO_GOOGLE } from '../../data/avaliacoes';
 import { UNIDADES } from '../../data/unidades';
+import IconArrow from '../icons/IconArrow.astro';
 
 const nomeUnidade = (slug?: string) => UNIDADES.find((u) => u.slug === slug)?.nome;
 const pendente = AVALIACOES.length === 0;
@@ -24,7 +26,8 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
 
 <section class="section section--neutral avaliacoes" aria-labelledby="avaliacoes-titulo">
   <div class="container">
-    <div class="section-head" data-reveal>
+    <div class="avaliacoes__topo" data-reveal>
+    <div class="section-head avaliacoes__head">
       <h2 class="section-title" id="avaliacoes-titulo">O que nossas clientes falam</h2>
       {
         notaGeral ? (
@@ -51,8 +54,21 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
         )
       }
     </div>
+    {
+      !pendente && (
+        <div class="avaliacoes__setas">
+          <button type="button" class="avaliacoes__seta avaliacoes__seta--anterior" aria-label="Avaliações anteriores" data-avaliacoes-seta="-1">
+            <IconArrow size={20} />
+          </button>
+          <button type="button" class="avaliacoes__seta" aria-label="Próximas avaliações" data-avaliacoes-seta="1">
+            <IconArrow size={20} />
+          </button>
+        </div>
+      )
+    }
+    </div>
 
-    <ul class="avaliacoes__lista" data-reveal-stagger="90">
+    <ul class="avaliacoes__lista" data-avaliacoes-trilho data-reveal-stagger="90">
       {
         cards.map((a) => (
           <li class="avaliacao" data-reveal>
@@ -64,7 +80,7 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
               ))}
             </p>
             <blockquote class="avaliacao__texto">
-              <p>{a.texto}</p>
+              <p data-avaliacao-texto>{a.texto}</p>
             </blockquote>
             <p class="avaliacao__autor">
               <span>{a.autor}</span>
@@ -72,6 +88,11 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
                 <span class="avaliacao__meta">{[nomeUnidade(a.unidade), a.data].filter(Boolean).join(' · ')}</span>
               )}
             </p>
+            <button type="button" class="avaliacao__expandir" aria-expanded="false" aria-label="Ler avaliação completa" hidden data-avaliacao-expandir>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
           </li>
         ))
       }
@@ -79,18 +100,129 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
   </div>
 </section>
 
+<script>
+  // Texto longo: os cards têm a mesma altura (texto cortado em 6 linhas) e a setinha do canto abre o resto
+  const cardsTexto = [...document.querySelectorAll<HTMLElement>('[data-avaliacao-texto]')];
+  const medirTextos = () =>
+    cardsTexto.forEach((texto) => {
+      const botao = texto.closest('.avaliacao')?.querySelector<HTMLButtonElement>('[data-avaliacao-expandir]');
+      if (!botao || botao.getAttribute('aria-expanded') === 'true') return;
+      botao.hidden = texto.scrollHeight <= texto.clientHeight + 2;
+    });
+  document.querySelectorAll<HTMLButtonElement>('[data-avaliacao-expandir]').forEach((botao) =>
+    botao.addEventListener('click', () => {
+      const aberto = botao.getAttribute('aria-expanded') !== 'true';
+      botao.setAttribute('aria-expanded', String(aberto));
+      botao.setAttribute('aria-label', aberto ? 'Recolher avaliação' : 'Ler avaliação completa');
+      botao.closest('.avaliacao')?.classList.toggle('avaliacao--aberta', aberto);
+    }),
+  );
+  medirTextos();
+  window.addEventListener('resize', medirTextos);
+  document.fonts?.ready.then(medirTextos);
+
+  // Setas: deslocam a rolagem em um card e se desativam nas pontas
+  const trilho = document.querySelector<HTMLElement>('[data-avaliacoes-trilho]');
+  const setas = document.querySelectorAll<HTMLButtonElement>('[data-avaliacoes-seta]');
+  if (trilho && setas.length) {
+    const atualizar = () => {
+      const fim = trilho.scrollWidth - trilho.clientWidth - 4;
+      setas.forEach((s) => {
+        s.disabled = Number(s.dataset.avaliacoesSeta) < 0 ? trilho.scrollLeft <= 4 : trilho.scrollLeft >= fim;
+      });
+    };
+    setas.forEach((s) =>
+      s.addEventListener('click', () => {
+        const item = trilho.querySelector<HTMLElement>('.avaliacao');
+        const gap = parseFloat(getComputedStyle(trilho).columnGap) || 16;
+        const passo = item ? item.offsetWidth + gap : trilho.clientWidth * 0.8;
+        trilho.scrollBy({ left: passo * Number(s.dataset.avaliacoesSeta), behavior: 'smooth' });
+      }),
+    );
+    trilho.addEventListener('scroll', atualizar, { passive: true });
+    window.addEventListener('resize', atualizar);
+    atualizar();
+  }
+</script>
+
 <style>
-  .avaliacoes__lista {
-    display: grid;
-    gap: 16px;
-    list-style: none;
+  .avaliacoes__topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px 24px;
+    margin-bottom: 32px;
   }
 
+  /* O cabeçalho mantém as duas colunas do .section-head (título | descrição) e as setas ficam na ponta */
+  .avaliacoes__head {
+    flex: 1 1 100%;
+    margin-bottom: 0;
+  }
+
+  .avaliacoes__setas {
+    display: flex;
+    gap: 8px;
+  }
+
+  .avaliacoes__seta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: var(--color-purple);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    transition: background-color 250ms var(--ease), color 250ms var(--ease), border-color 250ms var(--ease), opacity 250ms var(--ease);
+  }
+
+  .avaliacoes__seta:hover:not(:disabled) {
+    color: var(--color-white);
+    background-color: var(--color-purple);
+    border-color: var(--color-purple);
+  }
+
+  .avaliacoes__seta:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .avaliacoes__seta--anterior :global(.icon) {
+    transform: rotate(180deg);
+  }
+
+  /* Carrossel com encaixe: 1 card e um pedaço do próximo no celular, 2 no tablet, 3 no desktop */
+  .avaliacoes__lista {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    align-items: start;
+    gap: 12px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 8px;
+    overflow-x: auto;
+    list-style: none;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .avaliacoes__lista::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Mesma altura em todos: texto com 6 linhas fixas e autor com espaço para 2 linhas.
+     align-items: start no trilho, então só o card aberto cresce. */
   .avaliacao {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 28px;
+    scroll-snap-align: start;
     background-color: var(--color-white);
     border: 1px solid rgba(107, 31, 124, 0.08);
     border-radius: 20px;
@@ -112,16 +244,69 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
   }
 
   .avaliacao__texto p {
+    display: -webkit-box;
+    height: calc(6 * 1.65em);
+    overflow: hidden;
     font-size: 1.02rem;
     line-height: 1.65;
     color: var(--color-purple-dark);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+  }
+
+  .avaliacao--aberta .avaliacao__texto p {
+    display: block;
+    height: auto;
+    -webkit-line-clamp: unset;
+  }
+
+  .avaliacao__expandir {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--color-purple);
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    transition: background-color 250ms var(--ease), color 250ms var(--ease), border-color 250ms var(--ease);
+  }
+
+  .avaliacao__expandir[hidden] {
+    display: none;
+  }
+
+  .avaliacao__expandir svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 300ms var(--ease-out-expo);
+  }
+
+  .avaliacao__expandir:hover {
+    color: var(--color-white);
+    background-color: var(--color-purple);
+    border-color: var(--color-purple);
+  }
+
+  .avaliacao--aberta .avaliacao__expandir svg {
+    transform: rotate(180deg);
   }
 
   .avaliacao__autor {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-height: 3.2em;
     margin-top: auto;
+    padding-right: 48px;
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-purple);
@@ -157,9 +342,28 @@ const ESTRELA = 'M12 2.8l2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.13 6.38 20.1l1.
   }
 
   @media (min-width: 768px) {
+    .avaliacoes__topo {
+      flex-wrap: nowrap;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .avaliacoes__head {
+      flex-basis: auto;
+    }
+
     .avaliacoes__lista {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-columns: calc((100% - 20px) / 2);
       gap: 20px;
+      margin-inline: 0;
+      padding-inline: 0;
+      scroll-padding-inline: 0;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .avaliacoes__lista {
+      grid-auto-columns: calc((100% - 40px) / 3);
     }
   }
 </style>

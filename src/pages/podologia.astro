@@ -2,12 +2,9 @@
 import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroInternal from '../components/sections/HeroInternal.astro';
+import type { ImageMetadata } from 'astro';
 import IconArrow from '../components/icons/IconArrow.astro';
-import IconEncravada from '../components/icons/IconEncravada.astro';
-import IconCalo from '../components/icons/IconCalo.astro';
-import IconFissura from '../components/icons/IconFissura.astro';
-import IconInfeccao from '../components/icons/IconInfeccao.astro';
-import IconBolha from '../components/icons/IconBolha.astro';
+import Brilhos from '../components/sections/Brilhos.astro';
 import { unidadesAtivas, listaCidades } from '../lib/unidades';
 import { breadcrumb, servico } from '../lib/schema';
 import podologia01 from '../assets/podologia/podologia-01.jpg';
@@ -20,30 +17,47 @@ const descricao =
 const intro =
   'Os pés carregam o peso do dia todo e merecem o mesmo cuidado que qualquer outra parte do corpo. Podologia não é estética: é saúde. Na Esmaltale, o serviço é realizado por profissionais treinadas para identificar, tratar e prevenir problemas reais.';
 
+// Fotos ilustrativas dos tratamentos: basta salvar em src/assets/podologia/ com o nome de `arquivo`.
+// Enquanto a foto não existe, o card usa o gradiente da marca e mostra o nome esperado.
+const FOTOS = import.meta.glob<{ default: ImageMetadata }>('../assets/podologia/tratamento-*.{jpg,jpeg,png,webp}', {
+  eager: true,
+});
+const foto = (arquivo: string) =>
+  Object.entries(FOTOS).find(([caminho]) => caminho.split('/').pop()?.replace(/\.\w+$/, '') === arquivo)?.[1].default;
+
 const TRATAMENTOS = [
   {
     nome: 'Unhas encravadas',
     texto: 'Tratamento do encravamento sem cirurgia, com técnica adequada para cada grau de severidade e orientação para prevenção.',
-    Icone: IconEncravada,
+    arquivo: 'tratamento-unhas-encravadas',
+    alt: 'Podóloga de luvas tratando a lateral da unha do dedão de uma cliente',
   },
   {
     nome: 'Calos e hiperqueratose',
     texto: 'Remoção segura de calos, durezas e pele grossa nas regiões de pressão dos pés.',
-    Icone: IconCalo,
+    arquivo: 'tratamento-calos',
+    alt: 'Podóloga de luvas lixando a sola do pé de uma cliente',
   },
   {
     nome: 'Fissuras e rachaduras',
     texto: 'Tratamento de fissuras nos calcanhares com hidratação profunda e remoção da pele seca acumulada.',
-    Icone: IconFissura,
+    arquivo: 'tratamento-fissuras',
+    alt: 'Mãos de luvas aplicando creme hidratante no calcanhar de uma cliente',
   },
   {
     nome: 'Infecções e micoses',
     texto:
       'Identificação e manejo inicial de micoses nas unhas e entre os dedos, com orientação sobre cuidados e encaminhamento quando necessário.',
-    Icone: IconInfeccao,
+    arquivo: 'tratamento-micoses',
+    alt: 'Podóloga de luvas examinando as unhas do pé de uma cliente com lupa',
   },
-  { nome: 'Bolhas e úlceras', texto: 'Cuidado com lesões nos pés com protocolo de higiene rigoroso.', Icone: IconBolha },
-];
+  {
+    nome: 'Bolhas e úlceras',
+    texto: 'Cuidado com lesões nos pés com protocolo de higiene rigoroso.',
+    arquivo: 'tratamento-bolhas',
+    alt: 'Instrumentos esterilizados e gaze sobre bandeja ao lado do pé de uma cliente',
+  },
+].map((t) => ({ ...t, imagem: foto(t.arquivo) }));
 
 // "em Salvador ou em Lauro de Freitas", a partir das cidades das unidades ativas
 const cidadesOu = [...new Set(unidadesAtivas.map((u) => u.cidade))].join(' ou em ');
@@ -65,7 +79,7 @@ const schema = [
 
 <BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
   <HeroInternal titulo="Podologia" trilha="Podologia">
-    <p>{intro}</p>
+    <p class="podologia-intro">{intro}</p>
     <div class="hero-internal__acoes">
       <button type="button" class="btn-seta" data-booking data-booking-origem="pagina_servico">
         Agendar agora
@@ -97,15 +111,21 @@ const schema = [
         class="composicao__detalhe"
         loading="eager"
       />
-      <svg class="composicao__brilhos" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
-        <path d="M12 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
-        <path d="M32 0c.9 5.4 2.9 7.5 8.1 8.4-5.2.9-7.2 3-8.1 8.4-.9-5.4-2.9-7.5-8.1-8.4 5.2-.9 7.2-3 8.1-8.4z" />
-        <path d="M52 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
-      </svg>
+      <Brilhos
+        class="composicao__brilhos"
+        itens={[
+          { x: '10%', y: '8%', t: 20, d: 0 },
+          { x: '98%', y: '4%', t: 12, d: 1.3 },
+          { x: '102%', y: '44%', t: 18, d: 2.1 },
+          { x: '4%', y: '52%', t: 10, d: 0.7 },
+          { x: '62%', y: '99%', t: 14, d: 2.8 },
+          { x: '94%', y: '86%', t: 9, d: 3.5 },
+        ]}
+      />
     </div>
   </HeroInternal>
 
-  <!-- O que tratamos -->
+  <!-- O que tratamos: cards com foto de fundo (bento no desktop, carrossel no celular) -->
   <section class="section section--white" aria-labelledby="tratamos-titulo">
     <div class="container">
       <div class="section-head" data-reveal>
@@ -113,13 +133,30 @@ const schema = [
       </div>
       <ul class="tratamentos" data-reveal-stagger="90">
         {
-          TRATAMENTOS.map(({ nome, texto, Icone }) => (
-            <li class="tratamento icon-host" data-reveal>
-              <span class="tratamento__icone">
-                <Icone size={34} draw />
-              </span>
-              <h3 class="tratamento__nome">{nome}</h3>
-              <p class="tratamento__texto">{texto}</p>
+          TRATAMENTOS.map(({ nome, texto, arquivo, alt, imagem }, n) => (
+            <li class="tratamento" data-reveal>
+              {imagem ? (
+                <Picture
+                  src={imagem}
+                  widths={[480, 720, 960]}
+                  sizes="(min-width: 1024px) 420px, 84vw"
+                  formats={['avif', 'webp']}
+                  alt={alt}
+                  class="tratamento__img"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="tratamento__img tratamento__vazio brand-gradient">
+                  <span class="img-placeholder tratamento__arquivo">{arquivo}.jpg</span>
+                </div>
+              )}
+              <div class="tratamento__corpo">
+                <span class="tratamento__num" aria-hidden="true">
+                  {String(n + 1).padStart(2, '0')}
+                </span>
+                <h3 class="tratamento__nome">{nome}</h3>
+                <p class="tratamento__texto">{texto}</p>
+              </div>
             </li>
           ))
         }
@@ -194,78 +231,161 @@ const schema = [
     box-shadow: 0 20px 40px -20px rgba(54, 33, 58, 0.45);
   }
 
-  .composicao__brilhos {
-    position: absolute;
-    top: 8%;
-    left: 2%;
-    width: 52px;
-    fill: var(--color-purple);
+  .composicao :global(.composicao__brilhos) {
+    z-index: 1;
   }
 
   /* ---------- O que tratamos ---------- */
   .tratamentos {
     display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 84%;
     gap: 12px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 8px;
+    overflow-x: auto;
     list-style: none;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .tratamentos::-webkit-scrollbar {
+    display: none;
   }
 
   .tratamento {
-    padding: 28px 24px;
-    background-color: var(--color-neutral-bg);
-    border-radius: 22px;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 420px;
+    overflow: hidden;
+    border-radius: 24px;
+    scroll-snap-align: start;
   }
 
-  .tratamento__icone {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 20px;
-    color: var(--color-purple);
-    background-color: var(--color-white);
-    border-radius: 50%;
+  .tratamento :global(.tratamento__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out-expo);
+  }
+
+  /* Véu escuro de baixo para cima: o texto branco fica legível sobre qualquer foto */
+  .tratamento::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      0deg,
+      rgba(54, 33, 58, 0.88) 0%,
+      rgba(54, 33, 58, 0.6) 42%,
+      rgba(54, 33, 58, 0) 78%
+    );
+  }
+
+  .tratamento__arquivo {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 6px 10px;
+    font-size: 0.7rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+  }
+
+  .tratamento__corpo {
+    padding: 24px 24px 26px;
+    color: var(--color-white);
+  }
+
+  .tratamento__num {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    background-color: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
 
   .tratamento__nome {
     margin-bottom: 8px;
     font-family: var(--font-display);
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    line-height: 1.15;
-    color: var(--color-purple);
+    line-height: 1.1;
   }
 
   .tratamento__texto {
-    font-size: 0.975rem;
-    line-height: 1.65;
-    color: var(--color-text-muted);
+    max-width: 44ch;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.88);
   }
 
-  @media (min-width: 640px) {
-    .tratamentos {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (hover: hover) and (pointer: fine) {
+    .tratamento:hover :global(.tratamento__img) {
+      transform: scale(1.05);
     }
   }
 
-  /* Desktop: 3 + 2 centralizados */
-  @media (min-width: 1024px) {
+  /* Tablet: 2 colunas, o primeiro card na largura toda */
+  @media (min-width: 640px) {
     .tratamentos {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+      margin-inline: 0;
+      padding: 0;
+      overflow: visible;
     }
 
     .tratamento {
+      min-height: 340px;
+    }
+
+    .tratamento:first-child {
       grid-column: span 2;
-      padding: 32px 28px;
+      min-height: 400px;
+    }
+  }
+
+  /* Desktop: bento, o primeiro card alto à esquerda e os outros quatro em 2 x 2 */
+  @media (min-width: 1024px) {
+    .tratamentos {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-rows: 320px;
     }
 
-    .tratamento:nth-child(4) {
-      grid-column: 2 / span 2;
+    .tratamento,
+    .tratamento:first-child {
+      min-height: 0;
     }
 
-    .tratamento:nth-child(5) {
-      grid-column: 4 / span 2;
+    .tratamento:first-child {
+      grid-column: auto;
+      grid-row: span 2;
+    }
+
+    .tratamento:first-child .tratamento__corpo {
+      padding: 36px;
+    }
+
+    .tratamento:first-child .tratamento__nome {
+      font-size: 2.25rem;
     }
   }
 
@@ -314,6 +434,26 @@ const schema = [
     .porque__grid {
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
       gap: 72px;
+    }
+  }
+
+  /* No celular o hero fica só com o título (maior) e as fotos ocupando a largura toda; texto e botão continuam no desktop.
+     No fim do arquivo e com o seletor do hero na frente para vencer os estilos do HeroInternal. */
+  @media (max-width: 767px) {
+    :global(.hero-internal__frame .hero-internal__texto) .podologia-intro,
+    :global(.hero-internal__frame .hero-internal__texto) .hero-internal__acoes {
+      display: none;
+    }
+
+    :global(.hero-internal__frame .hero-internal__texto .hero-internal__title) {
+      font-size: 3.1rem;
+    }
+
+    /* Recuo menor à esquerda: a foto principal cresce e a de detalhe continua sobreposta */
+    .composicao {
+      max-width: none;
+      margin-top: -8px;
+      padding-left: 10%;
     }
   }
 </style>
