@@ -1,5 +1,5 @@
 // Garante que PUBLIC_SITE_ENV está definida antes do build.
-// Na Hostinger ela vem das variáveis de ambiente do app; localmente, do .env.local.
+// No deploy ela vem do scripts/deploy.mjs; localmente, do .env.local.
 import { existsSync, readFileSync } from 'node:fs';
 
 const VALORES = ['preview', 'production'];
@@ -20,8 +20,7 @@ if (!valor || !VALORES.includes(valor)) {
   ✖ PUBLIC_SITE_ENV ${valor ? `inválida ("${valor}")` : 'não definida'}.
 
     Valores aceitos: ${VALORES.join(' ou ')}.
-    • Na Hostinger: defina a variável de ambiente no app (preview no novo.esmaltale.com.br,
-      production no esmaltale.com.br).
+    • Para publicar: use npm run deploy:preview ou npm run deploy:producao
     • Localmente: crie um arquivo .env.local com a linha PUBLIC_SITE_ENV=preview
 `);
   process.exit(1);

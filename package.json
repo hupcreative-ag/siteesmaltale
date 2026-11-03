@@ -9,9 +9,12 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/check-env.mjs && astro build",
+    "build": "node scripts/check-env.mjs && astro build && node scripts/htaccess.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy:preview": "node scripts/deploy.mjs preview",
+    "deploy:producao": "node scripts/deploy.mjs producao",
+    "deploy:voltar": "node scripts/deploy.mjs voltar"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

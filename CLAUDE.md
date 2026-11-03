@@ -42,15 +42,20 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 
 ## Ambientes
 
-- `PUBLIC_SITE_ENV` = `preview` ou `production`. O build falha sem ela (`scripts/check-env.mjs`). Local: `.env.local` com `PUBLIC_SITE_ENV=preview` (fora do git).
+- `PUBLIC_SITE_ENV` = `preview` ou `production`. O build falha sem ela (`scripts/check-env.mjs`). Local: `.env.local` com `PUBLIC_SITE_ENV=preview` (fora do git). No deploy, o `scripts/deploy.mjs` define o valor.
 - preview: noindex (meta, robots.txt e X-Robots-Tag), sem GA4/Pixel, faixa "Versão de prévia".
 - production: indexável, GA4 + Pixel em scripts separados.
+- O `.htaccess` (HTTPS, www → sem www, 404, bloqueio de `.git`, cache, X-Robots-Tag no preview) é gerado por `scripts/htaccess.mjs` no fim do build. Não editar na Hostinger.
 
 ## Git e GitHub
 
 - Remoto: `https://github.com/hupcreative-ag/siteesmaltale` (privado). O git do terminal autentica pelo Keychain do macOS; não precisa do `gh`.
-- Branches: `main` = preview (novo.esmaltale.com.br). `producao` = esmaltale.com.br, só recebe push quando o usuário mandar publicar.
-- **Nunca** force push na `main`. Nunca commitar `.env*` (exceto `.env.example`) ou segredos.
+- Branches:
+  - `main` = código-fonte.
+  - `deploy-preview` = site pronto (dist) do preview, novo.esmaltale.com.br.
+  - `producao` = site pronto (dist) de esmaltale.com.br, só recebe envio quando o usuário mandar publicar.
+- As branches de deploy só recebem commits do `scripts/deploy.mjs`. Nunca editar, fazer merge nelas ou force push. **Nunca** force push na `main`.
+- Nunca commitar `.env*` (exceto `.env.example`) ou segredos.
 - Mensagens de commit em português, descritivas.
 
 ### Rotina de envio (fim de cada fase, "sobe" ou "sobe no preview")
@@ -61,26 +66,30 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 2. `npm run build`. Se falhar, corrigir antes de enviar.
 3. Mostrar resumo do que vai subir (uma linha por arquivo ou grupo).
 4. Commit e `git push origin main`.
-5. Depois da Fase 5: esperar a Hostinger publicar, verificar todas as rotas em https://novo.esmaltale.com.br com `curl` e passar o link.
+5. `npm run deploy:preview` (gera com `preview` e envia para `deploy-preview`).
+6. Esperar a Hostinger publicar, verificar todas as rotas em https://novo.esmaltale.com.br com `curl` e passar o link.
 
-## Publicação (Hostinger, deploy pelo GitHub)
+## Publicação (Hostinger, site estático pelo Git do hPanel)
 
-- Cada app Node.js no hPanel fica ligado a uma branch; a cada push a Hostinger roda `npm install`, `npm run build` e publica `dist/`. Sem GitHub Actions, SSH ou upload manual.
-- Configuração dos apps: framework Astro · Node 22 · npm · build `npm run build` · saída `dist` · `PUBLIC_SITE_ENV` (preview / production).
-- Subdomínios `loja.esmaltale.com.br` e `primeiravisita.esmaltale.com.br` apontam para a Cloudflare: **não mexer**. Não mexer no banco do WordPress antigo.
+- O plano é Business Web Hosting. esmaltale.com.br tem o e-mail grátis da Hostinger (até 5 caixas) em uso. A cliente não pode fazer upgrade.
+- **Nunca** criar Web App Node.js para esmaltale.com.br, conectar o domínio a um site novo, clicar em "Excluir site" ou redefinir a zona DNS: isso apaga os e-mails ou os registros MX/SPF/DKIM/DMARC.
+- O site é estático: a Hostinger não roda build. O Git do hPanel de cada site puxa a sua branch de deploy (deploy automático por webhook do GitHub, chave de deploy só leitura). Sem GitHub Actions, SSH ou upload manual.
+  - Preview: site novo.esmaltale.com.br, branch `deploy-preview`.
+  - Produção: site esmaltale.com.br, pasta `public_html`, branch `producao`.
+- Subdomínios `loja.esmaltale.com.br` e `primeiravisita.esmaltale.com.br` são CNAMEs para a Cloudflare: **não mexer**.
+- WordPress antigo: só sai na primeira publicação, depois do backup (arquivos de `public_html`). O banco MySQL só é apagado depois de o site novo ser verificado e com OK do usuário.
 
 ### "publica em produção"
 
-1. Confirmar que a `main` está limpa e buildando.
-2. Criar a tag `prod-AAAA-MM-DD-HHMM` na `main` e enviar a tag.
-3. Atualizar `producao` com a `main` por fast-forward (`git push origin main:producao`) — nunca força.
-4. Esperar a Hostinger publicar e verificar esmaltale.com.br: rotas, 404, HTTPS e redirecionamento de www.
-5. Primeira vez: confirmar com o usuário que o backup completo foi gerado no hPanel, criar a branch `producao` a partir da `main`, passar o passo a passo do hPanel e só verificar depois da confirmação.
+1. Confirmar que a `main` está limpa, enviada e buildando.
+2. `npm run deploy:producao`: gera com `production`, envia para `producao` e cria a tag `prod-AAAA-MM-DD-HHMM`.
+3. Esperar a Hostinger publicar e verificar esmaltale.com.br: rotas, 404, HTTPS, redirecionamento de www e e-mail (MX intacto com `dig MX esmaltale.com.br`).
+4. Primeira vez: confirmar com o usuário que o backup completo foi gerado no hPanel antes de rodar o passo 2, passar o passo a passo do hPanel (limpar o WordPress de `public_html`, ligar o Git) e só verificar depois da confirmação.
 
 ### "volta a versão anterior" (rollback)
 
-1. Listar as tags `prod-*` e escolher a anterior à atual.
-2. `git push --force-with-lease origin <tag>:producao` — force push **só** na `producao`.
+1. Listar as tags `prod-*` (`git tag -l 'prod-*'`) e escolher a anterior à atual.
+2. `npm run deploy:voltar -- <tag>`: cria um commit novo na `producao` com os arquivos daquela tag. Sem force push.
 3. Esperar a Hostinger publicar e verificar esmaltale.com.br.
 
 ### Pedidos de conteúdo
