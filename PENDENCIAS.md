@@ -1,6 +1,6 @@
 # Pendências
 
-Atualizado em 2026-11-03 (Fase 4: SEO, Lighthouse e acessibilidade; preview publicado).
+Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e carrosséis).
 
 ## Dados das unidades
 
@@ -16,13 +16,7 @@ Atualizado em 2026-11-03 (Fase 4: SEO, Lighthouse e acessibilidade; preview publ
 | Arquivo esperado | Onde aparece |
 |---|---|
 | `servicos/spa-das-maos` | Card SPA das Mãos (Home). A cliente não tem foto; o card fica no gradiente da marca até chegar uma. |
-| `podologia/tratamento-unhas-encravadas.jpg` | Podologia, "O que tratamos" (card grande). Imagem gerada com IA pelo usuário; o card mostra o gradiente e o nome do arquivo até chegar. |
-| `podologia/tratamento-calos.jpg` | Podologia, "O que tratamos". |
-| `podologia/tratamento-fissuras.jpg` | Podologia, "O que tratamos". |
-| `podologia/tratamento-micoses.jpg` | Podologia, "O que tratamos". |
-| `podologia/tratamento-bolhas.jpg` | Podologia, "O que tratamos". |
 
-As fotos dos tratamentos entram sozinhas: basta salvar em `src/assets/podologia/` com esses nomes (qualquer extensão jpg, png ou webp).
 
 Fotos da página Sobre recebidas em 2026-11-02 (originais em `conteudo/Imagens/Sobre/`). Distribuição feita por nós, confirmar:
 - `sobre-home` ← interior da loja com o logo (Sobre resumida, Home)
@@ -38,6 +32,7 @@ Mapeamento da podologia (confirmar):
 Carrossel da Home ligado no preview, só com o hero institucional e o banner Experiência (decidido em 2026-11-02; o banner Podologia ficou desligado em `src/data/hero.ts`).
 - Banner Experiência ← `sobre-pagina` (cliente escolhendo esmalte), foto em tela cheia com o degradê da marca. A mesma foto aparece no texto institucional da página Sobre.
 - Galeria da Home ← as 7 fotos da galeria da landing aprovada (`conteudo/Imagens/Galeria`).
+- Podologia, "O que tratamos" ← as 5 fotos dos tratamentos (unhas encravadas, calos, fissuras, micoses e bolhas), recebidas em 2026-11-03 (originais em `conteudo/Imagens/Podologia`).
 
 ## SEO e GEO
 
@@ -96,7 +91,7 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
 - Faixa de palavras-chave em creme com filetes finos, itálico espaçado e tulipa pequena (estilo Beauty Ticket).
 - Serviços: cards de 260px no desktop, arraste com mouse ou dedo, botão "Agendar agora" em pílula branca com seta.
 - Galeria sem título visível (título só para leitor de tela), em formato polaroid sobre fundo creme. Avaliações com o título "O que nossas clientes falam".
-- Hero: só o botão "Agende agora", que rola suavemente até as unidades (o briefing previa abrir o modal e um link "Ver unidades"; mudado a pedido). Slide 01 com o mesmo tratamento do banner Experiência: foto da loja nas cores reais, texto à esquerda sobre desfoque progressivo e degradê claro. No celular, a mesma foto (Salvador Shopping) entra ampliada e alinhada pela base, para mostrar bancadas e cadeiras acima do texto em vez do teto.
+- Hero: só o botão "Agende agora", que rola suavemente até as unidades (o briefing previa abrir o modal e um link "Ver unidades"; mudado a pedido). Slide 01 (2026-11-03): texto centralizado sobre a foto da loja (Salvador Shopping) coberta pelo degradê da marca em movimento, como antes. O banner Experiência continua com a foto nas cores reais e o texto à esquerda.
 - Banner Experiência: desfoque progressivo + degradê claro mais leve; o botão virou link com linha rosa e seta.
 - Unidades no celular: grade de 2 colunas com foto, nome e "Agendar"; piso, referência, foto grande e endereço ficam no modal, que abre já na unidade.
 - Modal de agendamento redesenhado: lista com miniaturas na etapa 1 e ficha da unidade (foto, localização, endereço) com Trinks e WhatsApp na etapa 2; no celular abre como folha que sobe da base.

@@ -273,6 +273,8 @@ const dados = GALERIA.map((f, i) => ({ src: grandes[i].src, alt: f.alt }));
   @media (prefers-reduced-motion: reduce) {
     .galeria__faixa {
       overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
     }
 
     .galeria__trilho {

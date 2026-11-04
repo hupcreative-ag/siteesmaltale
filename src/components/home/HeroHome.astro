@@ -3,8 +3,9 @@
  * Hero da Home dentro de um quadro de cantos arredondados (16px de margem da tela no desktop,
  * 8px no celular). O header fixo fica por cima do quadro.
  * O primeiro slide é o hero institucional (único com h1). Os banners ativos de src/data/hero.ts
- * entram depois; sem nenhum, não há carrossel. Todos usam foto em tela cheia nas cores reais,
- * com desfoque progressivo e degradê claro só na área do texto (à esquerda; na base no celular).
+ * entram depois; sem nenhum, não há carrossel. O slide 1 tem a foto da loja sob o degradê da marca
+ * em movimento, com o texto centralizado. Os banners usam a foto nas cores reais, com desfoque
+ * progressivo e degradê claro só na área do texto (à esquerda; na base no celular).
  * Comportamento do carrossel em src/scripts/carousel.ts.
  */
 import { Picture } from 'astro:assets';
@@ -36,7 +37,7 @@ const comCarrossel = totalSlides > 1;
   <div class="hero__frame">
     <div class="hero__track" aria-live="polite" data-carousel-track>
       <div
-        class="hero__slide hero__slide--foto is-active"
+        class="hero__slide hero__slide--centro is-active"
         role={comCarrossel ? 'group' : undefined}
         aria-roledescription={comCarrossel ? 'slide' : undefined}
         aria-label={comCarrossel ? `1 de ${totalSlides}` : undefined}
@@ -45,16 +46,15 @@ const comCarrossel = totalSlides > 1;
         <Picture
           src={heroFoto}
           widths={[768, 1280, 1920, 2500]}
-          sizes="(max-width: 767px) 420vw, 100vw"
+          sizes="(max-width: 767px) 300vw, 100vw"
           formats={['avif', 'webp']}
           alt="Interior de uma unidade Esmaltale, com bancadas de atendimento e prateleiras de esmaltes"
           class="hero__photo hero__photo--loja"
           loading="eager"
           fetchpriority="high"
         />
-        <div class="hero__veu" />
-        <div class="hero__overlay" />
-        <div class="container hero__content hero__content--banner hero__content--principal">
+        <div class="gradiente-marca hero__degrade" aria-hidden="true"></div>
+        <div class="container hero__content hero__content--centro">
           <svg class="hero__brilhos" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
             <path d="M12 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
             <path d="M32 0c.9 5.4 2.9 7.5 8.1 8.4-5.2.9-7.2 3-8.1 8.4-.9-5.4-2.9-7.5-8.1-8.4 5.2-.9 7.2-3 8.1-8.4z" />
@@ -264,25 +264,28 @@ const comCarrossel = totalSlides > 1;
     gap: 14px 28px;
   }
 
-  /* ---------- Slides com foto em tela cheia e véu claro da marca ---------- */
+  /* ---------- Slide 1: foto da loja sob o degradê da marca, texto no centro ---------- */
+  .hero__slide--centro {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero__degrade {
+    z-index: 1;
+    opacity: 0.84;
+  }
+
+  .hero__content--centro {
+    width: 100%;
+  }
+
+  /* ---------- Banners com foto em tela cheia e véu claro da marca ---------- */
   .hero__slide--foto {
     align-items: flex-end;
   }
 
-  /* Celular: foto ampliada e alinhada pela base, para as mesas e cadeiras ficarem na área
-     visível acima do texto (sem isso aparecia muito teto) */
   .hero__slide :global(.hero__photo.hero__photo--loja) {
-    inset: auto 0 0;
-    height: 135%;
     object-position: 60% center;
-  }
-
-  @media (min-width: 768px) {
-    .hero__slide :global(.hero__photo.hero__photo--loja) {
-      inset: 0;
-      height: 100%;
-      object-position: 68% center;
-    }
   }
 
   .hero__slide :global(.hero__photo) {
@@ -519,10 +522,6 @@ const comCarrossel = totalSlides > 1;
 
     .hero__content--banner > * {
       max-width: min(560px, 44vw);
-    }
-
-    .hero__content--principal > .hero__title {
-      max-width: min(640px, 48vw);
     }
   }
 
