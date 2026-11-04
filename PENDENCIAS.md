@@ -63,6 +63,7 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
 
 ## Decisões registradas
 
+- "Principais shoppings de Salvador" trocado por "principais shoppings da Bahia" a pedido (2026-11-03): subtítulo do hero, bloco Sobre da Home, seção de unidades e página Lojas (o documento de conteúdo ainda traz "de Salvador").
 - Publicado em produção em 2026-11-03 (tag `prod-2026-11-03-2304`). GA4 e Pixel passaram a carregar depois da página (as filas guardam os eventos desde o início): com eles cedo, o desempenho no celular caía de 98 para 65.
 - Título do hero da Home trocado a pedido (2026-11-03): "A sua pausa favorita de beleza e bem-estar" no lugar de "O cuidado que você merece, sempre que precisar." (o documento de conteúdo ainda traz o antigo).
 - Animações (2026-11-03): troca de página com View Transitions nativas (a página antiga some rápido, a nova sobe suave; faixa de prévia, header e botão flutuante ficam parados). Navegadores sem suporte trocam de página normalmente. Menu do celular abre como cortina com os itens subindo em sequência e fecha recolhendo para cima. Tudo desligado para quem pede menos movimento.
