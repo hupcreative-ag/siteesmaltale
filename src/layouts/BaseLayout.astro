@@ -56,6 +56,10 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
         e.viewTransition.ready.catch(fim);
         e.viewTransition.finished.then(fim, fim);
       });
+      // Lado da página que sai: mesma rejeição quando a transição é pulada
+      addEventListener('pageswap', function (e) {
+        if (e.viewTransition) e.viewTransition.ready.catch(function () {});
+      });
     </script>
     <Tracking />
     <title>{title}</title>
