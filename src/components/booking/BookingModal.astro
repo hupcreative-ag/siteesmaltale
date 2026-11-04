@@ -1,7 +1,7 @@
 ---
 /**
  * Modal de agendamento em <dialog> nativo, em duas etapas:
- * 1. "Em qual unidade?" (lista com miniatura)  2. Ficha da unidade (foto, localização, endereço)
+ * 1. "Escolha a loja" (lista com miniatura)  2. Ficha da unidade (foto, localização, endereço)
  *    com os canais: Trinks (principal) e WhatsApp.
  * No celular abre como folha que sobe da base da tela.
  *
@@ -54,7 +54,7 @@ const dados = unidades.map(({ u, foto }) => ({
     <!-- Etapa 1 -->
     <div class="modal-step" data-step="unidade">
       <header class="modal-header">
-        <h2 id="booking-titulo-unidade" tabindex="-1">Em qual unidade?</h2>
+        <h2 id="booking-titulo-unidade" tabindex="-1">Escolha a loja</h2>
         <p class="modal-subtitle" data-subtitulo-agendamento>
           Escolha a unidade mais perto de você para seguir com o agendamento.
         </p>

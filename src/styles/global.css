@@ -49,12 +49,13 @@ html {
     navigation: auto;
   }
 
-  ::view-transition-old(root) {
-    animation: paginaSai 200ms var(--ease) both;
-  }
-
+  /* Esmaecimento cruzado do próprio navegador (as duas páginas se misturam sem escurecer),
+     só mais lento e com curva uniforme. Sem deslocamento: os elementos com data-reveal já
+     sobem sozinhos, e dois movimentos juntos davam a sensação de salto. */
+  ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: paginaEntra 520ms var(--ease-out-expo) 60ms both;
+    animation-duration: 380ms;
+    animation-timing-function: var(--ease);
   }
 
   /* Saindo pelo menu do celular: o menu cobre header e botão, então eles entram com a página */
@@ -66,22 +67,8 @@ html {
   ::view-transition-group(cabecalho),
   ::view-transition-group(faixa-previa),
   ::view-transition-group(agendar-flutuante) {
-    animation-duration: 420ms;
-    animation-timing-function: var(--ease-out-expo);
-  }
-}
-
-@keyframes paginaSai {
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes paginaEntra {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
+    animation-duration: 380ms;
+    animation-timing-function: var(--ease);
   }
 }
 

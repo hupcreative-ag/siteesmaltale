@@ -49,8 +49,8 @@ export const UNIDADES: Unidade[] = [
     nome: 'Shopping Barra',
     ativa: true,
     novidade: true,
-    piso: 'Piso L3',
-    // referencia: [A CONFIRMAR]
+    piso: 'Piso L3 Leste',
+    referencia: 'Ao lado da Nike',
     endereco: 'Av. Centenário, 2992', // [A CONFIRMAR]
     bairro: 'Chame-Chame',
     cidade: 'Salvador',

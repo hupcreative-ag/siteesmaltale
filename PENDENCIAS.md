@@ -4,7 +4,7 @@ Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e car
 
 ## Dados das unidades
 
-- [ ] **Shopping Barra · referência** no shopping (ex.: "Próximo à ..."). Hoje aparece só "Piso L3".
+- [x] Shopping Barra · referência: "Piso L3 Leste · Ao lado da Nike" (2026-11-03).
 - [ ] **Shopping Barra · endereço** a confirmar: Av. Centenário, 2992, Chame-Chame, Salvador, BA, 40155-151.
 - [ ] **Shopping Barra · link do Trinks** a confirmar: usando https://www.trinks.com/esmaltale-shopping-barra (a página existe no Trinks com o nome da unidade).
 - [ ] **Shopping Barra · foto definitiva da unidade**. Hoje o site usa a foto provisória do tapume (`lojas/shopping-barra.webp`, recebida em 2026-11-02, original em `conteudo/Imagens/Lojas/shopping-barra-provisoria.webp`).
