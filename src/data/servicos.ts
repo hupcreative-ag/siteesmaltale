@@ -83,12 +83,6 @@ export const SERVICOS: Servico[] = [
     saibaMais: '/nail-art/',
   },
   {
-    slug: 'spa-das-maos',
-    nome: 'SPA das Mãos',
-    descricao: 'SPA completo de hidratação e cuidado para mãos ressecadas. Inclui esfoliação, máscara e massagem.',
-    // Sem foto: a cliente não tem imagem deste serviço.
-  },
-  {
     slug: 'spa-dos-pes',
     nome: 'SPA dos Pés',
     descricao: 'Imersão relaxante com esfoliação, hidratação e massagem. Um momento só seu, do início ao fim.',

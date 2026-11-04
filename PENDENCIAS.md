@@ -13,10 +13,7 @@ Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e car
 
 ## Imagens de conteúdo
 
-| Arquivo esperado | Onde aparece |
-|---|---|
-| `servicos/spa-das-maos` | Card SPA das Mãos (Home). A cliente não tem foto; o card fica no gradiente da marca até chegar uma. |
-
+Nenhuma imagem de conteúdo pendente (a foto definitiva do Shopping Barra está em "Dados das unidades").
 
 Fotos da página Sobre recebidas em 2026-11-02 (originais em `conteudo/Imagens/Sobre/`). Distribuição feita por nós, confirmar:
 - `sobre-home` ← interior da loja com o logo (Sobre resumida, Home)
@@ -36,7 +33,7 @@ Carrossel da Home ligado no preview, só com o hero institucional e o banner Exp
 
 ## SEO e GEO
 
-- [x] JSON-LD em todo o site: Organization (logo, Instagram, fundação, assinatura, catálogo dos 11 serviços) e WebSite. Na Home, cada unidade como BeautySalon (endereço, geo, telefone, horário, Trinks como ReserveAction) e FAQPage. Gerados de `src/lib/schema.ts` a partir dos dados.
+- [x] JSON-LD em todo o site: Organization (logo, Instagram, fundação, assinatura, catálogo dos 10 serviços) e WebSite. Na Home, cada unidade como BeautySalon (endereço, geo, telefone, horário, Trinks como ReserveAction) e FAQPage. Gerados de `src/lib/schema.ts` a partir dos dados.
 - [x] Open Graph e Twitter card com `public/og-image.jpg` (1200x630), meta de região (BR-BA), pré-carregamento da Gazpacho.
 - [x] `robots.txt` por ambiente (preview bloqueado; produção liberada, com os robôs de IA citados) e `/llms.txt` gerado dos dados (marca, serviços, unidades, horário, FAQ, links).
 - [x] FAQ reescrito como as pessoas perguntam a buscadores e IAs (com marca e cidade) + pergunta "Quais serviços a Esmaltale oferece?". Textos alternativos das fotos com serviço e cidade.
@@ -62,7 +59,6 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
 
 | Imagem | Proporção | Tamanho mínimo | Observação |
 |---|---|---|---|
-| `servicos/spa-das-maos` | 1:1 quadrada | 1200 × 1200 px | Igual às outras fotos de serviço |
 | `lojas/shopping-barra` (definitiva) | 4:3 horizontal | 1600 × 1200 px | Igual às outras fotos de loja |
 
 ## Decisões registradas
@@ -108,7 +104,7 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
 - Horário: segunda a sábado das 9h às 22h, domingo das 12h às 21h. A landing antiga dizia 10h às 22h todos os dias.
 - Referências de localização seguem o briefing ("Próximo ao Lar Shopping", "Próximo à Alpha Fitness"), não o hub antigo.
 - Card do Parque Shopping Bahia na Home usa `parque-shopping-bahia.jpg` (a versão 02 é praticamente a mesma foto da Sobre resumida).
-- Card SPA das Mãos no gradiente da marca com o ícone branco, em vez do placeholder com nome de arquivo: a cliente confirmou que não tem foto.
+- SPA das Mãos retirado dos serviços a pedido (2026-11-03): saiu dos cards da Home, do catálogo no JSON-LD, do FAQ "Quais serviços", do llms.txt e da faixa de palavras.
 - Ordem da Home: hero, Sobre, Unidades, Serviços, faixa da marca, Galeria, Avaliações, FAQ (pedido em 2026-11-02).
 - Hero dentro de um quadro de cantos arredondados (16px de margem, raio 30px no desktop), inspirado nas referências passadas pelo usuário. Sem o selo "6 unidades em Salvador e Lauro de Freitas" (pedido do usuário; o briefing previa o selo).
 - Serviços em carrossel de cards com foto, nome e "+"; hover ou toque no "+" abre um painel de vidro com a descrição, "Agendar agora" e "Saiba mais".

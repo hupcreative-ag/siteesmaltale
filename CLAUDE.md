@@ -9,7 +9,7 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - `src/assets/` — imagens usadas no site, em kebab-case sem espaços (`marca/`, `lojas/`, `servicos/`, `nail-art/`, `podologia/`, `sobre/`).
 - `src/data/unidades.ts` — **fonte única** das unidades. `src/lib/unidades.ts` — ordenação, contagem por extenso, listas e links.
 - `src/data/hero.ts` — banners do carrossel da Home, depois do hero institucional. Banner com `imagem: null` não aparece; sem nenhum, a Home mostra só o hero institucional. Arte montada no site (foto + gradiente + texto real).
-- `src/data/servicos.ts` — os 11 cards de serviço da Home. Sem `imagem`, o card usa o gradiente da marca com o ícone branco.
+- `src/data/servicos.ts` — os 10 cards de serviço da Home. Sem `imagem`, o card usa o gradiente da marca com o ícone branco.
 - `src/data/galeria.ts`, `src/data/faq.ts` (rascunho aprovado pelo usuário vira texto oficial), `src/data/avaliacoes.ts` (SOMENTE avaliações reais do Google; nunca inventar).
 - Animação de entrada: atributo `data-reveal` (e `data-reveal-stagger` no pai) via `src/scripts/reveal.ts`.
 - `src/data/nailArt.ts` — os 4 serviços da página Nail Art. `src/lib/schema.ts` — JSON-LD (organização, unidades, serviços, FAQ, breadcrumb); toda página interna passa `schema` ao BaseLayout com pelo menos o breadcrumb.
