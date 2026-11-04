@@ -49,9 +49,12 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
         if (!e.viewTransition) return;
         var html = document.documentElement;
         html.classList.add('vt-entrada', 'vt-ativa');
-        e.viewTransition.finished.finally(function () {
+        var fim = function () {
           html.classList.remove('vt-ativa');
-        });
+        };
+        // Transição pulada (aba em segundo plano etc.) rejeita o ready: tratado para não sujar o console
+        e.viewTransition.ready.catch(fim);
+        e.viewTransition.finished.then(fim, fim);
       });
     </script>
     <Tracking />
