@@ -73,6 +73,7 @@
   --rosa: #E15297;
   --rosa-escuro: #A8336D;
   --rosa-claro: #EDB2BD;
+  --rosa-ticket: #C23F7E; /* rosa dos cupons: texto branco legível (AA) */
   --coral: #E5602E;
   --blush: #F6E6EA;
   --fundo: #FBF3F5;
@@ -166,7 +167,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--texto-suave);
 }
 
-/* Aviso de cupons: ticket pequeno, com recortes nas laterais e picote */
+/* Aviso de cupons: ticket pequeno, com canhoto, picote e recortes em cima e embaixo */
 .aviso {
   display: inline-block;
   margin-top: 20px;
@@ -176,33 +177,48 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .aviso[hidden] { display: none; }
 
 .aviso__ticket {
-  display: flex;
-  align-items: stretch;
+  --canhoto: 42px;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--canhoto) auto;
+  align-items: center;
+  height: 42px;
   font-size: 0.84rem;
   font-weight: 600;
+  line-height: 1;
   color: var(--rosa-escuro);
   background: var(--branco);
   border-radius: 10px;
   -webkit-mask:
-    radial-gradient(circle 6px at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
-    radial-gradient(circle 6px at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+    radial-gradient(circle 5px at var(--canhoto) 0, #0000 96%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle 5px at var(--canhoto) 100%, #0000 96%, #000) bottom / 100% 51% no-repeat;
           mask:
-    radial-gradient(circle 6px at 0 50%, #0000 97%, #000) left / 51% 100% no-repeat,
-    radial-gradient(circle 6px at 100% 50%, #0000 97%, #000) right / 51% 100% no-repeat;
+    radial-gradient(circle 5px at var(--canhoto) 0, #0000 96%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle 5px at var(--canhoto) 100%, #0000 96%, #000) bottom / 100% 51% no-repeat;
+}
+
+/* Picote */
+.aviso__ticket::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: calc(var(--canhoto) - 1px);
+  border-left: 1.5px dashed rgba(255, 255, 255, 0.85);
 }
 
 .aviso__pct {
-  display: grid;
-  place-items: center;
-  padding: 8px 12px 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   font-family: var(--display);
-  font-size: 1.05rem;
-  color: var(--roxo);
-  background: var(--rosa-claro);
-  border-right: 1.5px dashed rgba(255, 255, 255, 0.9);
+  font-size: 1.15rem;
+  color: var(--branco);
+  background: var(--rosa-ticket);
 }
 
-.aviso__texto { padding: 9px 18px 9px 12px; line-height: 1.35; }
+.aviso__texto { padding: 0 18px 0 14px; white-space: nowrap; }
 
 /* =====================================================
    LISTA DE UNIDADES
@@ -282,25 +298,21 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
   background: var(--blush);
 }
 
-/* Adesivo de cupom sobre a foto: mini ticket inclinado */
-.adesivo {
-  position: absolute;
-  left: -6px;
-  bottom: 8px;
-  transform: rotate(-7deg);
-  filter: drop-shadow(0 3px 6px rgba(99, 32, 102, 0.28));
-}
+/* Adesivos (cupom e promoção): mini tickets abaixo da localização */
+.loja__adesivos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+
+.adesivo { display: inline-block; filter: drop-shadow(0 2px 5px rgba(99, 32, 102, 0.2)); }
 
 .adesivo span {
   display: block;
-  padding: 3px 9px;
+  padding: 3px 10px;
   font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1.5;
   color: var(--branco);
-  background: #BC3A78; /* rosa um pouco mais fechado: texto branco legível (AA) */
+  background: var(--rosa-ticket);
   border-radius: 4px;
   -webkit-mask:
     radial-gradient(circle 3.5px at 0 50%, #0000 96%, #000) left / 51% 100% no-repeat,
@@ -310,8 +322,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
     radial-gradient(circle 3.5px at 100% 50%, #0000 96%, #000) right / 51% 100% no-repeat;
 }
 
-.adesivo--promo { left: auto; right: -6px; top: 8px; bottom: auto; transform: rotate(6deg); }
-.adesivo--promo span { background: var(--coral); }
+.adesivo--promo span { background: #B34A1E; }
 
 .loja__info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 
@@ -383,7 +394,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
    ===================================================== */
 .cupom {
   display: block;
-  margin: 2px 0 8px;
+  margin: 8px 0 2px;
   filter: drop-shadow(0 10px 18px rgba(168, 51, 109, 0.18));
   -webkit-tap-highlight-color: transparent;
   transition: transform 300ms var(--expo);
@@ -415,7 +426,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
   display: grid;
   place-items: center;
   color: var(--branco);
-  background: var(--rosa);
+  background: var(--rosa-ticket);
   background-image: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 60%);
 }
 
@@ -467,8 +478,9 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--branco);
-  background: var(--roxo);
+  background: var(--rosa-ticket);
   border-radius: 100px;
+  box-shadow: 0 4px 10px -3px rgba(194, 63, 126, 0.5);
   transition: background-color 250ms var(--ease);
 }
 
@@ -527,13 +539,14 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
 
 .canal__seta { transition: transform 300ms var(--expo); }
 
+.loja__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 22px; margin-top: 2px; }
+
 .link-seta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   min-height: 44px;
-  margin-top: 2px;
   font-size: 0.86rem;
   font-weight: 700;
   color: var(--roxo);
@@ -589,7 +602,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
   .loja__linha:hover .loja__seta { background: var(--blush); }
   .loja.is-aberta .loja__linha:hover .loja__seta { background: var(--roxo-hover); }
   .cupom:hover { transform: translateY(-2px) rotate(-0.6deg); }
-  .cupom:hover .cupom__acao { background: var(--roxo-hover); }
+  .cupom:hover .cupom__acao { background: var(--rosa-escuro); }
   .cupom:hover .cupom__acao svg { transform: translateX(3px); }
   .canal:hover { background: var(--blush); }
   .canal--principal:hover { background: var(--roxo-hover); }
@@ -675,8 +688,9 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
      - hasActiveCoupon / url: atualizados pelo sistema de landing pages. Com cupom ativo, o ticket
        "Pegar meu cupom" leva para "url" (a landing do cupom).
      - unitUrl: página da unidade (link "Conhecer a unidade").
+     - mapsUrl: perfil da unidade no Google Maps (link "Ver no mapa"). Vazio = sem o link.
      - isNew: mostra "Nova unidade" acima do nome.
-     - promo: texto curto de promoção (ex.: 'Promoção'), num adesivo laranja na foto. Vazio = sem adesivo.
+     - promo: texto curto de promoção (ex.: 'Promoção'), num adesivo laranja abaixo da localização. Vazio = sem adesivo.
      - trinksUrl / whatsapp: agendamento. Sem trinksUrl, a opção do Trinks some.
      - image: foto da frente da unidade (240x288, WebP).
      ===================================================== -->
@@ -690,6 +704,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
       image: '/assets/conheca/shopping-barra.webp',
       url: '/shoppingbarra',
       unitUrl: '/conheca/shoppingbarra',
+      mapsUrl: 'https://www.google.com/maps?cid=7693819465966985537',
       trinksUrl: 'https://www.trinks.com/esmaltale-shopping-barra',
       whatsapp: '5571999494089',
       hasActiveCoupon: true,
@@ -705,6 +720,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
       image: '/assets/conheca/shopping-da-bahia.webp',
       url: '/shoppingdabahia',
       unitUrl: '/conheca/shoppingdabahia',
+      mapsUrl: 'https://www.google.com/maps?cid=3673152592179540768',
       trinksUrl: 'https://www.trinks.com/esmaltale-shopping-da-bahia-',
       whatsapp: '5571999231497',
       hasActiveCoupon: true,
@@ -720,6 +736,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
       image: '/assets/conheca/shopping-paralela.webp',
       url: '/shoppingparalela',
       unitUrl: '/conheca/shoppingparalela',
+      mapsUrl: 'https://www.google.com/maps?cid=1865418680387577062',
       trinksUrl: 'https://www.trinks.com/esmaltale-shop-paralela',
       whatsapp: '5571991152859',
       hasActiveCoupon: true,
@@ -735,6 +752,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
       image: '/assets/conheca/parque-shopping-bahia.webp',
       url: '/parqueshoppingbahia',
       unitUrl: '/conheca/parqueshoppingbahia',
+      mapsUrl: 'https://www.google.com/maps?cid=17028121796568796822',
       trinksUrl: 'https://www.trinks.com/esmaltale-salvador-norte-shopping',
       whatsapp: '5571983259511',
       hasActiveCoupon: true,
@@ -750,6 +768,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
       image: '/assets/conheca/salvador-shopping.webp',
       url: '/conheca/salvadorshopping',
       unitUrl: '/conheca/salvadorshopping',
+      mapsUrl: 'https://www.google.com/maps?cid=7686953596061038359',
       trinksUrl: 'https://www.trinks.com/esmaltalesalvadorshopping',
       whatsapp: '5571993016341',
       hasActiveCoupon: false,
@@ -765,6 +784,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
       image: '/assets/conheca/shopping-bela-vista.webp',
       url: '/conheca/shoppingbelavista',
       unitUrl: '/conheca/shoppingbelavista',
+      mapsUrl: 'https://www.google.com/maps?cid=11797337463690376936',
       trinksUrl: 'https://www.trinks.com/esmaltale-shopping-bela-vista',
       whatsapp: '5571997002950',
       hasActiveCoupon: false,
@@ -785,6 +805,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
     agenda: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
     whats: '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.12-.27-.2-.57-.35zM12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.31l-.34-.2-3.56.93.95-3.47-.22-.36a9.4 9.4 0 0 1-1.44-5.01c0-5.2 4.23-9.43 9.43-9.43a9.37 9.37 0 0 1 9.42 9.44c0 5.2-4.23 9.42-9.43 9.42zm8.03-17.45A11.3 11.3 0 0 0 12.05.72C5.79.72.7 5.8.7 12.07c0 2 .52 3.95 1.52 5.67L.6 23.6l6-1.57a11.33 11.33 0 0 0 5.43 1.38h.01c6.26 0 11.35-5.09 11.35-11.35 0-3.03-1.18-5.88-3.32-8.02z"/></svg>',
     ir: '<svg class="canal__seta" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+    mapa: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
     irPequena: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>'
   };
 
@@ -816,6 +837,7 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
     var adesivos =
       (loja.hasActiveCoupon ? '<span class="adesivo" aria-hidden="true"><span>Cupom</span></span>' : '') +
       (loja.promo ? '<span class="adesivo adesivo--promo" aria-hidden="true"><span>' + loja.promo + '</span></span>' : '');
+    if (adesivos) adesivos = '<span class="loja__adesivos">' + adesivos + '</span>';
     // Os adesivos são decorativos: o leitor de tela recebe o mesmo aviso em texto.
     var leitura = [loja.hasActiveCoupon ? 'cupom ativo' : '', loja.promo || '']
       .filter(Boolean).join(', ');
@@ -850,6 +872,10 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
         ICONES.ir + '</a>';
     }
 
+    var links = '';
+    if (loja.mapsUrl) links += '<a class="link-seta" href="' + loja.mapsUrl + '" target="_blank" rel="noopener noreferrer" data-evento="click_map" data-unit="' + loja.slug + '">' + ICONES.mapa + ' Ver no mapa</a>';
+    if (loja.unitUrl) links += '<a class="link-seta" href="' + loja.unitUrl + '" data-evento="click_unit_page" data-unit="' + loja.slug + '">Conhecer a unidade ' + ICONES.irPequena + '</a>';
+
     // As 3 primeiras entram com a página; as demais, ao aparecer na rolagem.
     var entrada = i < 3 ? ' style="--atraso:' + (150 + i * 90) + 'ms"' : ' data-reveal';
 
@@ -858,12 +884,12 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
         '<button type="button" class="loja__linha" aria-expanded="false" aria-controls="' + painel + '">' +
           '<span class="loja__midia">' +
             '<img class="loja__foto" src="' + loja.image + '" alt="Frente da Esmaltale no ' + loja.name + '" width="84" height="100"' + (i > 2 ? ' loading="lazy"' : (i === 0 ? ' fetchpriority="high"' : '')) + ' decoding="async">' +
-            adesivos +
           '</span>' +
           '<span class="loja__info">' +
             (loja.isNew ? '<span class="loja__nova"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + ESTRELA + '"/></svg>Nova unidade</span>' : '') +
             '<span class="loja__nome">' + loja.name + '</span>' +
             '<span class="loja__local">' + loja.address + '</span>' +
+            adesivos +
             (leitura ? '<span class="leitor">, ' + leitura + '</span>' : '') +
           '</span>' +
           '<span class="loja__seta">' + ICONES.seta + '</span>' +
@@ -871,9 +897,9 @@ html.js .loja[data-reveal].is-revealed { opacity: 1; transform: none; }
         '<div class="loja__painel" id="' + painel + '" role="region" aria-label="Opções do ' + loja.name + '" inert>' +
           '<div class="loja__painel-dentro">' +
             '<div class="loja__opcoes">' +
-              cupom +
               (canais ? '<p class="pergunta">Como prefere agendar?</p>' + canais : '') +
-              (loja.unitUrl ? '<a class="link-seta" href="' + loja.unitUrl + '" data-evento="click_unit_page" data-unit="' + loja.slug + '">Conhecer a unidade ' + ICONES.irPequena + '</a>' : '') +
+              cupom +
+              (links ? '<div class="loja__links">' + links + '</div>' : '') +
             '</div>' +
           '</div>' +
         '</div>' +

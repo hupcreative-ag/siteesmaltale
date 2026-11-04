@@ -16,7 +16,7 @@ Substitua a página **/conheca/** (lista de unidades, a do QR Code dos panfletos
    A página usa caminhos absolutos (`/assets/conheca/...`). O favicon continua sendo `/assets/logofav.png`, que já existe.
 
 3. **Mantenha a automação dos cupons.** Hoje, quando uma landing de unidade ganha ou perde cupom, o sistema atualiza esta página. A nova versão mantém o array `STORES_DATA` com os mesmos campos de antes: `slug`, `name`, `city`, `address`, `image`, `url` e `hasActiveCoupon`.
-   - Ela também tem campos novos: `unitUrl`, `trinksUrl`, `whatsapp`, `isNew`, `promo` e `priority`.
+   - Ela também tem campos novos: `unitUrl`, `mapsUrl`, `trinksUrl`, `whatsapp`, `isNew`, `promo` e `priority`.
    - Ajuste a automação para continuar mudando só `hasActiveCoupon` (e `url`, se ela já fazia isso) na loja certa, pelo `slug`.
    - A automação não pode apagar, reordenar nem sobrescrever os campos novos.
    - Com `hasActiveCoupon: true`, `url` deve ser a landing do cupom (ex.: `/shoppingbarra`). Sem cupom, `url` pode continuar `/conheca/<slug>`.
@@ -28,8 +28,8 @@ Substitua a página **/conheca/** (lista de unidades, a do QR Code dos panfletos
    - Ao tocar numa loja, as opções descem logo abaixo dela, e só uma fica aberta por vez.
    - O ticket "Pegar meu cupom" (só nas lojas com cupom ativo) leva à landing do cupom daquela loja.
    - "Agendamento online (Trinks)" abre o Trinks da loja, e "Agendar pelo WhatsApp" abre a conversa com a mensagem pronta.
-   - "Conhecer a unidade" leva a /conheca/<slug>.
-   - Tire o cupom de uma landing e confirme que o adesivo "Cupom" e o ticket somem desta loja.
+   - "Ver no mapa" abre o perfil da loja no Google Maps, e "Conhecer a unidade" leva a /conheca/<slug>.
+   - Tire o cupom de uma landing e confirme que o adesivo "Cupom" (abaixo da localização) e o ticket somem desta loja.
 
 ---
 
@@ -37,6 +37,7 @@ Substitua a página **/conheca/** (lista de unidades, a do QR Code dos panfletos
 
 - **Ordem das lojas:** troque os números de `priority` (1 aparece primeiro).
 - **"Nova unidade" acima do nome:** `isNew: true`.
-- **Adesivo de promoção na foto:** `promo: 'Promoção'`, ou outro texto curto. Deixe `''` para esconder.
+- **Adesivo de promoção (abaixo da localização):** `promo: 'Promoção'`, ou outro texto curto. Deixe `''` para esconder.
+- **Link do mapa:** `mapsUrl` (perfil da loja no Google Maps). Vazio, o link some.
 - **Sem Trinks:** apague `trinksUrl` e a opção some, ficando só o WhatsApp.
 - **Foto nova:** 240x288 px, em WebP, na pasta `assets/conheca/`, e troque `image`.
