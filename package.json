@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/check-env.mjs && astro build && node scripts/htaccess.mjs && node scripts/sitemap-imagens.mjs",
+    "build": "node scripts/check-env.mjs && astro build && node scripts/htaccess.mjs && node scripts/sitemap-imagens.mjs && node scripts/previa-entregas.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "deploy:preview": "node scripts/deploy.mjs preview",
