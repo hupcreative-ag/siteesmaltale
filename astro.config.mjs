@@ -12,6 +12,8 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (page) => !page.includes('/404'),
+      // As páginas são geradas a cada publicação: a data do build é a da última alteração
+      serialize: (item) => ({ ...item, lastmod: new Date().toISOString() }),
     }),
   ],
 });

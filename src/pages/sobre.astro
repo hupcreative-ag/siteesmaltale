@@ -7,7 +7,9 @@ import MosaicoLojas from '../components/sections/MosaicoLojas.astro';
 import Brilhos from '../components/sections/Brilhos.astro';
 import { SITE } from '../config/site';
 import { totalUnidades, porExtenso, listaNomes } from '../lib/unidades';
-import { breadcrumb, pagina } from '../lib/schema';
+import { breadcrumb, pagina, ORG_ID } from '../lib/schema';
+import { PROPOSTA, MISSAO, VISAO, VALORES as NOMES_VALORES } from '../data/sobre';
+import { getImage } from 'astro:assets';
 import sobrePagina from '../assets/sobre/sobre-pagina.jpg';
 import missao from '../assets/sobre/missao.jpg';
 import visao from '../assets/sobre/visao.jpg';
@@ -22,19 +24,27 @@ import IconSocial from '../components/icons/IconSocial.astro';
 const titulo = 'Sobre a Esmaltale | Esmalteria em Salvador desde 2017';
 const descricao = `Conheça a Esmaltale: esmalteria fundada em ${SITE.fundacao} em Salvador, com ${porExtenso(totalUnidades)} unidades, esterilização em autoclave e ambiente acolhedor.`;
 
-const VALORES = [
-  { nome: 'Cuidado com o outro', Icone: IconCuidado },
-  { nome: 'Excelência técnica', Icone: IconExcelencia },
-  { nome: 'Higiene como compromisso', Icone: IconHigiene },
-  { nome: 'Ambiente que acolhe', Icone: IconAmbiente },
-  { nome: 'Valorização das profissionais', Icone: IconProfissionais },
-  { nome: 'Comprometimento social', Icone: IconSocial },
-];
+const ICONES_VALORES = [IconCuidado, IconExcelencia, IconHigiene, IconAmbiente, IconProfissionais, IconSocial];
+const VALORES = NOMES_VALORES.map((nome, i) => ({ nome, Icone: ICONES_VALORES[i] }));
 
-const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), breadcrumb([{ nome: 'Sobre', caminho: '/sobre/' }])];
+const fotoPrincipal = await getImage({ src: sobrePagina, width: 1200, format: 'jpg' });
+const schema = [
+  pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao, {
+    imagem: new URL(fotoPrincipal.src, SITE.url).href,
+    principal: [ORG_ID],
+  }),
+  breadcrumb([{ nome: 'Sobre', caminho: '/sobre/' }]),
+];
 ---
 
-<BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
+<BaseLayout
+  title={titulo}
+  description={descricao}
+  schema={schema}
+  ogImage={sobrePagina}
+  ogImageAlt="Cliente escolhendo um esmalte na prateleira de uma unidade Esmaltale"
+  contactStrip
+>
   <HeroInternal titulo="Sobre a Esmaltale" trilha="Sobre" midiaSangrada>
     <p>A Esmaltale nasceu em Salvador em 2017 com uma convicção: cuidar das unhas é cuidar de si.</p>
     <MosaicoLojas slot="media" />
@@ -82,8 +92,7 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
           <path d="M52 4c.6 3.6 1.9 5 5.4 5.6-3.5.6-4.8 2-5.4 5.6-.6-3.6-1.9-5-5.4-5.6 3.5-.6 4.8-2 5.4-5.6z" />
         </svg>
         <p>
-          Cada visita é pensada para ser uma pausa real. Uma hora em que o dia para, as mãos descansam e você sai diferente
-          de como entrou. É isso que a Esmaltale entrega e é por isso que nós estamos aqui.
+          {PROPOSTA}
         </p>
       </blockquote>
     </div>
@@ -108,8 +117,7 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
         <div class="mv__corpo">
           <h2 class="mv__titulo">Missão</h2>
           <p>
-            Proporcionar experiências de bem-estar e elevação da autoestima por meio de serviços de qualidade, em ambiente
-            acolhedor que valoriza cada cliente e cada profissional.
+            {MISSAO}
           </p>
         </div>
       </article>
@@ -129,8 +137,7 @@ const schema = [pagina('AboutPage', '/sobre/', 'Sobre a Esmaltale', descricao), 
         <div class="mv__corpo">
           <h2 class="mv__titulo">Visão</h2>
           <p>
-            Ser referência nacional no mercado de esmalterias, reconhecida pela excelência no atendimento, pela inovação
-            nos serviços e pelo cuidado genuíno com quem nos escolhe.
+            {VISAO}
           </p>
         </div>
       </article>

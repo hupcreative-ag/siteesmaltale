@@ -9,12 +9,13 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/check-env.mjs && astro build && node scripts/htaccess.mjs",
+    "build": "node scripts/check-env.mjs && astro build && node scripts/htaccess.mjs && node scripts/sitemap-imagens.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "deploy:preview": "node scripts/deploy.mjs preview",
     "deploy:producao": "node scripts/deploy.mjs producao",
-    "deploy:voltar": "node scripts/deploy.mjs voltar"
+    "deploy:voltar": "node scripts/deploy.mjs voltar",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

@@ -1,19 +1,10 @@
 ---
 /**
  * Perguntas frequentes da Home, em <details> nativo (abre sem JS, acessível por teclado).
- * Gera também o JSON-LD FAQPage com o mesmo texto visível, para buscadores e leitura por IA.
+ * O JSON-LD FAQPage com o mesmo texto entra no grafo da Home (src/pages/index.astro).
  */
 import { FAQ } from '../../data/faq';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: FAQ.map((f) => ({
-    '@type': 'Question',
-    name: f.pergunta,
-    acceptedAnswer: { '@type': 'Answer', text: f.resposta },
-  })),
-};
 ---
 
 <section class="section section--white faq" aria-labelledby="faq-titulo">
@@ -43,7 +34,6 @@ const jsonLd = {
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </section>
 
 <style>

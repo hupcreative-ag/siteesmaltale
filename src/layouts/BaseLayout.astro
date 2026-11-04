@@ -16,24 +16,46 @@ import BookingModal from '../components/booking/BookingModal.astro';
 import ContactStrip from '../components/sections/ContactStrip.astro';
 import { grafo, organizacao, website } from '../lib/schema';
 import gazpachoBold from '../assets/fontes/gazpacho-bold.woff2?url';
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   title: string;
   description: string;
   /** Faixa "Dúvidas ou precisa de ajuda?" antes do rodapé (Sobre, Nail Art e Podologia). */
   contactStrip?: boolean;
-  /** Imagem de compartilhamento (1200x630, em public/). */
-  ogImage?: string;
+  /** Imagem de compartilhamento: caminho em public/ (já 1200x630) ou foto de src/assets,
+      recortada aqui para 1200x630. */
+  ogImage?: string | ImageMetadata;
+  /** Descrição da imagem de compartilhamento. */
+  ogImageAlt?: string;
   /** Nós extras de JSON-LD da página; somam-se à organização e ao site, num só @graph. */
   schema?: object[];
   /** Tira a página dos buscadores mesmo em produção (ex.: 404). */
   noindex?: boolean;
 }
 
-const { title, description, contactStrip = false, ogImage = '/og-image.jpg', schema = [], noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  contactStrip = false,
+  ogImage = '/og-image.jpg',
+  ogImageAlt = `${SITE.nome}: ${SITE.assinatura}`,
+  schema = [],
+  noindex = false,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
-const ogImageUrl = new URL(ogImage, SITE.url).href;
-const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href), website(), ...schema);
+const ogImagePath =
+  typeof ogImage === 'string'
+    ? ogImage
+    : (await getImage({ src: ogImage, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 82 })).src;
+const ogImageUrl = new URL(ogImagePath, SITE.url).href;
+const logo = { url: new URL('/logo-esmaltale.png', SITE.url).href, width: 1012, height: 278 };
+const jsonLd = grafo(organizacao(logo), website(), ...schema);
+
+// Página aberta por transição: o título entra parado (a troca já esmaece) e os blocos da
+// primeira tela só aparecem, sem subir; senão o texto parece "pular". Transição pulada (aba em
+// segundo plano etc.) rejeita as promessas: tratadas para não sujar o console.
 ---
 
 <!doctype html>
@@ -41,9 +63,11 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta name="robots" content={IS_PRODUCTION && !noindex ? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' : 'noindex, nofollow'} />
     <script is:inline>document.documentElement.classList.add('js');</script>
-    <!-- Página aberta por transição: o título entra parado (a troca já esmaece) e os blocos
-         da primeira tela só aparecem, sem subir; senão o texto parece "pular". -->
     <script is:inline>
       addEventListener('pagereveal', function (e) {
         if (!e.viewTransition) return;
@@ -52,13 +76,11 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
         var fim = function () {
           html.classList.remove('vt-ativa');
         };
-        // Transição pulada (aba em segundo plano etc.) rejeita o ready: tratado para não sujar o console
         var vt = e.viewTransition;
         vt.ready.catch(fim);
         vt.updateCallbackDone && vt.updateCallbackDone.catch(function () {});
         vt.finished.then(fim, fim);
       });
-      // Lado da página que sai: mesma rejeição quando a transição é pulada
       addEventListener('pageswap', function (e) {
         var vt = e.viewTransition;
         if (!vt) return;
@@ -69,15 +91,14 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
       });
     </script>
     <Tracking />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    {!noindex && <link rel="canonical" href={canonical} />}
-    <meta name="robots" content={IS_PRODUCTION && !noindex ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'} />
     <meta name="theme-color" content="#6B1F7C" />
+    <meta name="author" content={SITE.nome} />
+    <meta name="format-detection" content="telephone=no" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" href={gazpachoBold} as="font" type="font/woff2" crossorigin />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Resumo do site para IAs (llms.txt)" />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
@@ -86,13 +107,16 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:secure_url" content={ogImageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${SITE.nome}: ${SITE.assinatura}`} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <meta name="geo.region" content="BR-BA" />
     <meta name="geo.placename" content="Salvador" />
 

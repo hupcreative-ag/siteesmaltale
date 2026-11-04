@@ -10,7 +10,8 @@ import Avaliacoes from '../components/home/Avaliacoes.astro';
 import Faq from '../components/home/Faq.astro';
 import { getImage } from 'astro:assets';
 import { totalUnidades, porExtenso, listaCidades, unidadesAtivas } from '../lib/unidades';
-import { salao } from '../lib/schema';
+import { salao, salaoId, pagina, faq, ORG_ID } from '../lib/schema';
+import { FAQ } from '../data/faq';
 import { SITE } from '../config/site';
 
 // Sem faixa de contato na Home: cada unidade já tem o botão de WhatsApp.
@@ -23,9 +24,19 @@ const saloes = await Promise.all(
     return salao(u, foto ? new URL(foto.src, SITE.url).href : undefined);
   }),
 );
+
+const titulo = 'Esmaltale | Esmalteria em Salvador e Lauro de Freitas';
+const schema = [
+  pagina('WebPage', '/', titulo, descricao, {
+    imagem: new URL('/og-image.jpg', SITE.url).href,
+    principal: [ORG_ID, ...unidadesAtivas.map(salaoId)],
+  }),
+  faq(FAQ, '/'),
+  ...saloes,
+];
 ---
 
-<BaseLayout title="Esmaltale | Esmalteria em Salvador e Lauro de Freitas" description={descricao} schema={saloes}>
+<BaseLayout title={titulo} description={descricao} schema={schema}>
   <HeroHome />
   <SobreResumo />
   <Unidades />

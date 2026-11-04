@@ -24,6 +24,14 @@ ErrorDocument 404 /404.html
   # Pasta .git deixada pelo deploy da Hostinger: nunca servir
   RewriteRule (^|/)\\.git(/|$) - [R=404,L]
 
+  # Endereços comuns do site antigo (WordPress) → páginas novas
+  RewriteRule ^(home|inicio|index\\.php)/?$ / [R=301,L,NC]
+  RewriteRule ^(sobre-nos|quem-somos|a-esmaltale|institucional)/?$ /sobre/ [R=301,L,NC]
+  RewriteRule ^(unidades|nossas-unidades|lojas-esmaltale|enderecos|contato|fale-conosco|agendamento|agendar)/?$ /lojas/ [R=301,L,NC]
+  RewriteRule ^(servicos|nossos-servicos)/?$ /#servicos [R=301,L,NC,NE]
+  RewriteRule ^(alongamento|alongamento-de-unhas|unhas-de-gel|banho-de-gel|banho-de-cristal|fibra-de-vidro)/?$ /nail-art/ [R=301,L,NC]
+  RewriteRule ^(podologo|podologa|podologia-salvador)/?$ /podologia/ [R=301,L,NC]
+
   # Sempre HTTPS
   RewriteCond %{HTTPS} off
   RewriteCond %{HTTP:X-Forwarded-Proto} !https

@@ -10,22 +10,37 @@ import Brilhos from '../components/sections/Brilhos.astro';
 import { SERVICOS_NAIL_ART } from '../data/nailArt';
 import { SERVICOS } from '../data/servicos';
 import { listaCidades } from '../lib/unidades';
-import { breadcrumb, servico, faq } from '../lib/schema';
+import { breadcrumb, servico, faq, pagina } from '../lib/schema';
+import { getImage } from 'astro:assets';
+import { SITE } from '../config/site';
+import fotoNailArt from '../assets/nail-art/fibra-de-vidro.jpg';
 
 const titulo = 'Nail Art, Alongamento e Banho de Gel | Esmaltale';
 const descricao = `Alongamento em fibra de vidro, unhas postiças, banho de cristal e banho de gel em ${listaCidades}. Agende online na Esmaltale.`;
 
 const nailArt = SERVICOS.find((s) => s.slug === 'nail-art');
 const perguntas = SERVICOS_NAIL_ART.flatMap((s) => [s.duracao, ...(s.diferenca ? [s.diferenca] : [])]);
+const fotoPrincipal = await getImage({ src: fotoNailArt, width: 1200, format: 'jpg' });
 const schema = [
+  pagina('WebPage', '/nail-art/', titulo, descricao, {
+    imagem: new URL(fotoPrincipal.src, SITE.url).href,
+    principal: [`${SITE.url}/nail-art/#servico`, ...SERVICOS_NAIL_ART.map((s) => `${SITE.url}/nail-art/#${s.id}`)],
+  }),
   breadcrumb([{ nome: 'Nail Art', caminho: '/nail-art/' }]),
   ...(nailArt ? [servico(nailArt.nome, nailArt.descricao, '/nail-art/')] : []),
   ...SERVICOS_NAIL_ART.map((s) => servico(s.nome, s.descricao, `/nail-art/#${s.id}`)),
-  faq(perguntas),
+  faq(perguntas, '/nail-art/'),
 ];
 ---
 
-<BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
+<BaseLayout
+  title={titulo}
+  description={descricao}
+  schema={schema}
+  ogImage={fotoNailArt}
+  ogImageAlt="Unhas alongadas em fibra de vidro feitas na Esmaltale"
+  contactStrip
+>
   <HeroInternal tag="Nail Art" titulo="Unhas do seu jeito, do formato ao acabamento." trilha="Nail Art">
     <Brilhos
       slot="decor"

@@ -6,16 +6,17 @@ import type { ImageMetadata } from 'astro';
 import IconArrow from '../components/icons/IconArrow.astro';
 import Brilhos from '../components/sections/Brilhos.astro';
 import { unidadesAtivas, listaCidades } from '../lib/unidades';
-import { breadcrumb, servico } from '../lib/schema';
+import { breadcrumb, servico, pagina } from '../lib/schema';
+import { DESCRICAO_PODOLOGIA, INTRO_PODOLOGIA, TRATAMENTOS as TRATAMENTOS_DADOS } from '../data/podologia';
+import { getImage } from 'astro:assets';
+import { SITE } from '../config/site';
 import podologia01 from '../assets/podologia/podologia-01.jpg';
 import podologia02 from '../assets/podologia/podologia-02.jpg';
 import encerramento from '../assets/podologia/podologia-encerramento.jpg';
 
 const titulo = `Podologia em ${listaCidades} | Esmaltale`;
-const descricao =
-  'Tratamento de unhas encravadas, calos, fissuras, micoses e bolhas com profissionais treinadas e instrumentos esterilizados em autoclave.';
-const intro =
-  'Os pés carregam o peso do dia todo e merecem o mesmo cuidado que qualquer outra parte do corpo. Podologia não é estética: é saúde. Na Esmaltale, o serviço é realizado por profissionais treinadas para identificar, tratar e prevenir problemas reais.';
+const descricao = DESCRICAO_PODOLOGIA;
+const intro = INTRO_PODOLOGIA;
 
 // Fotos ilustrativas dos tratamentos: basta salvar em src/assets/podologia/ com o nome de `arquivo`.
 // Enquanto a foto não existe, o card usa o gradiente da marca e mostra o nome esperado.
@@ -25,44 +26,17 @@ const FOTOS = import.meta.glob<{ default: ImageMetadata }>('../assets/podologia/
 const foto = (arquivo: string) =>
   Object.entries(FOTOS).find(([caminho]) => caminho.split('/').pop()?.replace(/\.\w+$/, '') === arquivo)?.[1].default;
 
-const TRATAMENTOS = [
-  {
-    nome: 'Unhas encravadas',
-    texto: 'Tratamento do encravamento sem cirurgia, com técnica adequada para cada grau de severidade e orientação para prevenção.',
-    arquivo: 'tratamento-unhas-encravadas',
-    alt: 'Podóloga de luvas tratando a lateral da unha do dedão de uma cliente',
-  },
-  {
-    nome: 'Calos e hiperqueratose',
-    texto: 'Remoção segura de calos, durezas e pele grossa nas regiões de pressão dos pés.',
-    arquivo: 'tratamento-calos',
-    alt: 'Podóloga de luvas lixando a sola do pé de uma cliente',
-  },
-  {
-    nome: 'Fissuras e rachaduras',
-    texto: 'Tratamento de fissuras nos calcanhares com hidratação profunda e remoção da pele seca acumulada.',
-    arquivo: 'tratamento-fissuras',
-    alt: 'Mãos de luvas aplicando creme hidratante no calcanhar de uma cliente',
-  },
-  {
-    nome: 'Infecções e micoses',
-    texto:
-      'Identificação e manejo inicial de micoses nas unhas e entre os dedos, com orientação sobre cuidados e encaminhamento quando necessário.',
-    arquivo: 'tratamento-micoses',
-    alt: 'Podóloga de luvas examinando as unhas do pé de uma cliente com lupa',
-  },
-  {
-    nome: 'Bolhas e úlceras',
-    texto: 'Cuidado com lesões nos pés com protocolo de higiene rigoroso.',
-    arquivo: 'tratamento-bolhas',
-    alt: 'Instrumentos esterilizados e gaze sobre bandeja ao lado do pé de uma cliente',
-  },
-].map((t) => ({ ...t, imagem: foto(t.arquivo) }));
+const TRATAMENTOS = TRATAMENTOS_DADOS.map((t) => ({ ...t, imagem: foto(t.arquivo) }));
 
 // "em Salvador ou em Lauro de Freitas", a partir das cidades das unidades ativas
 const cidadesOu = [...new Set(unidadesAtivas.map((u) => u.cidade))].join(' ou em ');
 
+const fotoPrincipal = await getImage({ src: podologia01, width: 1200, format: 'jpg' });
 const schema = [
+  pagina('WebPage', '/podologia/', titulo, descricao, {
+    imagem: new URL(fotoPrincipal.src, SITE.url).href,
+    principal: [`${SITE.url}/podologia/#servico`],
+  }),
   breadcrumb([{ nome: 'Podologia', caminho: '/podologia/' }]),
   servico('Podologia', intro, '/podologia/', {
     hasOfferCatalog: {
@@ -77,7 +51,14 @@ const schema = [
 ];
 ---
 
-<BaseLayout title={titulo} description={descricao} schema={schema} contactStrip>
+<BaseLayout
+  title={titulo}
+  description={descricao}
+  schema={schema}
+  ogImage={podologia01}
+  ogImageAlt="Podóloga atendendo uma cliente na Esmaltale"
+  contactStrip
+>
   <HeroInternal titulo="Podologia" trilha="Podologia">
     <p class="podologia-intro">{intro}</p>
     <div class="hero-internal__acoes">

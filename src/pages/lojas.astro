@@ -21,7 +21,8 @@ import {
   formatarTelefone,
   telefoneHref,
 } from '../lib/unidades';
-import { breadcrumb, pagina, salao } from '../lib/schema';
+import { breadcrumb, pagina, salao, salaoId } from '../lib/schema';
+import fotoLojas from '../assets/lojas/salvador-shopping-02.jpg';
 
 const titulo = `Unidades Esmaltale em ${listaCidades}`;
 const descricao = `Endereços, horários e contatos das ${porExtenso(totalUnidades)} unidades da Esmaltale nos shoppings de ${listaCidades}. Agende pelo Trinks ou WhatsApp.`;
@@ -38,14 +39,24 @@ const saloes = await Promise.all(
     return salao(u, foto ? new URL(foto.src, SITE.url).href : undefined);
   }),
 );
+const fotoPrincipal = await getImage({ src: fotoLojas, width: 1200, format: 'jpg' });
 const schema = [
-  pagina('CollectionPage', '/lojas/', 'Unidades Esmaltale', descricao),
+  pagina('CollectionPage', '/lojas/', 'Unidades Esmaltale', descricao, {
+    imagem: new URL(fotoPrincipal.src, SITE.url).href,
+    principal: unidadesAtivas.map(salaoId),
+  }),
   breadcrumb([{ nome: 'Lojas', caminho: '/lojas/' }]),
   ...saloes,
 ];
 ---
 
-<BaseLayout title={titulo} description={descricao} schema={schema}>
+<BaseLayout
+  title={titulo}
+  description={descricao}
+  schema={schema}
+  ogImage={fotoLojas}
+  ogImageAlt="Interior de uma unidade Esmaltale, com bancadas de atendimento e prateleiras de esmaltes"
+>
   <HeroInternal titulo="Nossas unidades" trilha="Lojas">
     <p>Estamos nos principais shoppings da Bahia. Escolha a mais perto de você.</p>
     <ul class="atalhos" aria-label="Ir para a unidade">

@@ -12,7 +12,9 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - `src/data/servicos.ts` — os 10 cards de serviço da Home. Sem `imagem`, o card usa o gradiente da marca com o ícone branco.
 - `src/data/galeria.ts`, `src/data/faq.ts` (rascunho aprovado pelo usuário vira texto oficial), `src/data/avaliacoes.ts` (SOMENTE avaliações reais do Google; nunca inventar).
 - Animação de entrada: atributo `data-reveal` (e `data-reveal-stagger` no pai) via `src/scripts/reveal.ts`.
-- `src/data/nailArt.ts` — os 4 serviços da página Nail Art. `src/lib/schema.ts` — JSON-LD (organização, unidades, serviços, FAQ, breadcrumb); toda página interna passa `schema` ao BaseLayout com pelo menos o breadcrumb.
+- `src/data/nailArt.ts` — os 4 serviços da página Nail Art. `src/data/podologia.ts` e `src/data/sobre.ts` — textos dessas páginas (usados também no JSON-LD e no `/llms-full.txt`).
+- `src/lib/schema.ts` — JSON-LD num único `@graph` ligado por `@id` (organização, site, página, unidades como BeautySalon dentro do ShoppingCenter, serviços, FAQ, breadcrumb). Toda página passa `schema` ao BaseLayout com o nó `pagina()` e, nas internas, o breadcrumb; `ogImage` aceita uma foto de `src/assets` (recortada para 1200x630).
+- `src/lib/llms.ts` — blocos do `/llms.txt` (resumo) e do `/llms-full.txt` (conteúdo das páginas). `scripts/sitemap-imagens.mjs` gera o `sitemap-imagens.xml` depois do build. `scripts/indexnow.mjs` (`npm run indexnow`) avisa Bing e outros buscadores; a chave fica em `public/<chave>.txt`.
 - Páginas internas usam `HeroInternal` (prop `trilha` obrigatória; slot `media` opcional) e, onde o briefing pede, `contactStrip` no BaseLayout.
 - `src/config/site.ts` — URL, ambiente, Instagram, horário, mensagens do WhatsApp, menu. `src/config/tracking.ts` — IDs GA4 e Pixel.
 - `PENDENCIAS.md` — tudo que falta da cliente. Atualizar sempre que algo entrar ou sair.
@@ -85,7 +87,8 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 1. Confirmar que a `main` está limpa, enviada e buildando.
 2. `npm run deploy:producao`: gera com `production`, envia para `producao` e cria a tag `prod-AAAA-MM-DD-HHMM`.
 3. Esperar a Hostinger publicar e verificar esmaltale.com.br: rotas, 404, HTTPS, redirecionamento de www e e-mail (MX intacto com `dig MX esmaltale.com.br`).
-4. Primeira vez: confirmar com o usuário que o backup completo foi gerado no hPanel antes de rodar o passo 2, passar o passo a passo do hPanel (limpar o WordPress de `public_html`, ligar o Git) e só verificar depois da confirmação.
+4. `npm run indexnow` para avisar os buscadores das páginas atualizadas.
+5. Primeira vez: confirmar com o usuário que o backup completo foi gerado no hPanel antes de rodar o passo 2, passar o passo a passo do hPanel (limpar o WordPress de `public_html`, ligar o Git) e só verificar depois da confirmação.
 
 ### "volta a versão anterior" (rollback)
 

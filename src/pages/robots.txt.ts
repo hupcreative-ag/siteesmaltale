@@ -1,11 +1,32 @@
 /**
  * robots.txt por ambiente. Preview: bloqueia tudo. Produção: libera, inclusive para os
- * robôs de busca por IA (citados um a um para deixar a permissão explícita), e aponta o sitemap.
+ * robôs de busca e de IA (citados um a um para deixar a permissão explícita), e aponta o sitemap.
  */
 import type { APIRoute } from 'astro';
 import { IS_PRODUCTION, SITE } from '../config/site';
 
-const ROBOS_IA = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'PerplexityBot', 'Google-Extended'];
+const ROBOS_IA = [
+  'Googlebot',
+  'Googlebot-Image',
+  'Google-Extended',
+  'GoogleOther',
+  'Bingbot',
+  'GPTBot',
+  'OAI-SearchBot',
+  'ChatGPT-User',
+  'ClaudeBot',
+  'Claude-SearchBot',
+  'Claude-User',
+  'PerplexityBot',
+  'Perplexity-User',
+  'Applebot',
+  'Applebot-Extended',
+  'meta-externalagent',
+  'Amazonbot',
+  'DuckAssistBot',
+  'MistralAI-User',
+  'CCBot',
+];
 
 export const GET: APIRoute = () => {
   const corpo = IS_PRODUCTION

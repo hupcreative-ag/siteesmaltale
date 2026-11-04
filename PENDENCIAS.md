@@ -37,6 +37,16 @@ Carrossel da Home ligado no preview, só com o hero institucional e o banner Exp
 - [x] Open Graph e Twitter card com `public/og-image.jpg` (1200x630), meta de região (BR-BA), pré-carregamento da Gazpacho.
 - [x] `robots.txt` por ambiente (preview bloqueado; produção liberada, com os robôs de IA citados) e `/llms.txt` gerado dos dados (marca, serviços, unidades, horário, FAQ, links).
 - [x] FAQ reescrito como as pessoas perguntam a buscadores e IAs (com marca e cidade) + pergunta "Quais serviços a Esmaltale oferece?". Textos alternativos das fotos com serviço e cidade.
+- [x] **Varredura de SEO, GEO e imagens (2026-11-03):**
+  - JSON-LD num único grafo ligado por `@id` em todas as páginas: organização (descrição, logo com dimensões, áreas atendidas, assuntos, unidades como suborganizações), site, nó da página (imagem principal, data, trilha, entidade principal), unidades como BeautySalon/NailSalon dentro do shopping (ShoppingCenter), com mapa, contato de agendamento, Trinks e página da unidade, serviços com canal de agendamento e FAQ.
+  - Imagem de compartilhamento própria em Sobre, Nail Art, Podologia e Lojas (1200x630, com descrição); título, descrição e canonical no topo do `<head>`; robots com `max-snippet:-1`.
+  - `sitemap-imagens.xml` com as fotos de cada página; data de atualização no sitemap; galeria com texto alternativo nas fotos.
+  - `/llms-full.txt` com o conteúdo de todas as páginas (institucional, nail art em detalhe, tratamentos de podologia, unidades com mapa, FAQ e avaliações reais), ligado no `/llms.txt` e no `<head>`.
+  - `robots.txt` citando os robôs de busca e de IA (Google, Bing, OpenAI, Anthropic, Perplexity, Apple, Meta, Amazon, DuckDuckGo, Mistral, Common Crawl).
+  - Redirecionamentos 301 de endereços comuns de sites antigos (`/contato`, `/unidades`, `/sobre-nos`, `/servicos`...).
+  - IndexNow configurado (`npm run indexnow` depois de cada publicação).
+- [ ] **Google Search Console:** enviar `https://esmaltale.com.br/sitemap-index.xml` em Sitemaps e pedir indexação da Home. O domínio já tem o registro de verificação do Google no DNS.
+- [ ] **Bing Webmaster Tools:** importar o site do Search Console (alimenta também a busca do ChatGPT e do Copilot).
 - [ ] **Perfil do Google (Google Meu Negócio) de cada unidade:** mandar o link de cada um. Entra no `sameAs` de cada BeautySalon e ajuda o Google e as IAs a ligarem o site às avaliações e ao mapa.
 - [x] Avaliações reais do Google na Home (2026-11-03). Ficam fora do schema: avaliações do Google não podem ser marcadas como AggregateRating do site.
 - [x] **Fase 4 (2026-11-03), Lighthouse nas 5 páginas, celular e desktop:** acessibilidade 100, boas práticas 100 e desempenho de 97 a 100 no preview. SEO 100 no build de produção (no preview o noindex é proposital). Títulos e descrições únicos com bom tamanho, um h1 por página, canonical, JSON-LD válido, sitemap com as 5 páginas e nenhum link interno quebrado. A página 404 deixou de ter canonical.
