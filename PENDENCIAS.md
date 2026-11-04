@@ -8,7 +8,7 @@ Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e car
 - [ ] **Shopping Barra · endereço** a confirmar: Av. Centenário, 2992, Chame-Chame, Salvador, BA, 40155-151.
 - [ ] **Shopping Barra · link do Trinks** a confirmar: usando https://www.trinks.com/esmaltale-shopping-barra (a página existe no Trinks com o nome da unidade).
 - [ ] **Shopping Barra · foto definitiva da unidade**. Hoje o site usa a foto provisória do tapume (`lojas/shopping-barra.webp`, recebida em 2026-11-02, original em `conteudo/Imagens/Lojas/shopping-barra-provisoria.webp`).
-- [ ] **Shopping Barra · latitude e longitude** (opcional, para o mapa no Google).
+- [x] Shopping Barra · latitude e longitude: do perfil no Google (2026-11-03).
 - [x] Parque Shopping Bahia · endereço: Av. Santos Dumont, 4360, conforme a landing aprovada (decidido em 2026-11-02).
 
 ## Imagens de conteúdo
@@ -45,9 +45,8 @@ Carrossel da Home ligado no preview, só com o hero institucional e o banner Exp
   - `robots.txt` citando os robôs de busca e de IA (Google, Bing, OpenAI, Anthropic, Perplexity, Apple, Meta, Amazon, DuckDuckGo, Mistral, Common Crawl).
   - Redirecionamentos 301 de endereços comuns de sites antigos (`/contato`, `/unidades`, `/sobre-nos`, `/servicos`...).
   - IndexNow configurado (`npm run indexnow` depois de cada publicação).
-- [ ] **Google Search Console:** enviar `https://esmaltale.com.br/sitemap-index.xml` em Sitemaps e pedir indexação da Home. O domínio já tem o registro de verificação do Google no DNS.
-- [ ] **Bing Webmaster Tools:** importar o site do Search Console (alimenta também a busca do ChatGPT e do Copilot).
-- [ ] **Perfil do Google (Google Meu Negócio) de cada unidade:** mandar o link de cada um. Entra no `sameAs` de cada BeautySalon e ajuda o Google e as IAs a ligarem o site às avaliações e ao mapa.
+- [x] Perfis do Google das 6 unidades (2026-11-03): link público do Maps (`googleCid`) no `sameAs` de cada BeautySalon, no botão de mapa/rotas e no llms.txt; coordenadas atualizadas com as do perfil (inclusive Shopping Barra, que não tinha).
+- [x] Google Search Console e Bing Webmaster Tools configurados pelo usuário (2026-11-03).
 - [x] Avaliações reais do Google na Home (2026-11-03). Ficam fora do schema: avaliações do Google não podem ser marcadas como AggregateRating do site.
 - [x] **Fase 4 (2026-11-03), Lighthouse nas 5 páginas, celular e desktop:** acessibilidade 100, boas práticas 100 e desempenho de 97 a 100 no preview. SEO 100 no build de produção (no preview o noindex é proposital). Títulos e descrições únicos com bom tamanho, um h1 por página, canonical, JSON-LD válido, sitemap com as 5 páginas e nenhum link interno quebrado. A página 404 deixou de ter canonical.
   - Teclado: "Pular para o conteúdo" aparece no primeiro Tab; o modal de agendamento abre com o foco no "Fechar", fecha com Esc e devolve o foco ao botão.

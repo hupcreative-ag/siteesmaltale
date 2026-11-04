@@ -34,6 +34,9 @@ export interface Unidade {
   whatsapp: string;
   trinksUrl?: string;
   landingUrl?: string;
+  /** ID do perfil no Google (o `fid` do painel do Perfil da Empresa). Vira o link público do Maps. */
+  googleCid?: string;
+  /** Coordenadas do perfil no Google Maps. */
   lat?: number;
   lng?: number;
   foto?: ImageMetadata;
@@ -59,6 +62,9 @@ export const UNIDADES: Unidade[] = [
     whatsapp: '71999494089',
     // Página encontrada no Trinks com o nome da unidade; aguardando confirmação da cliente.
     trinksUrl: 'https://www.trinks.com/esmaltale-shopping-barra',
+    googleCid: '7693819465966985537',
+    lat: -13.0071675,
+    lng: -38.5247271,
     foto: shoppingBarra,
     fotoPosicao: 'center 34%',
     fotoProvisoria: true,
@@ -79,8 +85,9 @@ export const UNIDADES: Unidade[] = [
     whatsapp: '71993016341',
     trinksUrl: 'https://www.trinks.com/esmaltalesalvadorshopping',
     landingUrl: 'https://loja.esmaltale.com.br/conheca/salvadorshopping',
-    lat: -12.9785,
-    lng: -38.4551,
+    googleCid: '7686953596061038359',
+    lat: -12.9785509,
+    lng: -38.4541098,
     foto: salvadorShopping,
     fotoPosicao: 'center 40%',
   },
@@ -100,8 +107,9 @@ export const UNIDADES: Unidade[] = [
     // O hífen no final faz parte do link (sem ele cai na home do Trinks).
     trinksUrl: 'https://www.trinks.com/esmaltale-shopping-da-bahia-',
     landingUrl: 'https://loja.esmaltale.com.br/conheca/shoppingdabahia',
-    lat: -12.9808,
-    lng: -38.4687,
+    googleCid: '3673152592179540768',
+    lat: -12.9817061,
+    lng: -38.4646255,
     foto: shoppingDaBahia,
     fotoPosicao: 'center 30%',
   },
@@ -122,8 +130,9 @@ export const UNIDADES: Unidade[] = [
     whatsapp: '71991152859',
     trinksUrl: 'https://www.trinks.com/esmaltale-shop-paralela',
     landingUrl: 'https://loja.esmaltale.com.br/conheca/shoppingparalela',
-    lat: -12.9463,
-    lng: -38.4112,
+    googleCid: '1865418680387577062',
+    lat: -12.9366876,
+    lng: -38.3945855,
     foto: shoppingParalela,
     fotoPosicao: 'center 35%',
   },
@@ -143,8 +152,9 @@ export const UNIDADES: Unidade[] = [
     whatsapp: '71997002950',
     trinksUrl: 'https://www.trinks.com/esmaltale-shopping-bela-vista',
     landingUrl: 'https://loja.esmaltale.com.br/conheca/shoppingbelavista',
-    lat: -12.9792,
-    lng: -38.4815,
+    googleCid: '11797337463690376936',
+    lat: -12.9704379,
+    lng: -38.4742036,
     foto: shoppingBelaVista,
     fotoPosicao: 'center 30%',
   },
@@ -162,8 +172,9 @@ export const UNIDADES: Unidade[] = [
     whatsapp: '71983259511',
     trinksUrl: 'https://www.trinks.com/esmaltale-salvador-norte-shopping',
     landingUrl: 'https://loja.esmaltale.com.br/conheca/parqueshoppingbahia',
-    lat: -12.893111,
-    lng: -38.330456,
+    googleCid: '17028121796568796822',
+    lat: -12.8884395,
+    lng: -38.318028,
     foto: parqueShoppingBahia,
     fotoPosicao: 'center 45%',
   },

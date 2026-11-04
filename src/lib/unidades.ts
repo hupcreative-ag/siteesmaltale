@@ -74,7 +74,15 @@ export function enderecoCompleto(u: Unidade): string {
   return [u.endereco, u.bairro, `${u.cidade} - ${u.uf}`].filter(Boolean).join(' · ');
 }
 
+/** Perfil público da unidade no Google Maps (avaliações, fotos, rotas). */
+export function perfilGoogleUrl(u: Unidade): string | undefined {
+  return u.googleCid ? `https://www.google.com/maps?cid=${u.googleCid}` : undefined;
+}
+
+/** Link do mapa: o perfil da unidade no Google quando existe; senão, a busca pelo endereço. */
 export function mapaUrl(u: Unidade): string {
+  const perfil = perfilGoogleUrl(u);
+  if (perfil) return perfil;
   const consulta = `Esmaltale ${u.nome}, ${u.endereco}, ${u.cidade} - ${u.uf}, ${u.cep}`;
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(consulta)}`;
 }

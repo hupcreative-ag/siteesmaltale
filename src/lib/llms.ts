@@ -42,7 +42,8 @@ export const secaoUnidades = (completa = false) => [
     ...(u.telefone ? [`- Telefone: ${formatarTelefone(u.telefone)}`] : []),
     `- WhatsApp: ${formatarTelefone(u.whatsapp)} (https://wa.me/55${u.whatsapp})`,
     ...(u.trinksUrl ? [`- Agendamento online: ${u.trinksUrl}`] : []),
-    ...(completa ? [`- Mapa: ${mapaUrl(u)}`, ...(u.landingUrl ? [`- Página da unidade: ${u.landingUrl}`] : [])] : []),
+    `- ${u.googleCid ? 'Perfil no Google Maps (avaliações e rotas)' : 'Mapa'}: ${mapaUrl(u)}`,
+    ...(completa && u.landingUrl ? [`- Página da unidade: ${u.landingUrl}`] : []),
     '',
   ]),
 ];

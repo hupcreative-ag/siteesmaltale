@@ -5,7 +5,7 @@
  * único grafo de entidades em cada página.
  */
 import { SITE, HORARIO } from '../config/site';
-import { unidadesAtivas, totalUnidades, porExtenso, listaCidades, localizacao, mapaUrl } from './unidades';
+import { unidadesAtivas, totalUnidades, porExtenso, listaCidades, localizacao, mapaUrl, perfilGoogleUrl } from './unidades';
 import { SERVICOS } from '../data/servicos';
 import type { Unidade } from '../data/unidades';
 
@@ -110,8 +110,8 @@ export function salao(u: Unidade, imagemUrl?: string) {
       url: `https://wa.me/55${u.whatsapp}`,
       availableLanguage: 'pt-BR',
     },
-    ...((u.trinksUrl || u.landingUrl) && {
-      sameAs: [u.trinksUrl, u.landingUrl].filter(Boolean),
+    ...((u.googleCid || u.trinksUrl || u.landingUrl) && {
+      sameAs: [perfilGoogleUrl(u), u.trinksUrl, u.landingUrl].filter(Boolean),
     }),
     ...(u.trinksUrl && {
       potentialAction: {
