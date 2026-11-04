@@ -8,8 +8,9 @@ Substitua a página **/conheca/** (lista de unidades, a do QR Code dos panfletos
 
 1. **Troque o arquivo inteiro.** O conteúdo de `conheca/index.html` substitui a página atual de /conheca/ exatamente como está. Não reescreva, não reformate, não traduza e não "melhore" textos, classes, cores, ícones ou estrutura.
 
-2. **Suba as imagens.** Crie a pasta `assets/conheca/` na raiz do site e coloque nela os 7 arquivos de `assets/conheca/`, com os mesmos nomes:
+2. **Suba as imagens e a fonte.** Crie a pasta `assets/conheca/` na raiz do site e coloque nela os 8 arquivos de `assets/conheca/`, com os mesmos nomes:
    - `logo-esmaltale.svg`
+   - `gazpacho-bold.woff2` (fonte dos títulos, a mesma do esmaltale.com.br)
    - `shopping-barra.webp`, `shopping-da-bahia.webp`, `shopping-paralela.webp`, `parque-shopping-bahia.webp`, `salvador-shopping.webp`, `shopping-bela-vista.webp`
 
    A página usa caminhos absolutos (`/assets/conheca/...`). O favicon continua sendo `/assets/logofav.png`, que já existe.
@@ -25,17 +26,17 @@ Substitua a página **/conheca/** (lista de unidades, a do QR Code dos panfletos
 5. **Confira depois de publicar,** num celular:
    - /conheca/ abre, com o logo e as 6 fotos.
    - Ao tocar numa loja, as opções descem logo abaixo dela, e só uma fica aberta por vez.
-   - "Pegar meu cupom" (só nas lojas com cupom ativo) leva à landing do cupom daquela loja.
-   - "Agendar online" abre o Trinks da loja, e "WhatsApp" abre a conversa com a mensagem pronta.
+   - O ticket "Pegar meu cupom" (só nas lojas com cupom ativo) leva à landing do cupom daquela loja.
+   - "Agendamento online (Trinks)" abre o Trinks da loja, e "Agendar pelo WhatsApp" abre a conversa com a mensagem pronta.
    - "Conhecer a unidade" leva a /conheca/<slug>.
-   - Tire o cupom de uma landing e confirme que o selo "Cupom ativo" some desta página.
+   - Tire o cupom de uma landing e confirme que o adesivo "Cupom" e o ticket somem desta loja.
 
 ---
 
 ## Como editar depois (direto no `STORES_DATA`)
 
 - **Ordem das lojas:** troque os números de `priority` (1 aparece primeiro).
-- **Selo "Nova unidade":** `isNew: true`.
-- **Selo de promoção:** `promo: 'Promoção'`, ou outro texto curto. Deixe `''` para esconder.
-- **Sem Trinks:** apague `trinksUrl` e o botão some, ficando só o WhatsApp.
+- **"Nova unidade" acima do nome:** `isNew: true`.
+- **Adesivo de promoção na foto:** `promo: 'Promoção'`, ou outro texto curto. Deixe `''` para esconder.
+- **Sem Trinks:** apague `trinksUrl` e a opção some, ficando só o WhatsApp.
 - **Foto nova:** 240x288 px, em WebP, na pasta `assets/conheca/`, e troque `image`.
