@@ -14,7 +14,7 @@ import { bannersAtivos } from '../../data/hero';
 import { totalUnidades, porExtenso } from '../../lib/unidades';
 import IconArrow from '../icons/IconArrow.astro';
 
-const titulo = 'O cuidado que você merece, sempre que precisar.';
+const titulo = 'A sua pausa favorita de beleza e bem-estar';
 const palavras = titulo.split(' ');
 let indiceLetra = 0;
 
@@ -522,6 +522,10 @@ const comCarrossel = totalSlides > 1;
 
     .hero__content--banner > * {
       max-width: min(560px, 44vw);
+    }
+
+    .hero__content--centro .hero__title {
+      max-width: 18ch;
     }
   }
 

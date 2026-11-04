@@ -1,5 +1,8 @@
 ---
-// GA4 e Meta Pixel em scripts separados, ambos assíncronos. Só em produção.
+// GA4 e Meta Pixel em scripts separados. Só em produção.
+// As filas (dataLayer e fbq) existem desde o início, então nenhum evento se perde, mas as
+// bibliotecas só baixam depois do carregamento da página, quando o navegador fica ocioso.
+// Carregadas cedo, elas atrasavam a foto do hero (LCP de 2,2 s para 7,9 s no celular).
 import { IS_PRODUCTION } from '../../config/site';
 import { TRACKING } from '../../config/tracking';
 
@@ -9,7 +12,6 @@ const { ga4, metaPixel } = TRACKING;
 {
   IS_PRODUCTION && (
     <>
-      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`} />
       <script is:inline define:vars={{ ga4 }}>
         window.dataLayer = window.dataLayer || [];
         function gtag() {
@@ -18,9 +20,22 @@ const { ga4, metaPixel } = TRACKING;
         window.gtag = gtag;
         gtag('js', new Date());
         gtag('config', ga4);
+
+        (function (src) {
+          function carregar() {
+            var s = document.createElement('script');
+            s.async = true;
+            s.src = src;
+            document.head.appendChild(s);
+          }
+          function quandoOcioso() {
+            'requestIdleCallback' in window ? requestIdleCallback(carregar, { timeout: 2500 }) : setTimeout(carregar, 1200);
+          }
+          document.readyState === 'complete' ? quandoOcioso() : addEventListener('load', quandoOcioso, { once: true });
+        })('https://www.googletagmanager.com/gtag/js?id=' + ga4);
       </script>
       <script is:inline define:vars={{ metaPixel }}>
-        !(function (f, b, e, v, n, t, s) {
+        !(function (f, b, e, v, n) {
           if (f.fbq) return;
           n = f.fbq = function () {
             n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
@@ -30,11 +45,17 @@ const { ga4, metaPixel } = TRACKING;
           n.loaded = !0;
           n.version = '2.0';
           n.queue = [];
-          t = b.createElement(e);
-          t.async = !0;
-          t.src = v;
-          s = b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t, s);
+
+          function carregar() {
+            var t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            b.head.appendChild(t);
+          }
+          function quandoOcioso() {
+            'requestIdleCallback' in f ? f.requestIdleCallback(carregar, { timeout: 2500 }) : setTimeout(carregar, 1200);
+          }
+          b.readyState === 'complete' ? quandoOcioso() : f.addEventListener('load', quandoOcioso, { once: true });
         })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', metaPixel);
         fbq('track', 'PageView');
