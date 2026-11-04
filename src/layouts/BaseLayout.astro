@@ -45,7 +45,7 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
     <Tracking />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {!noindex && <link rel="canonical" href={canonical} />}
     <meta name="robots" content={IS_PRODUCTION && !noindex ? 'index, follow, max-image-preview:large' : 'noindex, nofollow'} />
     <meta name="theme-color" content="#6B1F7C" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />

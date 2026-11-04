@@ -1,6 +1,6 @@
 # Pendências
 
-Atualizado em 2026-11-03 (avaliações do Google e ajustes pós-Fase 3).
+Atualizado em 2026-11-03 (Fase 4: SEO, Lighthouse e acessibilidade; preview publicado).
 
 ## Dados das unidades
 
@@ -47,6 +47,9 @@ Carrossel da Home ligado no preview, só com o hero institucional e o banner Exp
 - [x] FAQ reescrito como as pessoas perguntam a buscadores e IAs (com marca e cidade) + pergunta "Quais serviços a Esmaltale oferece?". Textos alternativos das fotos com serviço e cidade.
 - [ ] **Perfil do Google (Google Meu Negócio) de cada unidade:** mandar o link de cada um. Entra no `sameAs` de cada BeautySalon e ajuda o Google e as IAs a ligarem o site às avaliações e ao mapa.
 - [x] Avaliações reais do Google na Home (2026-11-03). Ficam fora do schema: avaliações do Google não podem ser marcadas como AggregateRating do site.
+- [x] **Fase 4 (2026-11-03), Lighthouse nas 5 páginas, celular e desktop:** acessibilidade 100, boas práticas 100 e desempenho de 97 a 100 no preview. SEO 100 no build de produção (no preview o noindex é proposital). Títulos e descrições únicos com bom tamanho, um h1 por página, canonical, JSON-LD válido, sitemap com as 5 páginas e nenhum link interno quebrado. A página 404 deixou de ter canonical.
+  - Teclado: "Pular para o conteúdo" aparece no primeiro Tab; o modal de agendamento abre com o foco no "Fechar", fecha com Esc e devolve o foco ao botão.
+  - Em produção, "boas práticas" cai para 77 por causa do cookie de terceiros do Meta Pixel. É esperado com o Pixel ligado e não afeta o Google.
 
 ## Textos
 
