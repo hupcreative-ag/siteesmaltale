@@ -625,6 +625,18 @@ html.js [data-reveal].is-revealed {
   transform: none;
 }
 
+/* Chegada por transição de página: os blocos já visíveis só esmaecem (sem subir) */
+html.vt-ativa [data-reveal] {
+  transform: none;
+}
+
+/* Títulos de entrada (hero da Home e heros internos) ficam parados quando a página chega
+   por transição */
+html.vt-entrada .split-char,
+html.vt-entrada .hero-internal__texto {
+  animation: none;
+}
+
 /* ---------- Movimento reduzido ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,

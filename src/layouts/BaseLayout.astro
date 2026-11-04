@@ -42,6 +42,18 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <!-- Página aberta por transição: o título entra parado (a troca já esmaece) e os blocos
+         da primeira tela só aparecem, sem subir; senão o texto parece "pular". -->
+    <script is:inline>
+      addEventListener('pagereveal', function (e) {
+        if (!e.viewTransition) return;
+        var html = document.documentElement;
+        html.classList.add('vt-entrada', 'vt-ativa');
+        e.viewTransition.finished.finally(function () {
+          html.classList.remove('vt-ativa');
+        });
+      });
+    </script>
     <Tracking />
     <title>{title}</title>
     <meta name="description" content={description} />
