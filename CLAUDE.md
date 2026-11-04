@@ -52,8 +52,9 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - Remoto: `https://github.com/hupcreative-ag/siteesmaltale` (privado). O git do terminal autentica pelo Keychain do macOS; não precisa do `gh`.
 - Branches:
   - `main` = código-fonte.
-  - `deploy-preview` = site pronto (dist) do preview, novo.esmaltale.com.br.
-  - `producao` = site pronto (dist) de esmaltale.com.br, só recebe envio quando o usuário mandar publicar.
+  - Branches de deploy ficam no repositório `https://github.com/esmaltalesalvador/esmatalesite` (remoto `deploy`, da conta conectada ao Git do hPanel; hupcreative-ag é colaboradora):
+    - `deploy-preview` = site pronto (dist) do preview, novo.esmaltale.com.br.
+    - `producao` = site pronto (dist) de esmaltale.com.br, só recebe envio quando o usuário mandar publicar. As tags `prod-*` também ficam lá.
 - As branches de deploy só recebem commits do `scripts/deploy.mjs`. Nunca editar, fazer merge nelas ou force push. **Nunca** force push na `main`.
 - Nunca commitar `.env*` (exceto `.env.example`) ou segredos.
 - Mensagens de commit em português, descritivas.
