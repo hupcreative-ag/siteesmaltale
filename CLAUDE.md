@@ -17,6 +17,7 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - `src/lib/llms.ts` — blocos do `/llms.txt` (resumo) e do `/llms-full.txt` (conteúdo das páginas). `scripts/sitemap-imagens.mjs` gera o `sitemap-imagens.xml` depois do build. `scripts/indexnow.mjs` (`npm run indexnow`) avisa Bing e outros buscadores; a chave fica em `public/<chave>.txt`.
 - Páginas internas usam `HeroInternal` (prop `trilha` obrigatória; slot `media` opcional) e, onde o briefing pede, `contactStrip` no BaseLayout.
 - `src/config/site.ts` — URL, ambiente, Instagram, horário, mensagens do WhatsApp, menu. `src/config/tracking.ts` — IDs GA4 e Pixel.
+- `entregas/` — arquivos para outros sistemas, fora do build (ex.: `entregas/loja-conheca/`, a página /conheca/ de loja.esmaltale.com.br, publicada pelo Antigravity). Prévia local: configuração `loja-conheca` do `.claude/launch.json`.
 - `PENDENCIAS.md` — tudo que falta da cliente. Atualizar sempre que algo entrar ou sair.
 
 ## Regras de copy
