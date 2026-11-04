@@ -41,6 +41,48 @@ html {
   html {
     scroll-behavior: smooth;
   }
+
+  /* Transição entre páginas (View Transitions entre documentos, sem JS). A página antiga
+     some rápido e a nova sobe suavemente; faixa de prévia, header e botão flutuante ficam
+     parados. Navegadores sem suporte trocam de página normalmente. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: paginaSai 200ms var(--ease) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: paginaEntra 520ms var(--ease-out-expo) 60ms both;
+  }
+
+  /* Saindo pelo menu do celular: o menu cobre header e botão, então eles entram com a página */
+  html:has(.mobile-menu.is-open) .site-header,
+  html:has(.mobile-menu.is-open) .floating-cta {
+    view-transition-name: none;
+  }
+
+  ::view-transition-group(cabecalho),
+  ::view-transition-group(faixa-previa),
+  ::view-transition-group(agendar-flutuante) {
+    animation-duration: 420ms;
+    animation-timing-function: var(--ease-out-expo);
+  }
+}
+
+@keyframes paginaSai {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes paginaEntra {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
 }
 
 h1,

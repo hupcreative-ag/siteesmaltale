@@ -67,6 +67,7 @@ Formato: JPG (ou PNG/WebP), sRGB, qualidade alta, sem texto aplicado na foto. O 
 
 ## Decisões registradas
 
+- Animações (2026-11-03): troca de página com View Transitions nativas (a página antiga some rápido, a nova sobe suave; faixa de prévia, header e botão flutuante ficam parados). Navegadores sem suporte trocam de página normalmente. Menu do celular abre como cortina com os itens subindo em sequência e fecha recolhendo para cima. Tudo desligado para quem pede menos movimento.
 - Fase 3 (2026-11-02): páginas Sobre, Nail Art, Podologia, Lojas e 404 na identidade da Home (moldura clara, Gazpacho, tons do Beauty Ticket).
   - Heros internos com trilha de navegação visível (Início / página) e o JSON-LD BreadcrumbList.
   - Sobre: a primeira frase do texto institucional abre o hero; os demais parágrafos ficam em "Nossa história" (título de seção criado, conversa com o link "Conheça nossa história" da Home); o último parágrafo vira citação em destaque. Contagem e lista de unidades geradas ("Hoje são seis... Salvador Shopping, ..., Parque Shopping Bahia e Shopping Barra"). Corrigido "o padrão não muda: O ambiente" para "o ambiente".

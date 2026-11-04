@@ -58,8 +58,8 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
   <nav aria-label="Menu" class="mobile-menu__nav container">
     <ul>
       {
-        NAV.map((item) => (
-          <li>
+        NAV.map((item, i) => (
+          <li style={`--n:${i}`}>
             <a href={item.href} aria-current={ativo(item.href) ? 'page' : undefined}>
               {item.label}
             </a>
@@ -67,7 +67,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
         ))
       }
     </ul>
-    <button type="button" class="specular-button specular-button--dark" data-booking data-booking-origem="header">
+    <button type="button" class="specular-button specular-button--dark" style={`--n:${NAV.length}`} data-booking data-booking-origem="header">
       Agende agora
     </button>
   </nav>
@@ -84,6 +84,7 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     z-index: 90;
     height: var(--header-h);
     color: var(--color-purple);
+    view-transition-name: cabecalho;
     transition:
       top 400ms var(--ease-out-expo),
       background-color 300ms var(--ease),
@@ -223,8 +224,8 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     flex-direction: column;
     color: var(--color-purple);
     isolation: isolate;
-    animation: menuIn 300ms var(--ease);
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   /* O gradiente fica preso à tela enquanto o menu rola */
@@ -236,9 +237,76 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
     display: none;
   }
 
-  @keyframes menuIn {
-    from { opacity: 0; transform: translateY(-12px); }
-    to { opacity: 1; transform: none; }
+  /* Entrada: o painel desce como uma cortina (clip-path, sem transform no pai para o fundo
+     fixo não pular) e os itens sobem em sequência. Saída: tudo recolhe para cima, mais rápido. */
+  .mobile-menu.is-open {
+    animation: menuAbre 560ms var(--ease-out-expo) both;
+  }
+
+  .mobile-menu.is-open .mobile-menu__top,
+  .mobile-menu.is-open li,
+  .mobile-menu.is-open .specular-button {
+    animation: menuItemEntra 640ms var(--ease-out-expo) both;
+    animation-delay: calc(140ms + var(--n, 0) * 45ms);
+  }
+
+  .mobile-menu.is-open .mobile-menu__top {
+    animation-delay: 80ms;
+  }
+
+  .mobile-menu.is-closing {
+    animation: menuFecha 340ms cubic-bezier(0.7, 0, 0.84, 0) both;
+  }
+
+  .mobile-menu.is-closing .mobile-menu__top,
+  .mobile-menu.is-closing li,
+  .mobile-menu.is-closing .specular-button {
+    animation: menuItemSai 200ms var(--ease) both;
+  }
+
+  @keyframes menuAbre {
+    from {
+      opacity: 0.4;
+      clip-path: inset(0 0 100% 0 round 0 0 40px 40px);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0 0 0 0 round 0);
+    }
+  }
+
+  @keyframes menuFecha {
+    from {
+      opacity: 1;
+      clip-path: inset(0 0 0 0 round 0);
+    }
+    to {
+      opacity: 0.6;
+      clip-path: inset(0 0 100% 0 round 0 0 40px 40px);
+    }
+  }
+
+  @keyframes menuItemEntra {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+  }
+
+  @keyframes menuItemSai {
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu.is-open,
+    .mobile-menu.is-closing,
+    .mobile-menu.is-open *,
+    .mobile-menu.is-closing * {
+      animation: none !important;
+    }
   }
 
   .mobile-menu__top {
@@ -310,28 +378,54 @@ const ativo = (href: string) => (href === '/' ? atual === '/' : atual.startsWith
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Menu mobile
+  // Menu mobile: abre com .is-open; fecha com .is-closing e só esconde no fim da animação
+  const semMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let timerFechar: number | undefined;
+
   function abrir() {
     if (!menu || !toggle) return;
+    window.clearTimeout(timerFechar);
+    menu.classList.remove('is-closing');
     menu.hidden = false;
+    menu.classList.add('is-open');
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
-    close?.focus();
+    close?.focus({ preventScroll: true });
   }
 
-  function fechar(devolverFoco = true) {
-    if (!menu || !toggle || menu.hidden) return;
+  function esconder() {
+    if (!menu) return;
     menu.hidden = true;
-    toggle.setAttribute('aria-expanded', 'false');
+    menu.classList.remove('is-open', 'is-closing');
     document.body.style.overflow = '';
-    if (devolverFoco) toggle.focus();
+  }
+
+  function fechar(devolverFoco = true, imediato = false) {
+    if (!menu || !toggle || menu.hidden || menu.classList.contains('is-closing')) return;
+    toggle.setAttribute('aria-expanded', 'false');
+    if (devolverFoco) toggle.focus({ preventScroll: true });
+    if (imediato || semMovimento.matches) return esconder();
+    menu.classList.remove('is-open');
+    menu.classList.add('is-closing');
+    timerFechar = window.setTimeout(esconder, 340);
   }
 
   toggle?.addEventListener('click', abrir);
   close?.addEventListener('click', () => fechar());
-  menu?.querySelectorAll('a, [data-booking]').forEach((el) =>
-    el.addEventListener('click', () => fechar(false)),
+  // Links para outra página: o menu continua aberto e a transição de página cuida da troca.
+  // Âncoras na mesma página e o agendamento fecham o menu antes.
+  menu?.querySelectorAll<HTMLElement>('a, [data-booking]').forEach((el) =>
+    el.addEventListener('click', () => {
+      const href = el.getAttribute('href');
+      const outraPagina = href && !href.startsWith('#') && new URL(href, location.href).pathname !== location.pathname;
+      if (!outraPagina) fechar(false);
+    }),
   );
+
+  // Voltar pelo navegador (página restaurada do cache): menu fechado
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) fechar(false, true);
+  });
 
   document.addEventListener('keydown', (e) => {
     if (!menu || menu.hidden) return;
