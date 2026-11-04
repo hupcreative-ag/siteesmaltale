@@ -53,12 +53,19 @@ const jsonLd = grafo(organizacao(new URL('/logo-esmaltale.png', SITE.url).href),
           html.classList.remove('vt-ativa');
         };
         // Transição pulada (aba em segundo plano etc.) rejeita o ready: tratado para não sujar o console
-        e.viewTransition.ready.catch(fim);
-        e.viewTransition.finished.then(fim, fim);
+        var vt = e.viewTransition;
+        vt.ready.catch(fim);
+        vt.updateCallbackDone && vt.updateCallbackDone.catch(function () {});
+        vt.finished.then(fim, fim);
       });
       // Lado da página que sai: mesma rejeição quando a transição é pulada
       addEventListener('pageswap', function (e) {
-        if (e.viewTransition) e.viewTransition.ready.catch(function () {});
+        var vt = e.viewTransition;
+        if (!vt) return;
+        var nada = function () {};
+        vt.ready.catch(nada);
+        vt.updateCallbackDone && vt.updateCallbackDone.catch(nada);
+        vt.finished.catch(nada);
       });
     </script>
     <Tracking />
