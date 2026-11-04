@@ -94,8 +94,12 @@ const jsonLd = grafo(organizacao(logo), website(), ...schema);
     <meta name="theme-color" content="#6B1F7C" />
     <meta name="author" content={SITE.nome} />
     <meta name="format-detection" content="telephone=no" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <!-- O Google usa ícones em múltiplos de 48px (48, 96, 192); o .ico cobre navegadores antigos. -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" href={gazpachoBold} as="font" type="font/woff2" crossorigin />
     <link rel="alternate" type="text/plain" href="/llms.txt" title="Resumo do site para IAs (llms.txt)" />
