@@ -7,7 +7,7 @@ export const SITE = {
   nome: 'Esmaltale',
   razao: 'Esmaltale Estética e Beleza',
   url: 'https://esmaltale.com.br',
-  previewUrl: 'https://novo.esmaltale.com.br',
+  previewUrl: 'https://minha.esmaltale.com.br',
   fundacao: 2017,
   assinatura: 'O melhor cuidado das nossas mãos para as suas.',
   instagram: 'https://www.instagram.com/esmaltale',

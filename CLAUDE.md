@@ -53,7 +53,7 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - Branches:
   - `main` = código-fonte.
   - Branches de deploy ficam no repositório `https://github.com/esmaltalesalvador/esmatalesite` (remoto `deploy`, da conta conectada ao Git do hPanel; hupcreative-ag é colaboradora):
-    - `deploy-preview` = site pronto (dist) do preview, novo.esmaltale.com.br.
+    - `deploy-preview` = site pronto (dist) do preview, minha.esmaltale.com.br.
     - `producao` = site pronto (dist) de esmaltale.com.br, só recebe envio quando o usuário mandar publicar. As tags `prod-*` também ficam lá.
 - As branches de deploy só recebem commits do `scripts/deploy.mjs`. Nunca editar, fazer merge nelas ou force push. **Nunca** force push na `main`.
 - Nunca commitar `.env*` (exceto `.env.example`) ou segredos.
@@ -68,14 +68,14 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 3. Mostrar resumo do que vai subir (uma linha por arquivo ou grupo).
 4. Commit e `git push origin main`.
 5. `npm run deploy:preview` (gera com `preview` e envia para `deploy-preview`).
-6. Esperar a Hostinger publicar, verificar todas as rotas em https://novo.esmaltale.com.br com `curl` e passar o link.
+6. Esperar a Hostinger publicar, verificar todas as rotas em https://minha.esmaltale.com.br com `curl` e passar o link.
 
 ## Publicação (Hostinger, site estático pelo Git do hPanel)
 
 - O plano é Business Web Hosting. esmaltale.com.br tem o e-mail grátis da Hostinger (até 5 caixas) em uso. A cliente não pode fazer upgrade.
 - **Nunca** criar Web App Node.js para esmaltale.com.br, conectar o domínio a um site novo, clicar em "Excluir site" ou redefinir a zona DNS: isso apaga os e-mails ou os registros MX/SPF/DKIM/DMARC.
 - O site é estático: a Hostinger não roda build. O Git do hPanel de cada site puxa a sua branch de deploy (deploy automático por webhook do GitHub, chave de deploy só leitura). Sem GitHub Actions, SSH ou upload manual.
-  - Preview: site novo.esmaltale.com.br, branch `deploy-preview`.
+  - Preview: site minha.esmaltale.com.br, branch `deploy-preview`.
   - Produção: site esmaltale.com.br, pasta `public_html`, branch `producao`.
 - Subdomínios `loja.esmaltale.com.br` e `primeiravisita.esmaltale.com.br` são CNAMEs para a Cloudflare: **não mexer**.
 - WordPress antigo: só sai na primeira publicação, depois do backup (arquivos de `public_html`). O banco MySQL só é apagado depois de o site novo ser verificado e com OK do usuário.

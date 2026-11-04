@@ -1,6 +1,6 @@
 # Esmaltale · site institucional
 
-Site estático em [Astro](https://astro.build) para **esmaltale.com.br**. Preview em **novo.esmaltale.com.br**.
+Site estático em [Astro](https://astro.build) para **esmaltale.com.br**. Preview em **minha.esmaltale.com.br**.
 
 ## Rodar localmente
 
@@ -46,18 +46,17 @@ Build de produção local: `npm run build` (gera `dist/`) e `npm run preview` pa
 
 ## Publicação
 
-A Hostinger está ligada ao repositório e publica a cada push:
+O site é publicado como arquivos estáticos pelo Git do hPanel da Hostinger, que não roda build. O script `scripts/deploy.mjs` gera a `dist` e a envia para o repositório [esmaltalesalvador/esmatalesite](https://github.com/esmaltalesalvador/esmatalesite):
 
-- `main` → https://novo.esmaltale.com.br (preview)
-- `producao` → https://esmaltale.com.br (só quando autorizado)
+- `npm run deploy:preview` → branch `deploy-preview` → https://minha.esmaltale.com.br
+- `npm run deploy:producao` → branch `producao` + tag `prod-AAAA-MM-DD-HHMM` → https://esmaltale.com.br (só quando autorizado)
+- `npm run deploy:voltar -- prod-AAAA-MM-DD-HHMM` → `producao` volta ao conteúdo dessa tag
 
 Comandos em linguagem natural (detalhes em `CLAUDE.md`):
 
-- **"sobe"** / **"sobe no preview"**: build, commit e push na `main`.
-- **"publica em produção"**: tag `prod-AAAA-MM-DD-HHMM` e fast-forward da `producao`.
-- **"volta a versão anterior"**: `producao` volta para a tag de produção anterior.
-
-Os scripts npm `deploy:preview`, `deploy:prod` e `deploy:rollback` entram na Fase 5.
+- **"sobe"** / **"sobe no preview"**: build, commit e push na `main`, depois `deploy:preview`.
+- **"publica em produção"**: `deploy:producao`.
+- **"volta a versão anterior"**: `deploy:voltar` com a tag anterior.
 
 ## Pendências
 

@@ -3,7 +3,7 @@
 // As branches de deploy ficam num repositório à parte (REPO_DEPLOY), da conta conectada ao hPanel;
 // o código-fonte continua no origin.
 //
-//   npm run deploy:preview   → branch deploy-preview (novo.esmaltale.com.br)
+//   npm run deploy:preview   → branch deploy-preview (minha.esmaltale.com.br)
 //   npm run deploy:producao  → branch producao + tag prod-AAAA-MM-DD-HHMM (esmaltale.com.br)
 //   npm run deploy:voltar -- prod-AAAA-MM-DD-HHMM → producao volta ao conteúdo dessa tag
 //
