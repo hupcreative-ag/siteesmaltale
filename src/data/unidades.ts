@@ -8,8 +8,7 @@
  */
 import type { ImageMetadata } from 'astro';
 
-// Foto provisória do tapume da loja; trocar pela definitiva quando chegar.
-import shoppingBarra from '../assets/lojas/shopping-barra.webp';
+import shoppingBarra from '../assets/lojas/shopping-barra.jpg';
 import salvadorShopping from '../assets/lojas/salvador-shopping.jpg';
 import shoppingDaBahia from '../assets/lojas/shopping-da-bahia.jpg';
 import shoppingParalela from '../assets/lojas/shopping-paralela.jpg';
@@ -66,8 +65,7 @@ export const UNIDADES: Unidade[] = [
     lat: -13.0071675,
     lng: -38.5247271,
     foto: shoppingBarra,
-    fotoPosicao: 'center 34%',
-    fotoProvisoria: true,
+    fotoPosicao: 'center',
   },
   {
     slug: 'salvador-shopping',

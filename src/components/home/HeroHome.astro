@@ -9,7 +9,7 @@
  * Comportamento do carrossel em src/scripts/carousel.ts.
  */
 import { Picture } from 'astro:assets';
-import heroFoto from '../../assets/lojas/salvador-shopping-02.jpg';
+import heroFoto from '../../assets/lojas/shopping-barra-interna.jpg';
 import { bannersAtivos } from '../../data/hero';
 import { totalUnidades, porExtenso } from '../../lib/unidades';
 import IconArrow from '../icons/IconArrow.astro';
@@ -45,10 +45,10 @@ const comCarrossel = totalSlides > 1;
       >
         <Picture
           src={heroFoto}
-          widths={[768, 1280, 1920, 2500]}
+          widths={[768, 1280, 1920, 2000]}
           sizes="(max-width: 767px) 300vw, 100vw"
           formats={['avif', 'webp']}
-          alt="Interior de uma unidade Esmaltale, com bancadas de atendimento e prateleiras de esmaltes"
+          alt="Interior da Esmaltale no Shopping Barra, com poltronas de atendimento, bancadas e prateleiras de esmaltes"
           class="hero__photo hero__photo--loja"
           loading="eager"
           fetchpriority="high"
@@ -285,7 +285,7 @@ const comCarrossel = totalSlides > 1;
   }
 
   .hero__slide :global(.hero__photo.hero__photo--loja) {
-    object-position: 60% center;
+    object-position: 45% center;
   }
 
   .hero__slide :global(.hero__photo) {
