@@ -27,7 +27,7 @@ import IconWhatsapp from '../icons/IconWhatsapp.astro';
 const unidades = await Promise.all(
   unidadesAtivas.map(async (u) => ({
     u,
-    mini: u.foto ? (await getImage({ src: u.foto, width: 112, height: 112, format: 'webp' })).src : null,
+    mini: u.foto ? (await getImage({ src: u.fotoMini ?? u.foto, width: 112, height: 112, format: 'webp' })).src : null,
     foto: u.foto ? (await getImage({ src: u.foto, width: 880, height: 440, format: 'webp' })).src : null,
   })),
 );

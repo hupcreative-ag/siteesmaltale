@@ -7,7 +7,7 @@ Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e car
 - [x] Shopping Barra · referência: "Piso L3 Leste · Ao lado da Nike" (2026-11-03).
 - [ ] **Shopping Barra · endereço** a confirmar: Av. Centenário, 2992, Chame-Chame, Salvador, BA, 40155-151.
 - [ ] **Shopping Barra · link do Trinks** a confirmar: usando https://www.trinks.com/esmaltale-shopping-barra (a página existe no Trinks com o nome da unidade).
-- [x] Shopping Barra · foto definitiva da fachada (2026-11-06): `lojas/shopping-barra.jpg`, original em `conteudo/Imagens/Lojas/shopping-barra-fachada.jpg`. A foto interna da loja (`lojas/shopping-barra-interna.jpg`) passou a ser a do hero da Home.
+- [x] Shopping Barra · foto definitiva da fachada (2026-11-06): `lojas/shopping-barra.jpg` (com o letreiro, em Lojas e na ficha do modal) e `lojas/shopping-barra-mini.jpg` (fachada com a área interna, sem o letreiro, nas imagens pequenas), original em `conteudo/Imagens/Lojas/shopping-barra-fachada.jpg`. A foto interna da loja (`lojas/shopping-barra-interna.jpg`) passou a ser a do hero da Home.
 - [x] Shopping Barra · latitude e longitude: do perfil no Google (2026-11-03).
 - [x] Parque Shopping Bahia · endereço: Av. Santos Dumont, 4360, conforme a landing aprovada (decidido em 2026-11-02).
 

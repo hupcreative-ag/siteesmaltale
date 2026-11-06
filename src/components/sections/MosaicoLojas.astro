@@ -27,7 +27,7 @@ const EXTRAS: Record<string, ImageMetadata> = {
 
 const principais: Foto[] = unidadesAtivas
   .filter((u) => u.foto && !u.fotoProvisoria)
-  .map((u) => ({ src: u.foto!, nome: u.nome, posicao: u.fotoPosicao }));
+  .map((u) => ({ src: u.fotoMini ?? u.foto!, nome: u.nome, posicao: u.fotoPosicao }));
 const extras: Foto[] = unidadesAtivas
   .filter((u) => EXTRAS[u.slug])
   .map((u) => ({ src: EXTRAS[u.slug], nome: u.nome }));

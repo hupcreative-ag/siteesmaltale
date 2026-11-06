@@ -9,6 +9,7 @@
 import type { ImageMetadata } from 'astro';
 
 import shoppingBarra from '../assets/lojas/shopping-barra.jpg';
+import shoppingBarraMini from '../assets/lojas/shopping-barra-mini.jpg';
 import salvadorShopping from '../assets/lojas/salvador-shopping.jpg';
 import shoppingDaBahia from '../assets/lojas/shopping-da-bahia.jpg';
 import shoppingParalela from '../assets/lojas/shopping-paralela.jpg';
@@ -39,6 +40,8 @@ export interface Unidade {
   lat?: number;
   lng?: number;
   foto?: ImageMetadata;
+  /** Recorte para imagens pequenas (cards, lista do modal, mosaico), quando o da foto principal não funciona nelas. */
+  fotoMini?: ImageMetadata;
   /** object-position da foto nos cards. */
   fotoPosicao?: string;
   /** Foto provisória (ex.: tapume): aparece no card, mas fica fora do grid de fotos da Sobre. */
@@ -65,6 +68,7 @@ export const UNIDADES: Unidade[] = [
     lat: -13.0071675,
     lng: -38.5247271,
     foto: shoppingBarra,
+    fotoMini: shoppingBarraMini,
     fotoPosicao: 'center',
   },
   {
