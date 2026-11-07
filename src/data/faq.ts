@@ -2,7 +2,7 @@
  * Perguntas frequentes da Home (também viram FAQPage no JSON-LD).
  * RASCUNHO PARA APROVAÇÃO: o documento de conteúdo não tem FAQ. As respostas usam só fatos
  * que já estão no documento ou nos dados das unidades; as de duração e diferença entre
- * banhos repetem o texto da página Nail Art. Ver PENDENCIAS.md.
+ * banhos repetem o texto da página Nail Design. Ver PENDENCIAS.md.
  */
 import { HORARIO } from '../config/site';
 import { porExtenso, totalUnidades, listaPorCidade, listaComE, listaCidades } from '../lib/unidades';

@@ -15,21 +15,21 @@ import { getImage } from 'astro:assets';
 import { SITE } from '../config/site';
 import fotoNailArt from '../assets/nail-art/fibra-de-vidro.jpg';
 
-const titulo = 'Nail Art, Alongamento e Banho de Gel | Esmaltale';
-const descricao = `Alongamento em fibra de vidro, unhas postiças, banho de cristal e banho de gel em ${listaCidades}. Agende online na Esmaltale.`;
+const titulo = 'Nail Design, Alongamento e Banho de Gel | Esmaltale';
+const descricao = `Alongamento em fibra de vidro, banho de cristal e banho de gel em ${listaCidades}. Agende online na Esmaltale.`;
 
 const nailArt = SERVICOS.find((s) => s.slug === 'nail-art');
 const perguntas = SERVICOS_NAIL_ART.flatMap((s) => [s.duracao, ...(s.diferenca ? [s.diferenca] : [])]);
 const fotoPrincipal = await getImage({ src: fotoNailArt, width: 1200, format: 'jpg' });
 const schema = [
-  pagina('WebPage', '/nail-art/', titulo, descricao, {
+  pagina('WebPage', '/nail-design/', titulo, descricao, {
     imagem: new URL(fotoPrincipal.src, SITE.url).href,
-    principal: [`${SITE.url}/nail-art/#servico`, ...SERVICOS_NAIL_ART.map((s) => `${SITE.url}/nail-art/#${s.id}`)],
+    principal: [`${SITE.url}/nail-design/#servico`, ...SERVICOS_NAIL_ART.map((s) => `${SITE.url}/nail-design/#${s.id}`)],
   }),
-  breadcrumb([{ nome: 'Nail Art', caminho: '/nail-art/' }]),
-  ...(nailArt ? [servico(nailArt.nome, nailArt.descricao, '/nail-art/')] : []),
-  ...SERVICOS_NAIL_ART.map((s) => servico(s.nome, s.descricao, `/nail-art/#${s.id}`)),
-  faq(perguntas, '/nail-art/'),
+  breadcrumb([{ nome: 'Nail Design', caminho: '/nail-design/' }]),
+  ...(nailArt ? [servico(nailArt.nome, nailArt.descricao, '/nail-design/')] : []),
+  ...SERVICOS_NAIL_ART.map((s) => servico(s.nome, s.descricao, `/nail-design/#${s.id}`)),
+  faq(perguntas, '/nail-design/'),
 ];
 ---
 
@@ -41,7 +41,7 @@ const schema = [
   ogImageAlt="Unhas alongadas em fibra de vidro feitas na Esmaltale"
   contactStrip
 >
-  <HeroInternal tag="Nail Art" titulo="Unhas do seu jeito, do formato ao acabamento." trilha="Nail Art">
+  <HeroInternal tag="Nail Design" titulo="Unhas do seu jeito, do formato ao acabamento." trilha="Nail Design">
     <Brilhos
       slot="decor"
       itens={[
@@ -57,7 +57,7 @@ const schema = [
   </HeroInternal>
 
   <!-- Navegação em pílulas, fixa no topo ao rolar -->
-  <nav class="pilulas" aria-label="Serviços de nail art" data-pilulas>
+  <nav class="pilulas" aria-label="Serviços de nail design" data-pilulas>
     <ul class="pilulas__lista">
       {
         SERVICOS_NAIL_ART.map((s) => (

@@ -1,6 +1,6 @@
 /**
  * /llms-full.txt: o conteúdo de todas as páginas em Markdown, para IAs que respondem sobre a
- * Esmaltale (serviços em detalhe, nail art, podologia, institucional, unidades, avaliações reais).
+ * Esmaltale (serviços em detalhe, nail design, podologia, institucional, unidades, avaliações reais).
  * Tudo vem de src/data: mudar um texto ou uma unidade atualiza este arquivo.
  */
 import type { APIRoute } from 'astro';
@@ -30,9 +30,9 @@ export const GET: APIRoute = () =>
     `- **Valores**: ${VALORES.join('; ')}.`,
     '',
     ...secaoServicos(),
-    '## Nail Art, alongamento e esmaltação em gel',
+    '## Nail Design, alongamento e esmaltação em gel',
     '',
-    `Fonte: ${SITE.url}/nail-art/`,
+    `Fonte: ${SITE.url}/nail-design/`,
     '',
     ...SERVICOS_NAIL_ART.flatMap((s) => [
       `### ${s.nome}`,

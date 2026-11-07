@@ -1,5 +1,5 @@
 /**
- * Serviços da página Nail Art, com o texto do documento de conteúdo.
+ * Serviços da página Nail Design, com o texto do documento de conteúdo.
  * Os blocos locais montam a lista de unidades a partir de src/data/unidades.ts (listaPorCidade).
  * As perguntas "Quanto tempo dura..." e "Qual a diferença..." também viram FAQPage no JSON-LD.
  */
@@ -7,7 +7,6 @@ import type { ImageMetadata } from 'astro';
 import { listaPorCidade, listaCidades } from '../lib/unidades';
 
 import fibra from '../assets/nail-art/fibra-de-vidro.jpg';
-import posticas from '../assets/servicos/unhas-posticas.jpg';
 import cristal from '../assets/servicos/banho-de-cristal.jpg';
 import gel from '../assets/servicos/banho-de-gel.jpg';
 
@@ -51,26 +50,6 @@ export const SERVICOS_NAIL_ART: ServicoNailArt[] = [
     local: {
       titulo: `Alongamento de unhas na Esmaltale em ${listaCidades}`,
       texto: `${oferece('alongamento em fibra de vidro')} Todos os atendimentos são realizados por profissionais treinadas, com materiais de qualidade e formato personalizado para cada cliente.`,
-    },
-  },
-  {
-    id: 'unhas-posticas',
-    rotulo: 'Unhas postiças',
-    nome: 'Aplicação de Unhas Postiças',
-    imagem: posticas,
-    alt: 'Mãos com unhas postiças longas esmaltadas em vermelho',
-    descricao:
-      'A aplicação de unhas postiças é uma técnica rápida para quem quer unhas maiores e bem cuidadas em pouco tempo. As unhas são fixadas com cola profissional sobre a unha natural, lixadas e modeladas para se adaptar ao formato e tamanho de cada mão. O resultado é imediato e pode ser personalizado com esmaltação, nail art ou acabamento em gel.',
-    indicado:
-      'A aplicação de unhas postiças é ideal para quem precisa de um resultado rápido para uma ocasião especial, como casamentos, formaturas e eventos. É também uma boa opção para quem quer experimentar unhas maiores sem o compromisso de uma extensão mais duradoura ou para quem não tem tempo para um procedimento mais longo.',
-    duracao: {
-      pergunta: 'Quanto tempo dura a aplicação de unhas postiças?',
-      resposta:
-        'A durabilidade da aplicação com cola profissional varia conforme a rotina de cada pessoa. Em geral, as unhas postiças duram entre uma e duas semanas com os cuidados adequados. Contato prolongado com água, produtos de limpeza e esforço físico podem reduzir a durabilidade.',
-    },
-    local: {
-      titulo: `Aplicação de unhas postiças na Esmaltale em ${listaCidades}`,
-      texto: `${oferece('aplicação de unhas postiças')} O atendimento é realizado por profissionais treinadas, com acabamento personalizado para cada cliente.`,
     },
   },
   {

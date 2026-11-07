@@ -12,7 +12,7 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - `src/data/servicos.ts` — os 10 cards de serviço da Home. Sem `imagem`, o card usa o gradiente da marca com o ícone branco.
 - `src/data/galeria.ts`, `src/data/faq.ts` (rascunho aprovado pelo usuário vira texto oficial), `src/data/avaliacoes.ts` (SOMENTE avaliações reais do Google; nunca inventar).
 - Animação de entrada: atributo `data-reveal` (e `data-reveal-stagger` no pai) via `src/scripts/reveal.ts`.
-- `src/data/nailArt.ts` — os 4 serviços da página Nail Art. `src/data/podologia.ts` e `src/data/sobre.ts` — textos dessas páginas (usados também no JSON-LD e no `/llms-full.txt`).
+- `src/data/nailArt.ts` — os 3 serviços da página Nail Design (rota `/nail-design/`; `/nail-art/` redireciona). `src/data/podologia.ts` e `src/data/sobre.ts` — textos dessas páginas (usados também no JSON-LD e no `/llms-full.txt`).
 - `src/lib/schema.ts` — JSON-LD num único `@graph` ligado por `@id` (organização, site, página, unidades como BeautySalon dentro do ShoppingCenter, serviços, FAQ, breadcrumb). Toda página passa `schema` ao BaseLayout com o nó `pagina()` e, nas internas, o breadcrumb; `ogImage` aceita uma foto de `src/assets` (recortada para 1200x630).
 - `src/lib/llms.ts` — blocos do `/llms.txt` (resumo) e do `/llms-full.txt` (conteúdo das páginas). `scripts/sitemap-imagens.mjs` gera o `sitemap-imagens.xml` depois do build. `scripts/indexnow.mjs` (`npm run indexnow`) avisa Bing e outros buscadores; a chave fica em `public/<chave>.txt`.
 - Páginas internas usam `HeroInternal` (prop `trilha` obrigatória; slot `media` opcional) e, onde o briefing pede, `contactStrip` no BaseLayout.
@@ -25,6 +25,7 @@ Site estático em Astro para esmaltale.com.br. Toda comunicação com o usuário
 - Usar os textos do documento **literalmente**. Não reescrever, resumir nem inventar.
 - Exceções permitidas: trocar travessões (— e –) por vírgula ou ponto no texto corrido; " · " como separador em endereços; corrigir erros evidentes de digitação e espaçamento; notas entre parênteses do documento são instruções internas e não aparecem.
 - Card Banho de Cristal na Home: "Esmaltação em gel que reforça a estrutura da unha natural, sem extensão. Resultado natural e duradouro."
+- O serviço se chama **Nail Design**, não Nail Art, em todo o site, mesmo onde o documento diz nail art. Unhas Postiças só no card da Home, sem "Saiba mais": a seção saiu da página Nail Design (pedido de 2026-11-07).
 - Contagens e listas de unidades vêm de `src/lib/unidades.ts` (`totalUnidades`, `porExtenso`, `listaNomes`, `listaPorCidade`). Manter o formato da frase original: extenso onde o texto usa extenso, algarismo onde usa algarismo.
 - Microtextos de interface que faltarem: curtos, acolhedores, elegantes, sem emojis e sem clichês ("eleve sua experiência", "não perca", "agende já").
 - Texto de conteúdo que faltar: `[TEXTO PENDENTE: descrição]` + registro em PENDENCIAS.md.

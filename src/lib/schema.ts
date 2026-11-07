@@ -23,7 +23,7 @@ const areaAtendida = cidades.map((c) => ({ '@type': 'City', name: c, containedIn
 export const salaoId = (u: Unidade) => `${SITE.url}/lojas/#${u.slug}`;
 
 /** Descrição curta da rede, usada na organização e no site. */
-export const DESCRICAO_REDE = `Rede de esmalterias fundada em ${SITE.fundacao} em Salvador, com ${porExtenso(totalUnidades)} unidades em shoppings de ${listaCidades}. Manicure, pedicure, alongamento de unhas, nail art, SPA dos pés e podologia, com instrumentos esterilizados em autoclave e agendamento online.`;
+export const DESCRICAO_REDE = `Rede de esmalterias fundada em ${SITE.fundacao} em Salvador, com ${porExtenso(totalUnidades)} unidades em shoppings de ${listaCidades}. Manicure, pedicure, alongamento de unhas, nail design, SPA dos pés e podologia, com instrumentos esterilizados em autoclave e agendamento online.`;
 
 export function organizacao(logo: { url: string; width: number; height: number }) {
   return {
@@ -67,7 +67,7 @@ export function salao(u: Unidade, imagemUrl?: string) {
     '@type': ['BeautySalon', 'NailSalon'],
     '@id': salaoId(u),
     name: `${SITE.nome} ${u.nome}`,
-    description: `Esmalteria ${SITE.nome} no ${u.nome}, em ${u.cidade}${local ? ` (${local})` : ''}: manicure, pedicure, alongamento, nail art, SPA dos pés e podologia.`,
+    description: `Esmalteria ${SITE.nome} no ${u.nome}, em ${u.cidade}${local ? ` (${local})` : ''}: manicure, pedicure, alongamento, nail design, SPA dos pés e podologia.`,
     parentOrganization: { '@id': ORG_ID },
     brand: { '@id': ORG_ID },
     url: `${SITE.url}/lojas/#${u.slug}`,

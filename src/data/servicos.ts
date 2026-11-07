@@ -47,7 +47,7 @@ export const SERVICOS: Servico[] = [
     descricao: 'Esmaltação de longa duração com gel de alta qualidade. Brilho intenso e resistência para o dia a dia.',
     imagem: banhoDeGel,
     foco: 'center 42%',
-    saibaMais: '/nail-art/#banho-de-gel',
+    saibaMais: '/nail-design/#banho-de-gel',
   },
   {
     slug: 'banho-de-cristal',
@@ -56,7 +56,7 @@ export const SERVICOS: Servico[] = [
     descricao: 'Esmaltação em gel que reforça a estrutura da unha natural, sem extensão. Resultado natural e duradouro.',
     imagem: banhoDeCristal,
     foco: 'center 58%',
-    saibaMais: '/nail-art/#banho-de-cristal',
+    saibaMais: '/nail-design/#banho-de-cristal',
   },
   {
     slug: 'alongamento',
@@ -64,7 +64,7 @@ export const SERVICOS: Servico[] = [
     descricao: 'Extensão profissional com modelagem personalizada no formato que mais combina com você, sempre com refinamento e acabamento.',
     imagem: alongamento,
     foco: 'center 50%',
-    saibaMais: '/nail-art/#fibra-de-vidro',
+    saibaMais: '/nail-design/#fibra-de-vidro',
   },
   {
     slug: 'unhas-posticas',
@@ -72,15 +72,14 @@ export const SERVICOS: Servico[] = [
     descricao: 'Solução rápida e elegante para quem quer unhas mais longas e perfeitas em qualquer ocasião.',
     imagem: unhasPosticas,
     foco: 'center 48%',
-    saibaMais: '/nail-art/#unhas-posticas',
   },
   {
     slug: 'nail-art',
-    nome: 'Nail Art',
+    nome: 'Nail Design',
     descricao: 'Designs exclusivos e personalizados. Do minimalismo às tendências mais ousadas para realçar o seu estilo.',
     imagem: nailArt,
     foco: 'center 46%',
-    saibaMais: '/nail-art/',
+    saibaMais: '/nail-design/',
   },
   {
     slug: 'spa-dos-pes',

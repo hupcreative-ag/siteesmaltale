@@ -18,7 +18,7 @@ export const SITE = {
 export const NAV = [
   { href: '/', label: 'Início' },
   { href: '/sobre/', label: 'Sobre' },
-  { href: '/nail-art/', label: 'Nail Art' },
+  { href: '/nail-design/', label: 'Nail Design' },
   { href: '/podologia/', label: 'Podologia' },
   { href: '/lojas/', label: 'Lojas' },
 ];

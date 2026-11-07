@@ -1,6 +1,6 @@
 # Pendências
 
-Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e carrosséis).
+Atualizado em 2026-11-07 (Nail Design, unhas postiças fora da página interna e nova foto do Sobre na Home).
 
 ## Dados das unidades
 
@@ -16,7 +16,7 @@ Atualizado em 2026-11-03 (fotos dos tratamentos de podologia, hero da Home e car
 Nenhuma imagem de conteúdo pendente.
 
 Fotos da página Sobre recebidas em 2026-11-02 (originais em `conteudo/Imagens/Sobre/`). Distribuição feita por nós, confirmar:
-- `sobre-home` ← interior da loja com o logo (Sobre resumida, Home)
+- `sobre-home` ← interior da loja com a parede de esmaltes (Sobre resumida, Home; trocada em 2026-11-07, original `Sobre/sobre-home-interna.jpg`)
 - `sobre-pagina` ← cliente escolhendo esmalte na prateleira (texto institucional)
 - `missao` ← cliente sorrindo durante a manicure, blazer rosa
 - `visao` ← cliente de óculos rindo durante a manicure

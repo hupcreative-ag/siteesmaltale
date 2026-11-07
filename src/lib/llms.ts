@@ -19,7 +19,7 @@ import {
 export const resumoMarca = () => [
   `# ${SITE.nome}`,
   '',
-  `> ${SITE.nome} é uma rede de esmalterias fundada em ${SITE.fundacao} em Salvador, com ${porExtenso(totalUnidades)} unidades em shoppings de ${listaCidades}. Manicure, pedicure, alongamento de unhas, nail art, SPA dos pés e podologia, com instrumentos esterilizados em autoclave e agendamento online pelo Trinks.`,
+  `> ${SITE.nome} é uma rede de esmalterias fundada em ${SITE.fundacao} em Salvador, com ${porExtenso(totalUnidades)} unidades em shoppings de ${listaCidades}. Manicure, pedicure, alongamento de unhas, nail design, SPA dos pés e podologia, com instrumentos esterilizados em autoclave e agendamento online pelo Trinks.`,
   '',
   `Assinatura: "${SITE.assinatura}"`,
   '',
