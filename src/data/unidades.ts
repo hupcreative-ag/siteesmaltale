@@ -40,7 +40,7 @@ export interface Unidade {
   lat?: number;
   lng?: number;
   foto?: ImageMetadata;
-  /** Recorte para imagens pequenas (cards, lista do modal, mosaico), quando o da foto principal não funciona nelas. */
+  /** Recorte para cards, fichas da página Lojas, lista do modal e mosaico, quando o da foto principal não funciona nelas. */
   fotoMini?: ImageMetadata;
   /** object-position da foto nos cards. */
   fotoPosicao?: string;

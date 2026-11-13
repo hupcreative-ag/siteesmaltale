@@ -108,7 +108,7 @@ const schema = [
                   <div class="ficha__media">
                     {u.foto ? (
                       <Picture
-                        src={u.foto}
+                        src={u.fotoMini ?? u.foto}
                         width={960}
                         height={720}
                         widths={[480, 720, 960]}
@@ -490,6 +490,11 @@ const schema = [
     .ficha__media {
       aspect-ratio: auto;
       min-height: 100%;
+    }
+
+    /* Altura mínima para a foto não virar faixa nas fichas com menos texto (ex.: sem "Conhecer a unidade") */
+    .ficha {
+      min-height: 23rem;
     }
 
     .ficha__corpo {
